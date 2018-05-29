@@ -1,0 +1,11 @@
+[
+  "lesson_testing.py::lesson_testing.Employee",
+  "lesson_testing.py::lesson_testing.salary_calc",
+  "lesson_testing.py::test_empty_str",
+  "lesson_testing.py::test_fio[\\u0420\\u043e\\u043c\\u0430\\u0448\\u043a\\u0438\\u043d    \\u0424\\u0438\\u043b\\u0438\\u043c\\u043e\\u043d 20          1000-expected0]",
+  "lesson_testing.py::test_fio[\\u0418\\u0432\\u0430\\u043d\\u043e\\u0432      \\u0418\\u0432\\u0430\\u043d    45          5000-expected1]",
+  "lesson_testing.py::test_salary",
+  "lesson_testing.py::TestSalary::test_salary_exception",
+  "lesson_testing.py::TestSalary::test_salary_fio",
+  "lesson_testing.py::TestSalary::test_salary_summ"
+]
