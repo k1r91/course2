@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 
 
@@ -35,3 +36,13 @@ a.x = 25
 
 b = A()
 b.x = 25
+
+s = '001010110'
+print(type(s), sys.getsizeof(s))
+sbytes = bytes(s, 'utf-8')
+print(type(sbytes), sys.getsizeof(sbytes))
+sbytes2 = s.encode('utf-8')
+print(type(sbytes2), sys.getsizeof(sbytes2), id(sbytes), id(sbytes2))
+print(sbytes == sbytes2)
+print(type(s), sys.getsizeof(s))
+print(sys.platform)
