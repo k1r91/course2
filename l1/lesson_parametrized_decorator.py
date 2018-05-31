@@ -38,7 +38,7 @@ def str_add(numbers):
 @time_it
 @sleep(.2)
 def str_join(numbers):
-    res = ' '.join(list(map(str, range(1000))))
+    res = ' '.join(list(map(str, range(numbers))))
     return res
 
 
