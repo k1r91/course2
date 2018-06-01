@@ -26,7 +26,13 @@ class Transaction:
     SEC_SZ = 24   # 3 bytes for seconds since midnight
 
     def __init__(self):
+        self.date = None        # attribute defined in deserialize method
+        self.length = None      # attribute defined in deserialize method
         self.type = None
+
+    def get_type(self, data):
+        cursor = self.HEADER_SZ + self.LENGTH_SZ + self.YEAR_SZ + self.MONTH_SZ + self.DAY_SZ + self.SEC_SZ
+        return int(data[cursor:cursor+self.TYPE_SZ], 2)
 
     def get_datetime(self):
         """
@@ -77,37 +83,49 @@ class Transaction:
     def serialized_header(self):
         return self.serialize_number(self.header, self.HEADER_SZ)
 
-    def check_header(self, data):
-        header = int(data[:self.HEADER_SZ], 2)
-        if header != self.header:
+    @staticmethod
+    def check_header(data):
+        header = int(data[:Transaction.HEADER_SZ], 2)
+        if header != Transaction.header:
             raise ValueError('Header is incorrect')
 
-    def check_length(self, length, data):
+    @staticmethod
+    def check_length(length, data):
         if length != len(data):
             raise ValueError('Length of packet is incorrect')
 
-    def check_type(self, ttype):
-        if ttype != self.type:
-            raise ValueError('Incorrect transaction type')
 
-    def deserialize(self, data):
-        data = data.decode('utf-8')
-        self.check_header(data)
-        cursor = self.HEADER_SZ
-        length = int(data[cursor:cursor+self.LENGTH_SZ], 2)
-        cursor += self.LENGTH_SZ
-        self.check_length(length, data[cursor:])
-        year = 2000 + int(data[cursor:cursor+self.YEAR_SZ], 2)
-        cursor += self.YEAR_SZ
-        month = int(data[cursor:cursor+self.MONTH_SZ], 2)
-        cursor += self.MONTH_SZ
-        day = int(data[cursor:cursor+self.DAY_SZ], 2)
-        cursor += self.DAY_SZ
-        total_seconds = int(data[cursor:cursor+self.SEC_SZ], 2)
-        cursor += self.SEC_SZ
-        hours, minutes, seconds = self.get_time(total_seconds)
+    @staticmethod
+    def deserialize(data):
+        """
+        deserialize common deserializable data for all transaction
+        :param data:
+        :return:cursor - position to decode remaining bytecode data
+        """
+        result = {}
+        if isinstance(data, bytes):
+            data = data.decode('utf-8')
+        Transaction.check_header(data)
+        cursor = Transaction.HEADER_SZ
+        length = int(data[cursor:cursor+Transaction.LENGTH_SZ], 2)
+        cursor += Transaction.LENGTH_SZ
+        Transaction.check_length(length, data[cursor:])
+        year = 2000 + int(data[cursor:cursor+Transaction.YEAR_SZ], 2)
+        cursor += Transaction.YEAR_SZ
+        month = int(data[cursor:cursor+Transaction.MONTH_SZ], 2)
+        cursor += Transaction.MONTH_SZ
+        day = int(data[cursor:cursor+Transaction.DAY_SZ], 2)
+        cursor += Transaction.DAY_SZ
+        total_seconds = int(data[cursor:cursor+Transaction.SEC_SZ], 2)
+        cursor += Transaction.SEC_SZ
+        hours, minutes, seconds = Transaction.get_time(total_seconds)
         date = datetime.datetime(year=year, month=month, day=day, hour=hours, minute=minutes, second=seconds)
-        return {'header': self.header, 'length': length, 'date': date}, cursor
+        result['length'] = length
+        result['date'] = date
+        return result, cursor
+
+    def __str__(self):
+        return 'length={}, date={}'.format(self.length, self.date)
 
 
 class ServiceTransaction(Transaction):
@@ -118,16 +136,16 @@ class ServiceTransaction(Transaction):
             'block': 0x04
             }
     ACTION_SZ = 8   # 1 byte to action
+    TYPE = 0x00
 
     def __init__(self, action):
-        self.type = 0x00
+        super().__init__()
         self.action = self.data[action]
 
     def serialize(self):
         result = list()
-        transaction_data = ''.join([self.serialize_number(self.type, self.TYPE_SZ),
-                                    self.serialize_number(self.collector_id_id, self.COLLECTOR_ID_SZ),
-                                    self.serialize_number(self.amount, self.AMOUNT_SZ)])
+        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
+                                    self.serialize_number(self.action, self.ACTION_SZ)])
         self.length = len(self.get_datetime()) + len(transaction_data)
         serialized_length = self.serialize_number(self.length, self.LENGTH_SZ)
         result.append(self.serialized_header)
@@ -136,20 +154,53 @@ class ServiceTransaction(Transaction):
         result.append(transaction_data)
         return bytes(''.join(result), 'utf-8')
 
+    @staticmethod
+    def deserialize(data):
+        """
+        returns new ServiceTransaction exemplary with filled parameters
+        :param data:
+        :return:
+        """
+        result, cursor = Transaction.deserialize(data)
+        ttype = int(data[cursor:cursor+ServiceTransaction.TYPE_SZ], 2)
+        ServiceTransaction.check_type(ttype)
+        cursor += ServiceTransaction.TYPE_SZ
+        action = int(data[cursor:cursor+ServiceTransaction.ACTION_SZ], 2)
+        res = ServiceTransaction(ServiceTransaction.get_key(ServiceTransaction.data, action))
+        res.date = result['date']
+        res.length = result['length']
+        res.type = ttype
+        return res
+
+    @staticmethod
+    def get_key(dict_data, value):
+        for key, _value in dict_data.items():
+            if _value == value:
+                return key
+
+    @staticmethod
+    def check_type(ttype):
+        if ttype != ServiceTransaction.TYPE:
+            raise ValueError('Type is incorrect')
+
+    def __str__(self):
+        return 'Service transaction: {}, action={}'.format(super().__str__(), self.get_key(self.data, self.action))
+
 
 class PaymentTransaction(Transaction):
 
     ORG_ID_SZ = 32  # 4 bytes to organization id
     AMOUNT_SZ = 64  # 8 bytes to amount size
+    TYPE = 0x01
 
     def __init__(self, org_id, amount):
-        self.type = 0x01
+        super().__init__()
         self.org_id = org_id
         self.amount = amount
 
     def serialize(self):
         result = list()
-        transaction_data = ''.join([self.serialize_number(self.type, self.TYPE_SZ),
+        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
                                     self.serialize_number(self.org_id, self.ORG_ID_SZ),
                                     self.serialize_number(self.amount, self.AMOUNT_SZ)])
         self.length = len(self.get_datetime()) + len(transaction_data)
@@ -160,35 +211,49 @@ class PaymentTransaction(Transaction):
         result.append(transaction_data)
         return bytes(''.join(result), 'utf-8')
 
+    @staticmethod
+    def deserialize(data):
+        """
 
-    def deserialize(self, data):
-        result, cursor = super().deserialize(data)
-        ttype = int(data[cursor:cursor+self.TYPE_SZ], 2)
-        self.check_type(ttype)
-        cursor += self.TYPE_SZ
-        org_id = int(data[cursor:cursor+self.ORG_ID_SZ], 2)
-        cursor += self.ORG_ID_SZ
-        amount = int(data[cursor:cursor+self.AMOUNT_SZ], 2)
-        result['type'] = ttype
-        result['org_id'] = org_id
-        result['amount'] = amount
-        return result
+        :param data:
+        :return:examplary of PaymentTranzaction class
+        """
+        result, cursor = Transaction.deserialize(data)
+        ttype = int(data[cursor:cursor+Transaction.TYPE_SZ], 2)
+        PaymentTransaction.check_type(ttype)
+        cursor += Transaction.TYPE_SZ
+        org_id = int(data[cursor:cursor+PaymentTransaction.ORG_ID_SZ], 2)
+        cursor += PaymentTransaction.ORG_ID_SZ
+        amount = int(data[cursor:cursor+PaymentTransaction.AMOUNT_SZ], 2)
+        res = PaymentTransaction(org_id, amount)
+        res.date = result['date']
+        res.length = result['length']
+        return res
+
+    @staticmethod
+    def check_type(ttype):
+        if ttype != PaymentTransaction.TYPE:
+            raise ValueError('Type is incorrect')
+
+    def __str__(self):
+        return 'Payment transaction: {}, org_id={}, amount={}'.format(super().__str__(), self.org_id, self.amount)
 
 
 class EncashmentTransaction(Transaction):
 
     COLLECTOR_ID_SZ = 32    # 4 bytes to collector id
     AMOUNT_SZ = 64          # 8 bytes to encashment amount
+    TYPE = 0x02
 
     def __init__(self, collector_id, amount):
-        self.type = 0x02
+        super().__init__()
         self.collector_id = collector_id
         self.amount = amount
 
     def serialize(self):
         result = list()
-        transaction_data = ''.join([self.serialize_number(self.type, self.TYPE_SZ),
-                                    self.serialize_number(self.collector_id_id, self.COLLECTOR_ID_SZ),
+        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
+                                    self.serialize_number(self.collector_id, self.COLLECTOR_ID_SZ),
                                     self.serialize_number(self.amount, self.AMOUNT_SZ)])
         self.length = len(self.get_datetime()) + len(transaction_data)
         serialized_length = self.serialize_number(self.length, self.LENGTH_SZ)
@@ -198,13 +263,46 @@ class EncashmentTransaction(Transaction):
         result.append(transaction_data)
         return bytes(''.join(result), 'utf-8')
 
+    @staticmethod
+    def deserialize(data):
+        """
+
+        :param data:
+        :return:examplary of PaymentTranzaction class
+        """
+        result, cursor = Transaction.deserialize(data)
+        ttype = int(data[cursor:cursor + Transaction.TYPE_SZ], 2)
+        EncashmentTransaction.check_type(ttype)
+        cursor += Transaction.TYPE_SZ
+        collector_id = int(data[cursor:cursor + EncashmentTransaction.COLLECTOR_ID_SZ], 2)
+        cursor += PaymentTransaction.ORG_ID_SZ
+        amount = int(data[cursor:cursor + EncashmentTransaction.AMOUNT_SZ], 2)
+        res = EncashmentTransaction(collector_id, amount)
+        res.date = result['date']
+        res.length = result['length']
+        return res
+
+    @staticmethod
+    def check_type(ttype):
+        if ttype != EncashmentTransaction.TYPE:
+            raise ValueError('Type is incorrect')
+
+    def __str__(self):
+        return 'Encashment transaction: {}, collector_id={}, amount={}'.format(super().__str__(), self.collector_id,
+                                                                               self.amount)
+
 
 if __name__ == '__main__':
     t = PaymentTransaction(225, 8000)
-    print(t.serialize())
-    print(t.deserialize(t.serialize()))
-    # print(t.serialize_number(24, 7))
-    # print(t.get_datetime())
-    # print(t.serialize_number(2100, 7, is_year=True))
-    # Transaction.serialize_number(24, 5)
+    serialized = t.serialize()
+    print(t.deserialize(serialized))
+    t2 = ServiceTransaction('shutdown')
+    print(t2.serialize())
+    print(t2.deserialize(t2.serialize()))
+    t3 = ServiceTransaction('activate_sensor')
+    print(t3.serialize())
+    print(t3.deserialize(t3.serialize()))
+    t4 = EncashmentTransaction(567, 20000)
+    print(t4.serialize())
+    print(t4.deserialize(t4.serialize()))
     pass
