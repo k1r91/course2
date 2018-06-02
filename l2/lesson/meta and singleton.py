@@ -37,5 +37,5 @@ class Space(metaclass=Singleton):
 a1 = Space()
 b1 = Space()
 print(id(a1), id(b1))
-
+print(a1)
 space = Cosmos()
