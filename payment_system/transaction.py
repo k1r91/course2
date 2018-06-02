@@ -1,5 +1,6 @@
 import datetime
 import time
+import sys
 
 
 class SerializeException(Exception):
@@ -103,8 +104,6 @@ class Transaction:
         :return:cursor - position to decode remaining bytecode data
         """
         result = {}
-        if isinstance(data, bytes):
-            data = data.decode('utf-8')
         Transaction.check_header(data)
         cursor = Transaction.HEADER_SZ
         length = int(data[cursor:cursor+Transaction.LENGTH_SZ], 2)
@@ -123,6 +122,13 @@ class Transaction:
         result['length'] = length
         result['date'] = date
         return result, cursor
+
+    @staticmethod
+    def dec_to_bin(data):
+        data = bin(data)[2:]
+        data = '0' + data
+        data = bytes(data, 'utf-8')
+        return data
 
     def __str__(self):
         return 'length={}, date={}'.format(self.length, self.date)
@@ -152,7 +158,9 @@ class ServiceTransaction(Transaction):
         result.append(serialized_length)
         result.append(self.get_datetime())
         result.append(transaction_data)
-        return bytes(''.join(result), 'utf-8')
+        result = bytes(''.join(result), 'utf-8')
+        result = int(result, 2)
+        return result
 
     @staticmethod
     def deserialize(data):
@@ -161,6 +169,7 @@ class ServiceTransaction(Transaction):
         :param data:
         :return:
         """
+        data = Transaction.dec_to_bin(data)
         result, cursor = Transaction.deserialize(data)
         ttype = int(data[cursor:cursor+ServiceTransaction.TYPE_SZ], 2)
         ServiceTransaction.check_type(ttype)
@@ -199,6 +208,10 @@ class PaymentTransaction(Transaction):
         self.amount = amount
 
     def serialize(self):
+        """
+        Serialize for payment transaction
+        :return: 
+        """
         result = list()
         transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
                                     self.serialize_number(self.org_id, self.ORG_ID_SZ),
@@ -209,15 +222,18 @@ class PaymentTransaction(Transaction):
         result.append(serialized_length)
         result.append(self.get_datetime())
         result.append(transaction_data)
-        return bytes(''.join(result), 'utf-8')
+        result = bytes(''.join(result), 'utf-8')
+        result = int(result, 2)
+        return result
 
     @staticmethod
     def deserialize(data):
         """
 
         :param data:
-        :return:examplary of PaymentTranzaction class
+        :return:examplary of PaymentTransaction class
         """
+        data = Transaction.dec_to_bin(data)
         result, cursor = Transaction.deserialize(data)
         ttype = int(data[cursor:cursor+Transaction.TYPE_SZ], 2)
         PaymentTransaction.check_type(ttype)
@@ -251,6 +267,10 @@ class EncashmentTransaction(Transaction):
         self.amount = amount
 
     def serialize(self):
+        """
+        Serialize for encashment transaction
+        :return: 
+        """
         result = list()
         transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
                                     self.serialize_number(self.collector_id, self.COLLECTOR_ID_SZ),
@@ -261,7 +281,9 @@ class EncashmentTransaction(Transaction):
         result.append(serialized_length)
         result.append(self.get_datetime())
         result.append(transaction_data)
-        return bytes(''.join(result), 'utf-8')
+        result = bytes(''.join(result), 'utf-8')
+        result = int(result, 2)
+        return result
 
     @staticmethod
     def deserialize(data):
@@ -270,6 +292,7 @@ class EncashmentTransaction(Transaction):
         :param data:
         :return:examplary of PaymentTranzaction class
         """
+        data = Transaction.dec_to_bin(data)
         result, cursor = Transaction.deserialize(data)
         ttype = int(data[cursor:cursor + Transaction.TYPE_SZ], 2)
         EncashmentTransaction.check_type(ttype)
