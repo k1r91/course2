@@ -1,6 +1,6 @@
 import datetime
-import time
 import sys
+import struct
 
 
 class SerializeException(Exception):
@@ -17,36 +17,29 @@ class SerializeException(Exception):
 
 class Transaction:
 
-    header = 0x7a7a     # 2 bytes for header
-    TYPE_SZ = 8     # 1 byte for transaction type
-    HEADER_SZ = 16
-    LENGTH_SZ = 16
-    YEAR_SZ = 7   # 7 bit for year
-    MONTH_SZ = 4  # 4 bit for month
-    DAY_SZ = 5    # 5 bit for day
-    SEC_SZ = 24   # 3 bytes for seconds since midnight
+    header = 0x7a7a
+    PACK_FORMAT = 'HBBBBIB'
 
     def __init__(self):
         self.date = None        # attribute defined in deserialize method
         self.length = None      # attribute defined in deserialize method
         self.type = None
 
-    def get_type(self, data):
-        cursor = self.HEADER_SZ + self.LENGTH_SZ + self.YEAR_SZ + self.MONTH_SZ + self.DAY_SZ + self.SEC_SZ
-        return int(data[cursor:cursor+self.TYPE_SZ], 2)
+    @staticmethod
+    def get_type(data):
+        data = struct.unpack(Transaction.PACK_FORMAT, data[:13])    # 13 is expected size of data to unpack according
+                                                                    # to PACK FORMAT
+        return data[-1]
 
-    def get_datetime(self):
+    @staticmethod
+    def seconds_since_midnight():
         """
-        :return: current day in binary format according to protocol description ../l2/homework/README.MD
-        * seconds since midnight
+        :return: seconds since midnight
         """
         now = datetime.datetime.now()
-        year = self.serialize_number(now.year, self.YEAR_SZ, is_year=True)
-        month = self.serialize_number(now.month, self.MONTH_SZ)
-        day = self.serialize_number(now.day, self.DAY_SZ)
         midnight = datetime.datetime.combine(now.date(), datetime.time())
-        seconds = self.serialize_number((now - midnight).seconds, 24)
-        return ''.join([year, month, day, seconds])
+        seconds = (now - midnight).seconds
+        return seconds
 
     @staticmethod
     def get_time(tseconds):
@@ -56,79 +49,9 @@ class Transaction:
         return hours, minutes, seconds
 
     @staticmethod
-    def serialize_number(value, size, is_year=False):
-        '''
-        >>> serialize_number(24, 7)
-        0011000
-        >>> serialize_number(2017, 7, is_year=True)
-        0010001
-
-        :param self:
-        :param value: number to serialize
-        :param size: number of bits to pack value
-        :param is_year: special logic to pack year in 7 bits: bin(current year - 2000)
-        :return: string, binary representation of a value, packed in size bits
-        '''
-        if is_year:
-            value -= 2000
-        if value > 2 ** size:
-            raise SerializeException('Can not serialize {}: {} bits is not enough'.format(value, size))
-        res = str(bin(value))[2:]
-        empty_bits = '0' * size
-        diff = len(empty_bits) - len(res)
-        if diff > 0:
-            res = ''.join(['0'*diff, res])
-        return res
-
-    @property
-    def serialized_header(self):
-        return self.serialize_number(self.header, self.HEADER_SZ)
-
-    @staticmethod
-    def check_header(data):
-        header = int(data[:Transaction.HEADER_SZ], 2)
+    def check_header(header):
         if header != Transaction.header:
-            raise ValueError('Header is incorrect')
-
-    @staticmethod
-    def check_length(length, data):
-        if length != len(data):
-            raise ValueError('Length of packet is incorrect')
-
-
-    @staticmethod
-    def deserialize(data):
-        """
-        deserialize common deserializable data for all transaction
-        :param data:
-        :return:cursor - position to decode remaining bytecode data
-        """
-        result = {}
-        Transaction.check_header(data)
-        cursor = Transaction.HEADER_SZ
-        length = int(data[cursor:cursor+Transaction.LENGTH_SZ], 2)
-        cursor += Transaction.LENGTH_SZ
-        Transaction.check_length(length, data[cursor:])
-        year = 2000 + int(data[cursor:cursor+Transaction.YEAR_SZ], 2)
-        cursor += Transaction.YEAR_SZ
-        month = int(data[cursor:cursor+Transaction.MONTH_SZ], 2)
-        cursor += Transaction.MONTH_SZ
-        day = int(data[cursor:cursor+Transaction.DAY_SZ], 2)
-        cursor += Transaction.DAY_SZ
-        total_seconds = int(data[cursor:cursor+Transaction.SEC_SZ], 2)
-        cursor += Transaction.SEC_SZ
-        hours, minutes, seconds = Transaction.get_time(total_seconds)
-        date = datetime.datetime(year=year, month=month, day=day, hour=hours, minute=minutes, second=seconds)
-        result['length'] = length
-        result['date'] = date
-        return result, cursor
-
-    @staticmethod
-    def dec_to_bin(data):
-        data = bin(data)[2:]
-        data = '0' + data
-        data = bytes(data, 'utf-8')
-        return data
+            raise ValueError('Header is incorrect!')
 
     def __str__(self):
         return 'length={}, date={}'.format(self.length, self.date)
@@ -141,25 +64,20 @@ class ServiceTransaction(Transaction):
             'activate_sensor': 0x03,
             'block': 0x04
             }
-    ACTION_SZ = 8   # 1 byte to action
     TYPE = 0x00
+    PACK_FORMAT = Transaction.PACK_FORMAT + 'B'
 
     def __init__(self, action):
         super().__init__()
         self.action = self.data[action]
 
     def serialize(self):
-        result = list()
-        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
-                                    self.serialize_number(self.action, self.ACTION_SZ)])
-        self.length = len(self.get_datetime()) + len(transaction_data)
-        serialized_length = self.serialize_number(self.length, self.LENGTH_SZ)
-        result.append(self.serialized_header)
-        result.append(serialized_length)
-        result.append(self.get_datetime())
-        result.append(transaction_data)
-        result = bytes(''.join(result), 'utf-8')
-        result = int(result, 2)
+        now = datetime.datetime.now()
+        year = now.year - 2000
+        seconds = Transaction.seconds_since_midnight()
+        self.length = len(struct.pack(self.PACK_FORMAT[2:], year, now.month, now.day,  seconds, self.TYPE, self.action))
+        result = struct.pack(self.PACK_FORMAT, self.header, self.length, year, now.month, now.day,
+                             seconds, self.TYPE, self.action)
         return result
 
     @staticmethod
@@ -169,16 +87,17 @@ class ServiceTransaction(Transaction):
         :param data:
         :return:
         """
-        data = Transaction.dec_to_bin(data)
-        result, cursor = Transaction.deserialize(data)
-        ttype = int(data[cursor:cursor+ServiceTransaction.TYPE_SZ], 2)
+        data = struct.unpack(ServiceTransaction.PACK_FORMAT, data)
+        header = data[0]
+        Transaction.check_header(header)
+        ttype = data[6]
         ServiceTransaction.check_type(ttype)
-        cursor += ServiceTransaction.TYPE_SZ
-        action = int(data[cursor:cursor+ServiceTransaction.ACTION_SZ], 2)
-        res = ServiceTransaction(ServiceTransaction.get_key(ServiceTransaction.data, action))
-        res.date = result['date']
-        res.length = result['length']
-        res.type = ttype
+        action = ServiceTransaction.get_key(ServiceTransaction.data, data[7])
+        res = ServiceTransaction(action)
+        res.length = data[1]
+        hours, minutes, seconds = Transaction.get_time(data[5])
+        res.date = datetime.datetime(year=2000+data[2], month=data[3], day=data[4], hour=hours, minute=minutes,
+                                     second=seconds)
         return res
 
     @staticmethod
@@ -197,10 +116,8 @@ class ServiceTransaction(Transaction):
 
 
 class PaymentTransaction(Transaction):
-
-    ORG_ID_SZ = 32  # 4 bytes to organization id
-    AMOUNT_SZ = 64  # 8 bytes to amount size
     TYPE = 0x01
+    PACK_FORMAT = Transaction.PACK_FORMAT + 'IQ'
 
     def __init__(self, org_id, amount):
         super().__init__()
@@ -212,18 +129,13 @@ class PaymentTransaction(Transaction):
         Serialize for payment transaction
         :return: 
         """
-        result = list()
-        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
-                                    self.serialize_number(self.org_id, self.ORG_ID_SZ),
-                                    self.serialize_number(self.amount, self.AMOUNT_SZ)])
-        self.length = len(self.get_datetime()) + len(transaction_data)
-        serialized_length = self.serialize_number(self.length, self.LENGTH_SZ)
-        result.append(self.serialized_header)
-        result.append(serialized_length)
-        result.append(self.get_datetime())
-        result.append(transaction_data)
-        result = bytes(''.join(result), 'utf-8')
-        result = int(result, 2)
+        now = datetime.datetime.now()
+        year = now.year - 2000
+        seconds = Transaction.seconds_since_midnight()
+        self.length = len(struct.pack(self.PACK_FORMAT[2:], year, now.month, now.day, seconds, self.TYPE,
+                                      self.org_id, self.amount))
+        result = struct.pack(self.PACK_FORMAT, self.header, self.length, year, now.month, now.day,
+                             seconds, self.TYPE, self.org_id, self.amount)
         return result
 
     @staticmethod
@@ -233,17 +145,17 @@ class PaymentTransaction(Transaction):
         :param data:
         :return:examplary of PaymentTransaction class
         """
-        data = Transaction.dec_to_bin(data)
-        result, cursor = Transaction.deserialize(data)
-        ttype = int(data[cursor:cursor+Transaction.TYPE_SZ], 2)
+        data = struct.unpack(PaymentTransaction.PACK_FORMAT, data)
+        header = data[0]
+        Transaction.check_header(header)
+        ttype = data[6]
         PaymentTransaction.check_type(ttype)
-        cursor += Transaction.TYPE_SZ
-        org_id = int(data[cursor:cursor+PaymentTransaction.ORG_ID_SZ], 2)
-        cursor += PaymentTransaction.ORG_ID_SZ
-        amount = int(data[cursor:cursor+PaymentTransaction.AMOUNT_SZ], 2)
+        org_id, amount = data[7], data[8]
         res = PaymentTransaction(org_id, amount)
-        res.date = result['date']
-        res.length = result['length']
+        res.length = data[1]
+        hours, minutes, seconds = Transaction.get_time(data[5])
+        res.date = datetime.datetime(year=2000 + data[2], month=data[3], day=data[4], hour=hours, minute=minutes,
+                                     second=seconds)
         return res
 
     @staticmethod
@@ -257,8 +169,7 @@ class PaymentTransaction(Transaction):
 
 class EncashmentTransaction(Transaction):
 
-    COLLECTOR_ID_SZ = 32    # 4 bytes to collector id
-    AMOUNT_SZ = 64          # 8 bytes to encashment amount
+    PACK_FORMAT = Transaction.PACK_FORMAT + 'IQ'
     TYPE = 0x02
 
     def __init__(self, collector_id, amount):
@@ -268,21 +179,16 @@ class EncashmentTransaction(Transaction):
 
     def serialize(self):
         """
-        Serialize for encashment transaction
+        Serialize for payment transaction
         :return: 
         """
-        result = list()
-        transaction_data = ''.join([self.serialize_number(self.TYPE, self.TYPE_SZ),
-                                    self.serialize_number(self.collector_id, self.COLLECTOR_ID_SZ),
-                                    self.serialize_number(self.amount, self.AMOUNT_SZ)])
-        self.length = len(self.get_datetime()) + len(transaction_data)
-        serialized_length = self.serialize_number(self.length, self.LENGTH_SZ)
-        result.append(self.serialized_header)
-        result.append(serialized_length)
-        result.append(self.get_datetime())
-        result.append(transaction_data)
-        result = bytes(''.join(result), 'utf-8')
-        result = int(result, 2)
+        now = datetime.datetime.now()
+        year = now.year - 2000
+        seconds = Transaction.seconds_since_midnight()
+        self.length = len(struct.pack(self.PACK_FORMAT[2:], year, now.month, now.day, seconds, self.TYPE,
+                                      self.collector_id, self.amount))
+        result = struct.pack(self.PACK_FORMAT, self.header, self.length, year, now.month, now.day,
+                             seconds, self.TYPE, self.collector_id, self.amount)
         return result
 
     @staticmethod
@@ -290,19 +196,19 @@ class EncashmentTransaction(Transaction):
         """
 
         :param data:
-        :return:examplary of PaymentTranzaction class
+        :return:examplary of PaymentTransaction class
         """
-        data = Transaction.dec_to_bin(data)
-        result, cursor = Transaction.deserialize(data)
-        ttype = int(data[cursor:cursor + Transaction.TYPE_SZ], 2)
+        data = struct.unpack(PaymentTransaction.PACK_FORMAT, data)
+        header = data[0]
+        Transaction.check_header(header)
+        ttype = data[6]
         EncashmentTransaction.check_type(ttype)
-        cursor += Transaction.TYPE_SZ
-        collector_id = int(data[cursor:cursor + EncashmentTransaction.COLLECTOR_ID_SZ], 2)
-        cursor += PaymentTransaction.ORG_ID_SZ
-        amount = int(data[cursor:cursor + EncashmentTransaction.AMOUNT_SZ], 2)
+        collector_id, amount = data[7], data[8]
         res = EncashmentTransaction(collector_id, amount)
-        res.date = result['date']
-        res.length = result['length']
+        res.length = data[1]
+        hours, minutes, seconds = Transaction.get_time(data[5])
+        res.date = datetime.datetime(year=2000 + data[2], month=data[3], day=data[4], hour=hours, minute=minutes,
+                                     second=seconds)
         return res
 
     @staticmethod
@@ -316,16 +222,14 @@ class EncashmentTransaction(Transaction):
 
 
 if __name__ == '__main__':
-    t = PaymentTransaction(225, 8000)
-    serialized = t.serialize()
-    print(t.deserialize(serialized))
-    t2 = ServiceTransaction('shutdown')
-    print(t2.serialize())
-    print(t2.deserialize(t2.serialize()))
-    t3 = ServiceTransaction('activate_sensor')
-    print(t3.serialize())
-    print(t3.deserialize(t3.serialize()))
-    t4 = EncashmentTransaction(567, 20000)
-    print(t4.serialize())
-    print(t4.deserialize(t4.serialize()))
+    def print_transaction(tr):
+        tr_serialized = tr.serialize()
+        print('Serialized transaction: {}'.format(tr_serialized))
+        print('Serialized size {}'.format(sys.getsizeof(tr_serialized)))
+        print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
+        print(Transaction.get_type(tr_serialized))
+    print_transaction(PaymentTransaction(225, 8000))
+    print_transaction(ServiceTransaction('shutdown'))
+    print_transaction(ServiceTransaction('reload'))
+    print_transaction(EncashmentTransaction(567, 20000))
     pass

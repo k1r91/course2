@@ -9,8 +9,8 @@ class PaymentServer(socketserver.BaseRequestHandler):
     port = 9999
 
     def handle(self):
-        self.data = self.request.recv(1024).decode()
-        tr_type = Transaction().get_type(self.data)
+        self.data = self.request.recv(1024)
+        tr_type = Transaction.get_type(self.data)
         if tr_type == 1:    # Payment transaction
             tr = PaymentTransaction.deserialize(self.data)
         elif tr_type == 2:  # Process to encashment transaction

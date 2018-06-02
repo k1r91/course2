@@ -3,6 +3,8 @@ import random
 from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransaction
 
 
+import struct
+
 class Terminal:
 
     host = 'localhost'
@@ -12,8 +14,6 @@ class Terminal:
         self.id = id
 
     def send(self, data):
-        if not isinstance(data, bytes):
-            data = bytes(data, 'utf-8')
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))
         self.sock.sendall(data)
@@ -34,5 +34,5 @@ class Terminal:
 
 if __name__ == '__main__':
     t1 = Terminal(500)
-    print(t1.send('test'))
-    Terminal.create_rnd_transaction()
+    t = Terminal.create_rnd_transaction()
+    t1.send(t.serialize())
