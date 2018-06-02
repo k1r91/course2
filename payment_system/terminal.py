@@ -29,7 +29,7 @@ class Terminal:
             action = random.choice(['power_on', 'reload', 'shutdown', 'activate_sensor', 'block'])
             transaction = tr_class(action)
         elif tr_class.__name__ in ['PaymentTransaction', 'EncashmentTransaction']:
-            transaction = tr_class(random.randint(0, 1000), random.randint(50, 50000))
+            transaction = tr_class(random.randint(0, 65000), random.randint(50, 10000000))
         return transaction
 
 if __name__ == '__main__':
