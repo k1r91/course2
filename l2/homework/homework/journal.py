@@ -13,3 +13,6 @@ if __name__ == '__main__':
     print(t)
     print(dir(t))
     print(t.Journal)
+    t.Journal.append(10)
+    print(t.Journal)
+    print(t.id)
