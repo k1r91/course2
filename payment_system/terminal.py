@@ -1,24 +1,31 @@
+import os
 import socket
 import random
+import json
 from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransaction
 
-
-import struct
 
 class Terminal:
 
     host = 'localhost'
     port = 9999
+    config_folder = 'terminals'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, _id):
+        self.config_file = os.path.join(self.config_folder, ''.join([str(_id), '.json']))
+        with open(self.config_file, 'r') as config_file:
+            config = json.load(config_file)
+            self._id = config['id']
+            self.title = config['title']
+            self.cash = config['cash']
+            self.last_transaction_id = config['last_transaction_id']
 
     def send(self, data):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.host, self.port))
-        self.sock.sendall(data)
-        result = str(self.sock.recv(1024), 'utf-8')
-        self.sock.close()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        sock.sendall(data)
+        result = str(sock.recv(1024), 'utf-8')
+        sock.close()
         return result
 
     @staticmethod
@@ -32,7 +39,15 @@ class Terminal:
             transaction = tr_class(random.randint(0, 65000), random.randint(50, 10000000))
         return transaction
 
+    def __str__(self):
+        return '{}: id={}, last_transaction_id={}, configuartion_file={}, cash={}'.format(self.title,
+                                                                                          self._id,
+                                                                                          self.last_transaction_id,
+                                                                                          self.config_file,
+                                                                                          self.cash)
+
 if __name__ == '__main__':
-    t1 = Terminal(500)
+    t1 = Terminal(1049)
+    print(t1)
     t = Terminal.create_rnd_transaction()
     t1.send(t.serialize())

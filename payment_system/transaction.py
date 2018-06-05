@@ -18,21 +18,26 @@ class SerializeException(Exception):
 class Transaction:
 
     header = 0x7a7a
-    PACK_FORMAT = 'HBBBBIB'
+    PACK_FORMAT = 'HBIIBBBIB'
+    TYPE = 0x00
 
-    def __init__(self):
-        self.date = None        # attribute defined in deserialize method
-        self.length = None      # attribute defined in deserialize method
-        self.type = 0x00
+    def __init__(self, term_id, tr_id):
+        self.term_id = term_id
+        self.tr_id = tr_id
+        # self.date = None        # attribute defined in deserialize method
+        # self.length = None      # attribute defined in deserialize method
+        # self.type = 0x00
 
     def get_length(self):
         year, month, day, seconds = Transaction.get_datetime()
-        self.length = len(struct.pack(Transaction.PACK_FORMAT[2:], year, month, day, seconds, self.type))
+        self.length = len(struct.pack(Transaction.PACK_FORMAT[2:], self.term_id, self.tr_id, year, month, day, seconds,
+                                      self.TYPE))
         return self.length
 
     def serialize(self, length, tr_type):
         year, month, day, seconds = Transaction.get_datetime()
-        result = struct.pack(Transaction.PACK_FORMAT, self.header, length, year, month, day, seconds, tr_type)
+        result = struct.pack(Transaction.PACK_FORMAT, self.header, length, self.term_id, self.tr_id, year, month, day,
+                             seconds, tr_type)
         return result
 
     @staticmethod
@@ -42,12 +47,14 @@ class Transaction:
         Transaction.check_header(data[0])
         result['header'] = data[0]
         result['length'] = data[1]
-        year = data[2] + 2000
-        month = data[3]
-        day = data[4]
-        hour, minute, second = Transaction.get_time(data[5])
+        result['term_id'] = data[2]
+        result['tr_id'] = data[3]
+        year = data[4] + 2000
+        month = data[5]
+        day = data[6]
+        hour, minute, second = Transaction.get_time(data[7])
         result['date'] = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
-        result['type'] = data[6]
+        result['type'] = data[8]
         return result
 
     @staticmethod
@@ -89,7 +96,7 @@ class Transaction:
         return struct.calcsize(Transaction.PACK_FORMAT)
 
     def __str__(self):
-        return 'length={}, date={}'.format(self.length, self.date)
+        return 'length={}, date={}, tr_id={}, terminal_id={}'.format(self.length, self.date, self.tr_id, self.term_id)
 
 
 class ServiceTransaction(Transaction):
@@ -102,8 +109,8 @@ class ServiceTransaction(Transaction):
     TYPE = 0x00
     PACK_FORMAT = 'B'
 
-    def __init__(self, action):
-        super().__init__()
+    def __init__(self, term_id, tr_id, action):
+        super().__init__(term_id, tr_id)
         self.action = self.data[action]
 
     def serialize(self):
@@ -122,7 +129,9 @@ class ServiceTransaction(Transaction):
         ServiceTransaction.check_type(parent_data['type'])
         data = struct.unpack(ServiceTransaction.PACK_FORMAT, data[-ServiceTransaction.fmt_size():])
         action = ServiceTransaction.get_key(ServiceTransaction.data, data[0])
-        res = ServiceTransaction(action)
+        tr_id = parent_data['tr_id']
+        term_id = parent_data['term_id']
+        res = ServiceTransaction(term_id, tr_id, action)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -150,8 +159,8 @@ class PaymentTransaction(Transaction):
     TYPE = 0x01
     PACK_FORMAT = 'IQ'
 
-    def __init__(self, org_id, amount):
-        super().__init__()
+    def __init__(self, term_id, tr_id, org_id, amount):
+        super().__init__(term_id, tr_id)
         self.org_id = org_id
         self.amount = amount
 
@@ -170,9 +179,11 @@ class PaymentTransaction(Transaction):
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         PaymentTransaction.check_type(parent_data['type'])
         data = struct.unpack(PaymentTransaction.PACK_FORMAT, data[-PaymentTransaction.fmt_size():])
+        tr_id = parent_data['tr_id']
+        term_id = parent_data['term_id']
         org_id = data[0]
         amount = data[1]
-        res = PaymentTransaction(org_id, amount)
+        res = PaymentTransaction(term_id, tr_id, org_id, amount)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -195,8 +206,8 @@ class EncashmentTransaction(Transaction):
     PACK_FORMAT = 'IQ'
     TYPE = 0x02
 
-    def __init__(self, collector_id, amount):
-        super().__init__()
+    def __init__(self, term_id, tr_id, collector_id, amount):
+        super().__init__(term_id, tr_id)
         self.collector_id = collector_id
         self.amount = amount
 
@@ -218,7 +229,9 @@ class EncashmentTransaction(Transaction):
         data = struct.unpack(PaymentTransaction.PACK_FORMAT, data[-EncashmentTransaction.fmt_size():])
         collector_id = data[0]
         amount = data[1]
-        res = EncashmentTransaction(collector_id, amount)
+        term_id = parent_data['term_id']
+        tr_id = parent_data['tr_id']
+        res = EncashmentTransaction(term_id, tr_id, collector_id, amount)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -244,8 +257,8 @@ if __name__ == '__main__':
         print('Serialized size {}'.format(sys.getsizeof(tr_serialized)))
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
-    print_transaction(PaymentTransaction(225, 8000))
-    print_transaction(ServiceTransaction('shutdown'))
-    print_transaction(ServiceTransaction('reload'))
-    print_transaction(EncashmentTransaction(567, 20000))
+    print_transaction(PaymentTransaction(50, 1, 225, 8000))
+    print_transaction(ServiceTransaction(50, 2, 'shutdown'))
+    print_transaction(ServiceTransaction(50, 3, 'reload'))
+    print_transaction(EncashmentTransaction(50, 4, 567, 20000))
     pass
