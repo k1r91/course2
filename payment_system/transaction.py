@@ -29,12 +29,25 @@ class Transaction:
         # self.type = 0x00
 
     def get_length(self):
+        """
+        >>> t = Transaction(100, 100)
+        >>> t.get_length()
+        17
+
+        :return: length of transaction data
+        """
         year, month, day, seconds = Transaction.get_datetime()
         self.length = len(struct.pack(Transaction.PACK_FORMAT[2:], self.term_id, self.tr_id, year, month, day, seconds,
                                       self.TYPE))
         return self.length
 
     def serialize(self, length, tr_type):
+        """
+        Serializes transaction for network transmission
+        :param length: length of transaction data
+        :param tr_type: transaction type
+        :return: binary string created by struct.pack module according to hex PACK_FORMAT
+        """
         year, month, day, seconds = Transaction.get_datetime()
         result = struct.pack(Transaction.PACK_FORMAT, self.header, length, self.term_id, self.tr_id, year, month, day,
                              seconds, tr_type)
@@ -42,6 +55,10 @@ class Transaction:
 
     @staticmethod
     def deserialize(data):
+        """
+        :param data: binary string created by struct.pack module according to PACK_FORMAT value
+        :return: unpacked data in dictionary
+        """
         result = {}
         data = struct.unpack(Transaction.PACK_FORMAT, data[:Transaction.fmt_size()])
         Transaction.check_header(data[0])
@@ -59,11 +76,23 @@ class Transaction:
 
     @staticmethod
     def get_type(data):
+        """
+        >>> Transaction.get_type(ServiceTransaction(500, 500, 'reload').serialize())
+        0
+        >>> Transaction.get_type(PaymentTransaction(500, 500, 500, 500).serialize())
+        1
+
+        :param data: binary string in hex format according to PACK_FORMAT
+        :return: transaction type: 0 - service, 1 - payment, 2 - encashment
+        """
         data = struct.unpack(Transaction.PACK_FORMAT, data[:Transaction.fmt_size()])
         return data[-1]
 
     @staticmethod
     def get_datetime():
+        """
+        :return: year, month, day, seconds(since midnight) tuple
+        """
         now = datetime.datetime.now()
         year = now.year - 2000
         seconds = Transaction.seconds_since_midnight()
@@ -71,6 +100,15 @@ class Transaction:
 
     @staticmethod
     def get_time(tseconds):
+        """
+        >>> Transaction.get_time(86399)
+        (23, 59, 59)
+        >>> Transaction.get_time(3665)
+        (1, 1, 5)
+
+        :param tseconds: total seconds
+        :return: hours, minutes and seconds of total seconds seconds
+        """
         hours = tseconds // 3600
         minutes = (tseconds - hours*3600) // 60
         seconds = tseconds - hours*3600 - minutes*60
@@ -88,11 +126,22 @@ class Transaction:
 
     @staticmethod
     def check_header(header):
+        """
+        >>> Transaction.check_header(0x7a7a)
+        True
+
+        :param header:
+        :return: True if header correct
+        """
         if header != Transaction.header:
             raise ValueError('Header is incorrect!')
+        return True
 
     @staticmethod
     def fmt_size():
+        """
+        :return: size of packed data according to PACK_FORMAT
+        """
         return struct.calcsize(Transaction.PACK_FORMAT)
 
     def __str__(self):
@@ -112,18 +161,21 @@ class ServiceTransaction(Transaction):
     def __init__(self, term_id, tr_id, action):
         super().__init__(term_id, tr_id)
         self.action = self.data[action]
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.action))
 
     def serialize(self):
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.action))
+        """
+        date is determined dynamically
+        :return: binary hex string according to pack format
+        """
         result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.action)
         return result
 
     @staticmethod
     def deserialize(data):
         """
-        returns new ServiceTransaction exemplary with filled parameters
-        :param data:
-        :return:
+        :param data: binary string in hex format
+        :return: new ServiceTransaction exemplary with filled parameters
         """
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         ServiceTransaction.check_type(parent_data['type'])
@@ -138,6 +190,14 @@ class ServiceTransaction(Transaction):
 
     @staticmethod
     def get_key(dict_data, value):
+        """
+        >>> ServiceTransaction.get_key({5: 'asd', 6: 'fgh'}, 'asd')
+        5
+
+        :param dict_data: dictionary
+        :param value: we try to find key of this value
+        :return: key
+        """
         for key, _value in dict_data.items():
             if _value == value:
                 return key
@@ -163,18 +223,20 @@ class PaymentTransaction(Transaction):
         super().__init__(term_id, tr_id)
         self.org_id = org_id
         self.amount = amount
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.amount))
 
     def serialize(self):
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.amount))
+        """
+        :return: binary hex string according to pack format
+        """
         result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.org_id, self.amount)
         return result
 
     @staticmethod
     def deserialize(data):
         """
-        returns new PaymentTransaction exemplary with filled parameters
-        :param data:
-        :return:
+        :param data: binary hex string according to pack format
+        :return: new PaymentTransaction exemplary with filled parameters
         """
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         PaymentTransaction.check_type(parent_data['type'])
@@ -210,9 +272,12 @@ class EncashmentTransaction(Transaction):
         super().__init__(term_id, tr_id)
         self.collector_id = collector_id
         self.amount = amount
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.collector_id, self.amount))
 
     def serialize(self):
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.collector_id, self.amount))
+        """
+        :return: binary hex string according to pack format
+        """
         result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.collector_id,
                                                                          self.amount)
         return result
@@ -220,9 +285,8 @@ class EncashmentTransaction(Transaction):
     @staticmethod
     def deserialize(data):
         """
-        returns new PaymentTransaction exemplary with filled parameters
-        :param data:
-        :return:
+        :param data: binary hex string according to pack format
+        :return: new EncashmenttTransaction exemplary with filled parameters
         """
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         EncashmentTransaction.check_type(parent_data['type'])
@@ -254,11 +318,12 @@ if __name__ == '__main__':
     def print_transaction(tr):
         tr_serialized = tr.serialize()
         print('Serialized transaction: {}'.format(tr_serialized))
-        print('Serialized size {}'.format(sys.getsizeof(tr_serialized)))
+        print('Serialized size: {} bytes'.format(sys.getsizeof(tr_serialized)))
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
     print_transaction(PaymentTransaction(50, 1, 225, 8000))
     print_transaction(ServiceTransaction(50, 2, 'shutdown'))
     print_transaction(ServiceTransaction(50, 3, 'reload'))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))
+    print(EncashmentTransaction.deserialize(b'zz!\x002\x00\x00\x00\x04\x00\x00\x00\x12\x06\x05\x00\xaa\xe9\x00\x00\x027\x02\x00\x00\x00\x00\x00\x00 N\x00\x00\x00\x00\x00\x00'))
     pass

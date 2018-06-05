@@ -1,7 +1,1 @@
-{
-  "id": 304,
-  "title": "Terminal № 304",
-  "configuration_file": "304.json",
-  "last_transaction_id": 1,
-  "cash": 0
-}
+{"title": "Terminal \u2116 304", "last_transaction_id": 18, "configuration_file": "304.json", "id": 304, "cash": 0}

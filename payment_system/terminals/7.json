@@ -1,7 +1,1 @@
-{
-  "id": 7,
-  "title": "Terminal № 7",
-  "configuration_file": "7.json",
-  "last_transaction_id": 1,
-  "cash": 0
-}
+{"title": "Terminal \u2116 7", "last_transaction_id": 16, "configuration_file": "7.json", "id": 7, "cash": 0}
