@@ -7,8 +7,6 @@ from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransa
 
 class Terminal:
 
-    __tablename__ = 'terminal'
-
     host = 'localhost'
     port = 9999
     config_folder = 'terminals'
@@ -35,7 +33,7 @@ class Terminal:
         tr_class = random.choice([ServiceTransaction, PaymentTransaction, EncashmentTransaction])
         transaction = None
         if tr_class.__name__ == 'ServiceTransaction':
-            action = random.choice(['power_on', 'reload', 'shutdown', 'activate_sensor', 'block'])
+            action = random.choice(['activate_sensor', ])
             transaction = tr_class(self._id, self.last_transaction_id, action)
         elif tr_class.__name__ in ['PaymentTransaction', 'EncashmentTransaction']:
             transaction = tr_class(self._id, self.last_transaction_id, random.randint(0, 65000),

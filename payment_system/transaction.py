@@ -15,6 +15,18 @@ class SerializeException(Exception):
         return self.__str__()
 
 
+class ServiceTransactionException(Exception):
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class Transaction:
 
     __tablename__ = 'ps_transaction'
@@ -200,19 +212,30 @@ class ServiceTransaction(Transaction):
             'block': 0x04
             }
     TYPE = 0x00
-    PACK_FORMAT = 'B'
+    PACK_FORMAT = 'BIQB'
 
-    def __init__(self, term_id, tr_id, action):
+    def __init__(self, term_id, tr_id, action, term_config=None):
         super().__init__(term_id, tr_id)
         self.action = self.data[action]
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.action))
+        self.term_config = term_config
+        try:
+            self.last_transaction_id = term_config['last_transaction_id']
+            self.cash = term_config['cash']
+            self.state = term_config['state']
+        except (IndexError, TypeError):
+            raise ServiceTransactionException('''Incorrect service transaction: with power_on, reload or shutdown
+                                                    action you should transmit proper terminal configuration''')
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.action, self.last_transaction_id,
+                                                             self.cash, self.state))
 
     def serialize(self):
         """
         date is determined dynamically
         :return: binary hex string according to pack format
         """
-        result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.action)
+        result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.action,
+                                                                             self.last_transaction_id, self.cash,
+                                                                             self.state)
         return result
 
     @staticmethod
@@ -227,7 +250,8 @@ class ServiceTransaction(Transaction):
         action = ServiceTransaction.get_key(ServiceTransaction.data, data[0])
         tr_id = parent_data['tr_id']
         term_id = parent_data['term_id']
-        res = ServiceTransaction(term_id, tr_id, action)
+        term_config = {'last_transaction_id': data[1], 'cash': data[2], 'state': data[3]}
+        res = ServiceTransaction(term_id, tr_id, action, term_config=term_config)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -251,12 +275,14 @@ class ServiceTransaction(Transaction):
         if ttype != ServiceTransaction.TYPE:
             raise ValueError('Type is incorrect')
 
-    def __str__(self):
-        return 'Service transaction: {}, action={}'.format(super().__str__(), self.get_key(self.data, self.action))
-
     @staticmethod
     def fmt_size():
         return struct.calcsize(ServiceTransaction.PACK_FORMAT)
+
+    def __str__(self):
+        return 'Service transaction: {}, action={},' \
+               'terminal_configuration={}'.format(super().__str__(), self.get_key(self.data, self.action),
+                                                  self.term_config)
 
 
 class PaymentTransaction(Transaction):
@@ -365,8 +391,9 @@ if __name__ == '__main__':
         print('Serialized size: {} bytes'.format(sys.getsizeof(tr_serialized)))
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
+        print('*' * 40)
     print_transaction(PaymentTransaction(50, 1, 225, 8000))
-    print_transaction(ServiceTransaction(50, 2, 'shutdown'))
-    print_transaction(ServiceTransaction(50, 3, 'reload'))
+    print_transaction(ServiceTransaction(50, 2, 'power_on', {'last_transaction_id':25,'cash':5000, 'state':1}))
+    print_transaction(ServiceTransaction(50, 3, 'activate_sensor', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))
     pass

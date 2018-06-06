@@ -36,12 +36,13 @@ class DB:
         self.cursor.execute((query))
 
     def create_table_terminal(self):
-        query = """CREATE TABLE {} (
+        query = """CREATE TABLE terminal (
                 id INT PRIMARY KEY,
                 title VARCHAR(255),
                 last_transaction_id INT NOT NULL DEFAULT 0,
-                cash BIGINT NOT NULL DEFAULT 0
-                )""".format(Terminal.__tablename__)
+                cash BIGINT NOT NULL DEFAULT 0,
+                state TINYINT NOT NULL DEFAULT 1
+                )"""
         self.cursor.execute(query)
 
     def create_table_transaction(self):
