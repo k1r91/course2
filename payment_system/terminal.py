@@ -7,6 +7,8 @@ from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransa
 
 class Terminal:
 
+    __tablename__ = 'terminal'
+
     host = 'localhost'
     port = 9999
     config_folder = 'terminals'

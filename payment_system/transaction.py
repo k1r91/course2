@@ -17,8 +17,10 @@ class SerializeException(Exception):
 
 class Transaction:
 
+    __tablename__ = 'ps_transaction'
+
     header = 0x7a7a
-    PACK_FORMAT = 'HBIIBBBIB'
+    PACK_FORMAT = 'HBIIHIB'
     TYPE = 0x00
 
     def __init__(self, term_id, tr_id):
@@ -37,7 +39,8 @@ class Transaction:
         :return: length of transaction data
         """
         year, month, day, seconds = Transaction.get_datetime()
-        self.length = len(struct.pack(Transaction.PACK_FORMAT[2:], self.term_id, self.tr_id, year, month, day, seconds,
+        packed_date = self.pack_data(year, month, day)
+        self.length = len(struct.pack(Transaction.PACK_FORMAT[2:], self.term_id, self.tr_id, packed_date, seconds,
                                       self.TYPE))
         return self.length
 
@@ -49,9 +52,11 @@ class Transaction:
         :return: binary string created by struct.pack module according to hex PACK_FORMAT
         """
         year, month, day, seconds = Transaction.get_datetime()
-        result = struct.pack(Transaction.PACK_FORMAT, self.header, length, self.term_id, self.tr_id, year, month, day,
+        packed_date = self.pack_data(year, month, day)
+        result = struct.pack(Transaction.PACK_FORMAT, self.header, length, self.term_id, self.tr_id, packed_date,
                              seconds, tr_type)
         return result
+
 
     @staticmethod
     def deserialize(data):
@@ -66,12 +71,10 @@ class Transaction:
         result['length'] = data[1]
         result['term_id'] = data[2]
         result['tr_id'] = data[3]
-        year = data[4] + 2000
-        month = data[5]
-        day = data[6]
-        hour, minute, second = Transaction.get_time(data[7])
+        year, month, day = Transaction.unpack_data(data[4])
+        hour, minute, second = Transaction.get_time(data[5])
         result['date'] = datetime.datetime(year=year, month=month, day=day, hour=hour, minute=minute, second=second)
-        result['type'] = data[8]
+        result['type'] = data[6]
         return result
 
     @staticmethod
@@ -94,7 +97,7 @@ class Transaction:
         :return: year, month, day, seconds(since midnight) tuple
         """
         now = datetime.datetime.now()
-        year = now.year - 2000
+        year = now.year
         seconds = Transaction.seconds_since_midnight()
         return year, now.month, now.day, seconds
 
@@ -123,6 +126,47 @@ class Transaction:
         midnight = datetime.datetime.combine(now.date(), datetime.time())
         seconds = (now - midnight).seconds
         return seconds
+
+    @staticmethod
+    def pack_data(year, month, day, year_sz=7, month_sz=4, day_sz=5):
+        """
+        Packs current date in integer value, by default no more than 2 bytes
+        :param year: current year
+        :param month: current month
+        :param day: current day
+        :param year_sz: size in bits to pack year
+        :param month_sz: size in bits to pack month
+        :param day_sz: size in bits to pack day
+        :return: packed integer value of data
+        """
+        year -= 2000
+        if year > 2 ** year_sz:
+            raise ValueError("Year is too big to pack in {} bits.".format(year_sz))
+        if month > 2 ** month_sz:
+            raise ValueError("Month is too big to pack in {} bits.".format(month_sz))
+        if day > 2 ** day_sz:
+            raise ValueError("Day is too big to pack in {} bits.".format(day_sz))
+        year_str = str(bin(year))[2:].zfill(year_sz)
+        month_str = str(bin(month))[2:].zfill(month_sz)
+        day_str = str(bin(day))[2:].zfill(day_sz)
+        return int(''.join([year_str, month_str, day_str]), 2)
+
+    @staticmethod
+    def unpack_data(value, year_sz=7, month_sz=4, day_sz=5):
+        """
+        Unpack packed integer value of date to year, month and day according to sizes
+        :param value: packed integer value of date
+        :param year_sz: size in bits of packed year
+        :param month_sz: size in bits of packed month
+        :param day_sz: size in bits of packed day
+        :return: (year, month, day) tuple
+        """
+        raw_str = str(bin(value))[2:].zfill(year_sz+month_sz+day_sz)
+        year = int(raw_str[:year_sz], 2)
+        year += 2000
+        month = int(raw_str[year_sz:year_sz+month_sz], 2)
+        day = int(raw_str[year_sz+month_sz:year_sz+month_sz+day_sz], 2)
+        return year, month, day
 
     @staticmethod
     def check_header(header):
@@ -325,5 +369,4 @@ if __name__ == '__main__':
     print_transaction(ServiceTransaction(50, 2, 'shutdown'))
     print_transaction(ServiceTransaction(50, 3, 'reload'))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))
-    print(EncashmentTransaction.deserialize(b'zz!\x002\x00\x00\x00\x04\x00\x00\x00\x12\x06\x05\x00\xaa\xe9\x00\x00\x027\x02\x00\x00\x00\x00\x00\x00 N\x00\x00\x00\x00\x00\x00'))
     pass
