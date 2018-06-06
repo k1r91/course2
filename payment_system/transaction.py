@@ -69,7 +69,6 @@ class Transaction:
                              seconds, tr_type)
         return result
 
-
     @staticmethod
     def deserialize(data):
         """
@@ -238,6 +237,7 @@ class ServiceTransaction(Transaction):
                                                                              self.state)
         return result
 
+
     @staticmethod
     def deserialize(data):
         """
@@ -280,7 +280,7 @@ class ServiceTransaction(Transaction):
         return struct.calcsize(ServiceTransaction.PACK_FORMAT)
 
     def __str__(self):
-        return 'Service transaction: {}, action={},' \
+        return 'Service transaction: {}, action={}, ' \
                'terminal_configuration={}'.format(super().__str__(), self.get_key(self.data, self.action),
                                                   self.term_config)
 

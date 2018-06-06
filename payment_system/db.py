@@ -11,10 +11,13 @@ class DB:
     def __init__(self):
         self.conn = sqlite3.connect(self.DB_NAME)
         self.cursor = self.conn.cursor()
+
+    def set_up(self):
         self.create_table_collectors()
         self.create_table_organizations()
         self.create_table_terminal()
         self.create_table_transaction()
+        self.fill_terminal()
 
     def create_table_collectors(self):
 
@@ -38,7 +41,6 @@ class DB:
     def create_table_terminal(self):
         query = """CREATE TABLE terminal (
                 id INT PRIMARY KEY,
-                title VARCHAR(255),
                 last_transaction_id INT NOT NULL DEFAULT 0,
                 cash BIGINT NOT NULL DEFAULT 0,
                 state TINYINT NOT NULL DEFAULT 1
@@ -62,6 +64,11 @@ class DB:
                 )""".format(Transaction.__tablename__)
         self.cursor.execute(query)
 
+    def fill_terminal(self):
+        terminals = [(7, ), (55, ), (250, ), (304, ), (1049, )]
+        query = 'INSERT INTO terminal (id) VALUES (?)'
+        self.cursor.executemany(query, terminals)
+        self.conn.commit()
     @staticmethod
     def flush():
         if os.path.exists(DB.DB_NAME):
@@ -71,3 +78,4 @@ class DB:
 if __name__ == '__main__':
     DB.flush()
     db = DB()
+    db.set_up()
