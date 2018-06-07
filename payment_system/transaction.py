@@ -27,9 +27,31 @@ class ServiceTransactionException(Exception):
         return self.__str__()
 
 
-class Transaction:
+class PaymentTransactionException(Exception):
 
-    __tablename__ = 'ps_transaction'
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class EncashmentTransactionException(Exception):
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class Transaction:
 
     header = 0x7a7a
     PACK_FORMAT = 'HBIIHIB'
@@ -208,7 +230,7 @@ class ServiceTransaction(Transaction):
             'reload': 0x01,
             'shutdown': 0x02,
             'activate_sensor': 0x03,
-            'block': 0x04
+            'block': 0x04,
             }
     TYPE = 0x00
     PACK_FORMAT = 'BIQB'
@@ -287,19 +309,21 @@ class ServiceTransaction(Transaction):
 
 class PaymentTransaction(Transaction):
     TYPE = 0x01
-    PACK_FORMAT = 'IQ'
+    PACK_FORMAT = 'IQQ'
 
-    def __init__(self, term_id, tr_id, org_id, amount):
+    def __init__(self, term_id, tr_id, org_id, p_acc, amount):
         super().__init__(term_id, tr_id)
         self.org_id = org_id
         self.amount = amount
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.amount))
+        self.p_acc = p_acc
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.p_acc, self.amount))
 
     def serialize(self):
         """
         :return: binary hex string according to pack format
         """
-        result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.org_id, self.amount)
+        result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.org_id, self.p_acc,
+                                                                         self.amount)
         return result
 
     @staticmethod
@@ -314,8 +338,9 @@ class PaymentTransaction(Transaction):
         tr_id = parent_data['tr_id']
         term_id = parent_data['term_id']
         org_id = data[0]
-        amount = data[1]
-        res = PaymentTransaction(term_id, tr_id, org_id, amount)
+        p_acc = data[1]
+        amount = data[2]
+        res = PaymentTransaction(term_id, tr_id, org_id, p_acc, amount)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -330,7 +355,8 @@ class PaymentTransaction(Transaction):
         return struct.calcsize(PaymentTransaction.PACK_FORMAT)
 
     def __str__(self):
-        return 'Payment transaction: {}, org_id={}, amount={}'.format(super().__str__(), self.org_id, self.amount)
+        return 'Payment transaction: {}, org_id={}, account={} amount={}'.format(
+            super().__str__(), self.org_id, self.p_acc, self.amount)
 
 
 class EncashmentTransaction(Transaction):
@@ -360,7 +386,7 @@ class EncashmentTransaction(Transaction):
         """
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         EncashmentTransaction.check_type(parent_data['type'])
-        data = struct.unpack(PaymentTransaction.PACK_FORMAT, data[-EncashmentTransaction.fmt_size():])
+        data = struct.unpack(EncashmentTransaction.PACK_FORMAT, data[-EncashmentTransaction.fmt_size():])
         collector_id = data[0]
         amount = data[1]
         term_id = parent_data['term_id']
@@ -383,7 +409,6 @@ class EncashmentTransaction(Transaction):
         return 'Encashment transaction: {}, collector_id={}, amount={}'.format(super().__str__(), self.collector_id,
                                                                                self.amount)
 
-
 if __name__ == '__main__':
     def print_transaction(tr):
         tr_serialized = tr.serialize()
@@ -392,7 +417,7 @@ if __name__ == '__main__':
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
         print('*' * 40)
-    print_transaction(PaymentTransaction(50, 1, 225, 8000))
+    print_transaction(PaymentTransaction(50, 1, 225, 89049864438, 8000))
     print_transaction(ServiceTransaction(50, 2, 'power_on', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(ServiceTransaction(50, 3, 'activate_sensor', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))

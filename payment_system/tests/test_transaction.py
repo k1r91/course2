@@ -58,7 +58,7 @@ class TestTransaction(unittest.TestCase):
 
 
 @pytest.mark.parametrize('transaction, expected', [(ServiceTransaction(100, 100, 'reload'), 0),
-                                                   (PaymentTransaction(500, 500, 500, 500), 1),
+                                                   (PaymentTransaction(500, 500, 500, 500, 500), 1),
                                                    (EncashmentTransaction(500, 500, 500, 500), 2)])
 def test_transaction_types(transaction, expected):
     assert Transaction.get_type(transaction.serialize()) == expected, 'Incorrect type'

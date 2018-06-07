@@ -1,23 +1,34 @@
 import socketserver
+import socket
 
-from db import DB
+from db import DB, DatabaseOrganization
 from transaction import Transaction, ServiceTransaction, PaymentTransaction, EncashmentTransaction
+from bill import Bill
 
 
 class PaymentServer(socketserver.BaseRequestHandler):
 
     host = 'localhost'
     port = 9999
-    db = DB()
+    db_trans = DB()
+    db_org = DatabaseOrganization()
+    bill = Bill()
 
     def handle(self):
 
         self.data = self.request.recv(1024)
         tr_type = Transaction.get_type(self.data)
         tr = None
+        errors = []
         if tr_type == 1:    # process payment transaction
             tr = PaymentTransaction.deserialize(self.data)
-            self.request.sendall(bytes('200', 'utf-8'))
+            if not self.check_valid_organization(tr.org_id):     # if organization id not in database
+                self.request.sendall(bytes('402', 'utf-8'))
+                return False
+            if self.send_pay(tr.org_id, tr.p_acc, tr.amount):
+                self.request.sendall(bytes('200'), 'utf-8')
+            else:
+                self.request.sendall(bytes('404'), 'utf-8')
         elif tr_type == 2:  # process encashment transaction
             tr = EncashmentTransaction.deserialize(self.data)
             self.request.sendall(bytes('200', 'utf-8'))
@@ -31,7 +42,8 @@ class PaymentServer(socketserver.BaseRequestHandler):
                     self.request.sendall(bytes('401', 'utf-8'))
             elif tr.action == 2:    # terminal shutdown
                 self.write_terminal_config(tr)
-        self.save_transaction(tr)
+        if not errors:
+            self.save_transaction(tr)
         print('Client {} says: {}'.format(self.client_address[0], self.data))
         print('Deserialized data: {}'.format(tr))
 
@@ -43,33 +55,58 @@ class PaymentServer(socketserver.BaseRequestHandler):
 
     def write_terminal_config(self, tr):
         query = '''UPDATE terminal SET last_transaction_id = ?, cash = ? , state = ? WHERE id = ?'''
-        self.db.cursor.execute(query, (tr.tr_id, tr.cash, tr.state, tr.term_id))
-        self.db.conn.commit()
+        self.db_trans.cursor.execute(query, (tr.tr_id, tr.cash, tr.state, tr.term_id))
+        self.db_trans.conn.commit()
 
     def check_terminal_registration(self, tr):
         query = '''SELECT * FROM terminal WHERE id = ?'''
-        result = self.db.cursor.execute(query, (tr.term_id,))
+        result = self.db_trans.cursor.execute(query, (tr.term_id,))
         if result.fetchall():
             return True
         return False
 
+    def check_valid_organization(self, org_id):
+        """
+        :param org_id:  organization id
+        :return: True if organization exists in database
+        """
+        query = '''SELECT * FROM organization WHERE id = ?'''
+        result = self.db_org.cursor.execute(query, (org_id, )).fetchall()
+        if not result:
+            return False
+        return True
+
     def save_transaction(self, tr):
-        base_query = 'INSERT INTO {} (length, term_id, transaction_id, datetime, type, '.format(
-            Transaction.__tablename__)
+        base_query = 'INSERT INTO ps_transaction (length, term_id, transaction_id, datetime, type, '
         if tr.TYPE == 0:        # saving service transaction
             query = base_query + 'action) VALUES (?, ?, ?, ?, ?, ?)'
-            self.db.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.action))
-            self.db.conn.commit()
+            self.db_trans.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.action))
+            self.db_trans.conn.commit()
         elif tr.TYPE == 1:      # saving payment transaction
-            query = base_query + 'org_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)'
-            self.db.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.org_id, tr.amount))
-            self.db.conn.commit()
+            query = base_query + 'org_id, account, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            self.db_trans.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.org_id, tr.p_acc,
+                                           tr.amount))
+            self.db_trans.conn.commit()
         elif tr.TYPE == 2:      # saving encashment transaction
             query = base_query + 'collector_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)'
-            self.db.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.collector_id,
+            self.db_trans.cursor.execute(query, (tr.length, tr.term_id, tr.tr_id, tr.date, tr.TYPE, tr.collector_id,
                                            tr.amount))
-            self.db.conn.commit()
+            self.db_trans.conn.commit()
 
+    def send_pay(self, org_id, p_acc, amount):
+        """
+        stub for sending payment for other organizations
+        :param org_id: organization id
+        :param p_acc: personal account
+        :return:
+        """
+        try:
+            self.bill -= amount
+            # here we send money to other organizations
+        except ValueError:
+            return False
+        return True
 
 if __name__ == '__main__':
-    PaymentServer.serve()
+    # PaymentServer.serve()
+    pass
