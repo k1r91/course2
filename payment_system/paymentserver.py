@@ -12,27 +12,42 @@ class PaymentServer(socketserver.BaseRequestHandler):
     port = 9999
     db_trans = DB()
     db_org = DatabaseOrganization()
-    bill = Bill()
 
     def handle(self):
 
+        self.bill = Bill()
         self.data = self.request.recv(1024)
         tr_type = Transaction.get_type(self.data)
         tr = None
         errors = []
-        if tr_type == 1:    # process payment transaction
+
+        # ***** process payment transaction *****
+
+        if tr_type == 1:
             tr = PaymentTransaction.deserialize(self.data)
             if not self.check_valid_organization(tr.org_id):     # if organization id not in database
                 self.request.sendall(bytes('402', 'utf-8'))
                 return False
-            if self.send_pay(tr.org_id, tr.p_acc, tr.amount):
-                self.request.sendall(bytes('200'), 'utf-8')
+            if self.send_pay(tr.org_id, tr.p_acc, tr.amount, tr.commission):
+                self.request.sendall(bytes('200', 'utf-8'))
             else:
-                self.request.sendall(bytes('404'), 'utf-8')
-        elif tr_type == 2:  # process encashment transaction
+                self.request.sendall(bytes('404', 'utf-8'))
+                errors.append(404)
+
+        # **** process encashment transaction *****
+
+        elif tr_type == 2:
             tr = EncashmentTransaction.deserialize(self.data)
-            self.request.sendall(bytes('200', 'utf-8'))
-        elif tr_type == 0:  # Process service transaction
+            if self.check_collector_requisites(tr.collector_id):
+                self.bill += tr.amount
+                self.request.sendall(bytes('200', 'utf-8'))
+            else:
+                self.request.sendall(bytes('406', 'utf-8'))
+                errors.append('406')
+
+        # **** process service transaction *****
+
+        elif tr_type == 0:
             tr = ServiceTransaction.deserialize(self.data)
             if tr.action == 0:  # terminal power on
                 # check terminal for registration in our database
@@ -40,10 +55,13 @@ class PaymentServer(socketserver.BaseRequestHandler):
                     self.request.sendall(bytes('200', 'utf-8'))
                 else:
                     self.request.sendall(bytes('401', 'utf-8'))
-            elif tr.action == 2:    # terminal shutdown
+                    errors.append('401')
+            elif tr.action == 2:    # terminal save config action (shutdown)
                 self.write_terminal_config(tr)
+        # save transaction in database if no errors occured
         if not errors:
             self.save_transaction(tr)
+        # TODO: log file instead of this
         print('Client {} says: {}'.format(self.client_address[0], self.data))
         print('Deserialized data: {}'.format(tr))
 
@@ -64,6 +82,13 @@ class PaymentServer(socketserver.BaseRequestHandler):
         if result.fetchall():
             return True
         return False
+
+    def check_collector_requisites(self, col_id):
+        query = '''SELECT * FROM collector WHERE id = ?'''
+        result = self.db_org.cursor.execute(query, (col_id, ))
+        if not result:
+            return False
+        return True
 
     def check_valid_organization(self, org_id):
         """
@@ -93,7 +118,7 @@ class PaymentServer(socketserver.BaseRequestHandler):
                                            tr.amount))
             self.db_trans.conn.commit()
 
-    def send_pay(self, org_id, p_acc, amount):
+    def send_pay(self, org_id, p_acc, amount, commission):
         """
         stub for sending payment for other organizations
         :param org_id: organization id
@@ -101,12 +126,12 @@ class PaymentServer(socketserver.BaseRequestHandler):
         :return:
         """
         try:
-            self.bill -= amount
+            self.bill -= amount * (1 - commission/100)
             # here we send money to other organizations
         except ValueError:
             return False
         return True
 
 if __name__ == '__main__':
-    # PaymentServer.serve()
-    pass
+    with PaymentServer.serve():
+        pass

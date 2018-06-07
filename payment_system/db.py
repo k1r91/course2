@@ -64,6 +64,7 @@ class DatabaseOrganization:
         self.create_table_collectors()
         self.fill_types()
         self.fill_organizations()
+        self.fill_collectors()
     
     def create_table_org_types(self):
         query = """CREATE TABLE IF NOT EXISTS org_type(
@@ -76,7 +77,8 @@ class DatabaseOrganization:
         query = """CREATE TABLE IF NOT EXISTS organization (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name VARCHAR(255) NOT NULL,
-                type INTEGER NOT NULL,
+                commission TINYINT NOT NULL,
+                type TINYINT NOT NULL,
                 logo VARCHAR(255) NOT NULL,
                 FOREIGN KEY (type) REFERENCES org_type(id)
                 )"""
@@ -87,7 +89,8 @@ class DatabaseOrganization:
                 id INT NOT NULL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 surname VARCHAR(255) NOT NULL,
-                phone VARCHAR(11) NOT NULL
+                phone VARCHAR(11) NOT NULL,
+                secret VARCHAR(64) NOT NULL
                 )
                 """
         self.cursor.execute(query)
@@ -99,22 +102,32 @@ class DatabaseOrganization:
         self.conn.commit()
     
     def fill_organizations(self):
-        query = 'INSERT INTO organization (name, type, logo) VALUES (?, ?, ?)'
+        query = 'INSERT INTO organization (name, commission, type, logo) VALUES (?, ?, ?, ?)'
 
         def logo(folder_name):
             return os.path.join('organizations_logo', folder_name, 'logo.png')
-        organizations = [('МТС', 1, logo('МТС')), ('МТС', 2, logo('МТС')), ('МТС', 3, logo('МТС')),
-                         ('Билайн', 1, logo('Билайн')), ('Билайн', 2, logo('Билайн')), ('Билайн', 3, logo('Билайн')),
-                         ('Мегафон', 1, logo('Мегафон')), ('Мегафон', 2, logo('Мегафон')), ('Акадо-Урал', 3, logo('Акадо-Урал')),
-                         ('Мотив', 1, logo('Мотив')), ('Ростелеком', 2, logo('Ростелеком')), ('Планета', 3, logo('Планета')),
-                         ('Теле2', 1, logo('Теле2')), ('Кабинет', 2, logo('Кабинет')), ('Convex', 3, logo('Convex')),
-                         ('Utel', 1, logo('Utel')), ('Акадо-Урал', 2, logo('Акадо-Урал')), ('ДомРу', 3, logo('ДомРу')),
-                         ('Yota', 1, logo('Yota')), ('Планета', 2, logo('Планета')), ('Инсис', 3, logo('Инсис')),
-                         ('Таттелеком', 1, logo('Таттелеком')), ('Convex', 2, logo('Convex')), ('РусКом', 3, logo('РусКом')),
-                         ('Вайнах Телеком', 1, logo('Вайнах Телеком')), ('ДомРу', 2, logo('ДомРу')), ('Ростелеком', 3, logo('Ростелеком')),
-                         ('VK Mobile', 1, logo('VK Mobile')), ('Инсис', 2, logo('Инсис')), ('ТелеКарта', 3, logo('ТелеКарта')),
+        organizations = [('МТС', 5, 1, logo('МТС')), ('МТС', 5, 2, logo('МТС')), ('МТС', 5, 3, logo('МТС')),
+                         ('Билайн', 0, 1, logo('Билайн')), ('Билайн', 0, 2, logo('Билайн')), ('Билайн', 0, 3, logo('Билайн')),
+                         ('Мегафон', 10, 1, logo('Мегафон')), ('Мегафон', 10, 2, logo('Мегафон')), ('Акадо-Урал', 1, 3, logo('Акадо-Урал')),
+                         ('Мотив', 1, 1, logo('Мотив')), ('Ростелеком', 1, 2, logo('Ростелеком')), ('Планета', 1, 3, logo('Планета')),
+                         ('Теле2', 1, 1, logo('Теле2')), ('Кабинет', 1, 2, logo('Кабинет')), ('Convex', 1, 3, logo('Convex')),
+                         ('Utel', 1, 1, logo('Utel')), ('Акадо-Урал', 1, 2, logo('Акадо-Урал')), ('ДомРу', 1, 3, logo('ДомРу')),
+                         ('Yota', 1, 1, logo('Yota')), ('Планета', 1, 2, logo('Планета')), ('Инсис', 1, 3, logo('Инсис')),
+                         ('Таттелеком', 1, 1, logo('Таттелеком')), ('Convex', 1, 2, logo('Convex')), ('РусКом', 1, 3, logo('РусКом')),
+                         ('Вайнах Телеком', 1, 1, logo('Вайнах Телеком')), ('ДомРу', 1, 2, logo('ДомРу')), ('Ростелеком', 1, 3, logo('Ростелеком')),
+                         ('VK Mobile', 1, 1, logo('VK Mobile')), ('Инсис', 1, 2, logo('Инсис')), ('ТелеКарта', 1, 3, logo('ТелеКарта')),
                          ]
         self.cursor.executemany(query, organizations)
+        self.conn.commit()
+
+    def fill_collectors(self):
+        query = '''INSERT INTO collector (id, name, surname, phone, secret) VALUES (?, ?, ?, ?, ?)'''
+        collectors = [(488, 'Kirill', 'Cherkasov', '89049864438',
+                       '8a22f0d8d7b0b3cba6eda35d76bae70e58eb3160b9eee8c7a353964d27d55008'),
+                      (1227, 'Larisa', 'Cherkasova', '89097019023',
+                       '93caad3f1734df406550dff8a3c4b9b893a539c1ac63c7af7a2aca702990ceca'),
+                      ]
+        self.cursor.executemany(query, collectors)
         self.conn.commit()
 
         

@@ -309,21 +309,23 @@ class ServiceTransaction(Transaction):
 
 class PaymentTransaction(Transaction):
     TYPE = 0x01
-    PACK_FORMAT = 'IQQ'
+    PACK_FORMAT = 'IQQB'
 
-    def __init__(self, term_id, tr_id, org_id, p_acc, amount):
+    def __init__(self, term_id, tr_id, org_id, p_acc, amount, commission):
         super().__init__(term_id, tr_id)
         self.org_id = org_id
         self.amount = amount
         self.p_acc = p_acc
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.p_acc, self.amount))
+        self.commission = commission
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.org_id, self.p_acc, self.amount,
+                                                             self.commission))
 
     def serialize(self):
         """
         :return: binary hex string according to pack format
         """
         result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.org_id, self.p_acc,
-                                                                         self.amount)
+                                                                         self.amount, self.commission)
         return result
 
     @staticmethod
@@ -340,7 +342,8 @@ class PaymentTransaction(Transaction):
         org_id = data[0]
         p_acc = data[1]
         amount = data[2]
-        res = PaymentTransaction(term_id, tr_id, org_id, p_acc, amount)
+        commission = data[3]
+        res = PaymentTransaction(term_id, tr_id, org_id, p_acc, amount, commission)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -355,8 +358,8 @@ class PaymentTransaction(Transaction):
         return struct.calcsize(PaymentTransaction.PACK_FORMAT)
 
     def __str__(self):
-        return 'Payment transaction: {}, org_id={}, account={} amount={}'.format(
-            super().__str__(), self.org_id, self.p_acc, self.amount)
+        return 'Payment transaction: {}, org_id={}, account={} amount={}, commission={}'.format(
+            super().__str__(), self.org_id, self.p_acc, self.amount, self.commission)
 
 
 class EncashmentTransaction(Transaction):
@@ -417,7 +420,7 @@ if __name__ == '__main__':
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
         print('*' * 40)
-    print_transaction(PaymentTransaction(50, 1, 225, 89049864438, 8000))
+    print_transaction(PaymentTransaction(50, 1, 225, 89049864438, 8000, 1))
     print_transaction(ServiceTransaction(50, 2, 'power_on', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(ServiceTransaction(50, 3, 'activate_sensor', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))

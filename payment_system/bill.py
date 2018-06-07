@@ -10,7 +10,7 @@ class Bill:
 
     def __init__(self):
         with open(self.storage, 'r', encoding='utf-8') as f:
-            self.amount = int(f.read())
+            self.amount = float(f.read())
 
     def save(self):
         with open(self.storage, 'w', encoding='utf-8') as f:
