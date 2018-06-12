@@ -14,6 +14,7 @@ class DocMeta(type):
 # if doc is not defined, raise TypeError
 
 class Documented(metaclass=DocMeta):
+
     def test(self):
         """test"""
         pass
@@ -27,7 +28,6 @@ class Foo(Documented):
         pass
 
     def boo(self):
-        """boo"""
         pass
 
 
