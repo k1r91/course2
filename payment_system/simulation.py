@@ -7,6 +7,4 @@ if __name__ == '__main__':
         while True:
             term = random.choice([t7, t55, t250, t304, t1049])
             time.sleep(.5)
-            transaction = term.create_rnd_transaction()
-            received = term.send(transaction.serialize())
-            print(received)
+            term.send_random_transaction()

@@ -309,6 +309,8 @@ class ServiceTransaction(Transaction):
 class PaymentTransaction(Transaction):
     TYPE = 0x01
     PACK_FORMAT = 'IQQB'
+    MIN_AMOUNT = 1000
+    MAX_AMOUNT = 1500000
 
     def __init__(self, term_id, tr_id, org_id, p_acc, amount, commission):
         super().__init__(term_id, tr_id)

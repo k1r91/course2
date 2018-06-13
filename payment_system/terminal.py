@@ -61,13 +61,15 @@ class Terminal:
 
     def send_random_transaction(self):
         self.check_block()
-        seed = random.randint(0, 100)
-        if seed < 10:
-            self.send_encashment_transaction(488, self.cash, 'dncornho7757411')
+        if self.cash > 10000000:
+            self.send_encashment_transaction(488, self.cash, 'dncornho775741')
         else:
             query = 'SELECT id FROM organization'
             result = self.db_org_cursor.execute(query)
-            print(result.fetchall())
+            org_id = random.choice(result.fetchall())[0]
+            amount = random.randint(PaymentTransaction.MIN_AMOUNT, PaymentTransaction.MAX_AMOUNT)
+            random_acc = random.randint(1000000, 9999999)
+            self.send_payment_transaction(org_id, random_acc, amount)
 
     def send_payment_transaction(self, org_id, p_acc, amount):
         self.check_block()
@@ -139,7 +141,7 @@ class Terminal:
 if __name__ == '__main__':
     with Terminal(1049) as terminal1:
         print(terminal1)
-        terminal1.send_random_transaction()
+        # terminal1.send_random_transaction()
         # terminal1.send_payment_transaction(25, 3249234, 1000)
         # try:
         #     terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
