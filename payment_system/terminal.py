@@ -59,17 +59,15 @@ class Terminal:
             raise TerminalException('Error {}'.format(response))
         return True
 
-    def create_rnd_transaction(self):
+    def send_random_transaction(self):
         self.check_block()
-        transaction = None
-        tr_class = random.choice([PaymentTransaction, EncashmentTransaction])
-        if tr_class.__name__ == 'PaymentTransaction':
-            transaction = tr_class(self._id, self.last_transaction_id, random.randint(0, 65000),
-                                   random.randint(1000, 10000000), random.randint(1000, 10000000))
-        elif tr_class.__name__ == 'EncashmentTransaction':
-            transaction = tr_class(self._id, self.last_transaction_id, random.randint(0, 65000),
-                                   random.randint(1000, 10000000))
-        return transaction
+        seed = random.randint(0, 100)
+        if seed < 10:
+            self.send_encashment_transaction(488, self.cash, 'dncornho7757411')
+        else:
+            query = 'SELECT id FROM organization'
+            result = self.db_org_cursor.execute(query)
+            print(result.fetchall())
 
     def send_payment_transaction(self, org_id, p_acc, amount):
         self.check_block()
@@ -100,7 +98,6 @@ class Terminal:
             raise EncashmentTransactionException('Error 407')
         tr = EncashmentTransaction(self._id, self.last_transaction_id, collector_id, amount)
         response = self.send(tr.serialize())
-        print(response)
         if response == '200':
             self.cash -= amount
             self.save_config()
@@ -142,16 +139,17 @@ class Terminal:
 if __name__ == '__main__':
     with Terminal(1049) as terminal1:
         print(terminal1)
-        terminal1.send_payment_transaction(25, 3249234, 1000)
-        try:
-            terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
-        except EncashmentTransactionException as e:
-            print(e.msg)
-        try:
-            terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
-        except EncashmentTransactionException as e:
-            print(e.msg)
-        try:
-            terminal1.send_encashment_transaction(488, 1000, 'dncornho775741')
-        except EncashmentTransactionException as e:
-            print(e.msg)
+        terminal1.send_random_transaction()
+        # terminal1.send_payment_transaction(25, 3249234, 1000)
+        # try:
+        #     terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
+        # except EncashmentTransactionException as e:
+        #     print(e.msg)
+        # try:
+        #     terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
+        # except EncashmentTransactionException as e:
+        #     print(e.msg)
+        # try:
+        #     terminal1.send_encashment_transaction(488, 1000, 'dncornho775741')
+        # except EncashmentTransactionException as e:
+        #     print(e.msg)

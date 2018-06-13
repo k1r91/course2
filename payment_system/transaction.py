@@ -50,7 +50,6 @@ class EncashmentTransactionException(Exception):
     def __repr__(self):
         return self.__str__()
 
-
 class Transaction:
 
     header = 0x7a7a
@@ -420,7 +419,8 @@ if __name__ == '__main__':
         print('Deserialized info: {}'.format(tr.deserialize(tr_serialized)))
         print('Type: {}'.format(Transaction.get_type(tr_serialized)))
         print('*' * 40)
-    print_transaction(PaymentTransaction(50, 1, 225, 89049864438, 8000, 1))
+    t1 = PaymentTransaction(50, 1, 225, 89049864438, 11000, 1)
+    print_transaction(t1)
     print_transaction(ServiceTransaction(50, 2, 'power_on', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(ServiceTransaction(50, 3, 'activate_sensor', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(EncashmentTransaction(50, 4, 567, 20000))
