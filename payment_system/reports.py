@@ -135,8 +135,8 @@ def calculate_sum_by_term(id, start=None, end=None):
     return 'На терминале {} за период с {} по {} обороты составили {} рублей.'.format(id, start, end, sum_term)
 
 
-def timespan_report(term_id, spans):
-    trs, start, end = select_transactions_by_var('term_id', term_id)
+def timespan_report(term_id, spans, start=None, end=None):
+    trs, start, end = select_transactions_by_var('term_id', term_id, start, end)
     if not trs:
         print('По терминалу {} нет данных.'.format(term_id))
         return
@@ -145,13 +145,13 @@ def timespan_report(term_id, spans):
         if spans.index(span) != len(spans) - 1:
             hstart = span
             hend = spans[spans.index(span) + 1]
-            temp = list()
+            count = 0
             for tr in trs:
                 date = datetime.strptime(tr[3], '%Y-%m-%d %H:%M:%S')
                 if hstart <= date.hour <= hend:
-                    temp.append(tr)
-            report['{}-{}'.format(hstart, hend)] = len(temp)
-    print('Отчёт по временным отметкам на терминале {}:'.format(term_id))
+                    count += 1
+            report['{}-{}'.format(hstart, hend)] = count
+    print('Отчёт по временным отметкам на терминале {} за период с {} по {}:'.format(term_id, start, end))
     for key, value in report.items():
         print('{}: {} транзакций.'.format(key, value))
 

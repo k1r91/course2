@@ -7,4 +7,4 @@ if __name__ == '__main__':
         while True:
             term = random.choice([t7, t55, t250, t304, t1049])
             time.sleep(.5)
-            term.send_random_transaction()
+            term.simulate_action()

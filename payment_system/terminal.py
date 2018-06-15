@@ -59,7 +59,7 @@ class Terminal:
             raise TerminalException('Error {}'.format(response))
         return True
 
-    def send_random_transaction(self):
+    def simulate_action(self):
         self.check_block()
         if self.cash > 10000000:
             self.send_encashment_transaction(488, self.cash, 'dncornho775741')
