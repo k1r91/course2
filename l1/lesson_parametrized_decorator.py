@@ -27,7 +27,7 @@ def time_it(func):
 
 
 @time_it
-@sleep(.2)
+# @sleep(.2)
 def str_add(numbers):
     res = ''
     for i in range(numbers):
@@ -36,14 +36,14 @@ def str_add(numbers):
 
 
 @time_it
-@sleep(.2)
+# @sleep(.2)
 def str_join(numbers):
     res = ' '.join(list(map(str, range(numbers))))
     return res
 
 
 @time_it
-@sleep(.2)
+# @sleep(.2)
 def str_join_v2(numbers):
     nums = []
     for i in range(numbers):
