@@ -5,7 +5,7 @@ import os
 
 def sql_get_terminals():
     ls = []
-    for i in range(3):
+    for i in range(10):
         ls.append([i, 'Terminal_{}'.format(i), 'description'])
     return ls
 
@@ -13,21 +13,27 @@ def sql_get_terminals():
 class TableGrid(Frame):
     def __init__(self, parent=None, titles=None, rows=0, *args):
         super().__init__(parent)
-        self.vars = []
         for index, title in enumerate(titles):
             Label(self, text=title).grid(row=0, column=index)
-
-        for i in range(1, rows+1):
-            self.vars.append([])
-            for j in range(index+1):
-                var = StringVar()
-                var.set('hello')
-                Entry(self, textvariable=var).grid(row=i, column=j)
-                self.vars[i-1].append(var)
+        self.rebuild(rows=rows, columns=3)
         self.pack()
 
+    def rebuild(self, rows=0, columns=0):
+        self.cells = []
+        self.vars = []
+        for i in range(1, rows+1):
+            self.vars.append([])
+            for j in range(columns):
+                var = StringVar()
+                self.vars[i-1].append(var)
+                ent = Entry(self, textvariable=var)
+                ent.grid(row=i, column=j)
+                self.cells.append(ent)
+
     def get_terminals(self):
-        for index, data in enumerate(sql_get_terminals()):
+        sql_data = sql_get_terminals()
+        self.rebuild(len(sql_data), len(sql_data[0]))
+        for index, data in enumerate(sql_data):
             for i, d in enumerate(data):
                 self.vars[index][i].set(d)
 
