@@ -9,13 +9,9 @@ class TestTransaction(unittest.TestCase):
 
     def setUp(self):
         self.t = Transaction(50, 50)
-        self.st = ServiceTransaction(50, 50, 'reload')
-        self.pt = PaymentTransaction(50, 50, 500, 500)
-        self.et = EncashmentTransaction(50, 50, 500, 500)
-
-    def test_deserialized_type(self):
-        self.assertEqual(type(self.t.deserialize(
-            b'zz!\x002\x00\x00\x00\x04\x00\x00\x00\x12\x06\x05\x00\x94\xd2\x00\x00\x02')), dict)
+        self.st = ServiceTransaction(50, 2, 'reload', {'last_transaction_id': 25,'cash': 5000, 'state': 1})
+        self.pt = PaymentTransaction(50, 1, 225, 89049864438, 11000, 1)
+        self.et = EncashmentTransaction(50, 4, 567, 20000)
 
     def test_common_transaction_length(self):
         self.assertEqual(self.t.get_length(), 17)
@@ -35,38 +31,10 @@ class TestTransaction(unittest.TestCase):
     def test_servicetransaction_serialize(self):
         self.assertIsInstance(self.st.serialize(), bytes)
 
-    def test_servicetransaction_deserialize(self):
-        st = ServiceTransaction.deserialize(b'zz\x12\x002\x00\x00\x00\x03\x00\x00\x00\x12\x06\x05\x00`\xe5\x00\x00\x00'
-                                            b'\x01')
-        self.assertIsInstance(st, ServiceTransaction)
-
-    def test_paymenttransaction_serialize(self):
-        self.assertIsInstance(self.pt.serialize(), bytes)
-
-    def test_paymenttransaction_deserialize(self):
-        pt = PaymentTransaction.deserialize(b'zz!\x002\x00\x00\x00\x01\x00\x00\x00\x12\x06\x05\x00\xe0\xe8\x00\x00\x01\
-        xe1\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00')
-        self.assertIsInstance(pt, PaymentTransaction)
-
-    def test_encashmenttransaction_serialize(self):
-        self.assertIsInstance(self.et.serialize(), bytes)
-
-    def test_encashmenttransaction_deserialize(self):
-        et = EncashmentTransaction.deserialize(b'zz!\x002\x00\x00\x00\x04\x00\x00\x00\x12\x06\x05\x00\xaa\xe9\x00\x00\x027\
-        x02\x00\x00\x00\x00\x00\x00 N\x00\x00\x00\x00\x00\x00')
-        self.assertIsInstance(et, EncashmentTransaction)
-
-
-@pytest.mark.parametrize('transaction, expected', [(ServiceTransaction(100, 100, 'reload'), 0),
-                                                   (PaymentTransaction(500, 500, 500, 500, 500), 1),
-                                                   (EncashmentTransaction(500, 500, 500, 500), 2)])
-def test_transaction_types(transaction, expected):
-    assert Transaction.get_type(transaction.serialize()) == expected, 'Incorrect type'
-
 
 @pytest.mark.parametrize('total_seconds, expected', [(86399, (23, 59, 59)),
                                                      (7825, (2, 10, 25)),
-                                                     (43200, (12, 0, 0 ))])
+                                                     (43200, (12, 0, 0))])
 def test_transaction_get_time(total_seconds, expected):
     assert Transaction.get_time(total_seconds) == expected, 'Incorrect get_time function behaviour'
 

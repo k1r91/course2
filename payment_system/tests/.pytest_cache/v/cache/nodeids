@@ -1,0 +1,18 @@
+[
+  "test_db.py::TestDb::test_db_org_already_filled",
+  "test_db.py::TestDb::test_db_trans_already_filled",
+  "test_terminal.py::TestTerminal::test_not_response",
+  "test_terminal.py::TestTerminal::test_terminal_not_exists",
+  "test_transaction.py::TestTransaction::test_check_header",
+  "test_transaction.py::TestTransaction::test_common_transaction_length",
+  "test_transaction.py::TestTransaction::test_fmt_size",
+  "test_transaction.py::TestTransaction::test_get_datetime",
+  "test_transaction.py::TestTransaction::test_seconds_since_midnight",
+  "test_transaction.py::TestTransaction::test_servicetransaction_serialize",
+  "test_transaction.py::test_transaction_get_time[86399-expected0]",
+  "test_transaction.py::test_transaction_get_time[7825-expected1]",
+  "test_transaction.py::test_transaction_get_time[43200-expected2]",
+  "test_transaction.py::test_servicetransaction_get_key[dict_data0-asd-6]",
+  "test_transaction.py::test_servicetransaction_get_key[dict_data1-25-100]",
+  "test_transaction.py::test_servicetransaction_get_key[dict_data2-fgh-asd]"
+]

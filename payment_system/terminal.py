@@ -24,9 +24,14 @@ class Terminal:
 
     host = 'localhost'
     port = 9999
-    config_folder = 'terminals'
+    config_folder = os.path.join(os.path.dirname(__file__), 'terminals')
 
     def __init__(self, _id):
+        """
+        reads configuration file, checks block, checks record about this terminal in database, initialize
+        cursor to organizations database
+        :param _id: terminal id 
+        """
         self.config_file = os.path.join(self.config_folder, str(_id), ''.join([str(_id), '.json']))
         with open(self.config_file, 'r') as config_file:
             self.config = json.load(config_file)
@@ -42,6 +47,11 @@ class Terminal:
         self.db_org_cursor = self.db_org.conn.cursor()
 
     def send(self, data):
+        """
+        send data to payment server
+        :param data: binary string
+        :return: server response
+        """
         self.last_transaction_id += 1
         self.config['last_transaction_id'] = self.last_transaction_id
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,6 +62,10 @@ class Terminal:
         return result
 
     def power_on(self):
+        """
+        Send power_on service transaction to payment server 
+        :return: True if response of server is ok (information about terminal in database)
+        """
         self.config['last_transaction_id'] += 1
         tr = ServiceTransaction(self._id, self.last_transaction_id, 'power_on', self.config)
         response = self.send(tr.serialize())
@@ -60,6 +74,8 @@ class Terminal:
         return True
 
     def simulate_action(self):
+        """if cash is full(10000000), simulate encashment, else simulate payment transaction
+        """
         self.check_block()
         if self.cash > 10000000:
             self.send_encashment_transaction(488, self.cash, 'dncornho775741')
@@ -120,6 +136,11 @@ class Terminal:
         return result
 
     def check_block(self):
+        """
+        state = 0 : blocked
+        state = 1: unblocked
+        :return: 
+        """
         if not self.state:
             raise TerminalException('Error 408')
 

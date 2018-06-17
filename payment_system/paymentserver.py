@@ -58,7 +58,7 @@ class PaymentServer(socketserver.BaseRequestHandler):
                     errors.append('401')
             elif tr.action == 2:    # terminal save config action (shutdown)
                 self.write_terminal_config(tr)
-        # save transaction in database if no errors occured
+        # save transaction in database if no errors occurred
         if not errors:
             self.save_transaction(tr)
         # TODO: log file instead of this
@@ -127,7 +127,7 @@ class PaymentServer(socketserver.BaseRequestHandler):
         """
         try:
             self.bill -= amount * (1 - commission/100)
-            # here we send money to other organizations
+            # here we send money to other organizations (not implemented due to simplicity)
         except ValueError:
             return False
         return True

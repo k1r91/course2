@@ -50,6 +50,7 @@ class EncashmentTransactionException(Exception):
     def __repr__(self):
         return self.__str__()
 
+
 class Transaction:
 
     header = 0x7a7a
@@ -257,7 +258,6 @@ class ServiceTransaction(Transaction):
                                                                              self.last_transaction_id, self.cash,
                                                                              self.state)
         return result
-
 
     @staticmethod
     def deserialize(data):

@@ -3,7 +3,7 @@ import sqlite3
 
 
 class DB:
-    DB_NAME = os.path.join('database', 'transactions.db3')
+    DB_NAME = os.path.join(os.path.dirname(__file__), 'database', 'transactions.db3')
 
     def __init__(self):
         self.conn = sqlite3.connect(self.DB_NAME)
@@ -52,7 +52,7 @@ class DB:
 
 
 class DatabaseOrganization:
-    DB_NAME = os.path.join('database', 'col_org.db3')
+    DB_NAME = os.path.join(os.path.dirname(__file__), 'database', 'col_org.db3')
 
     def __init__(self):
         self.conn = sqlite3.connect(self.DB_NAME)
@@ -137,9 +137,9 @@ class DatabaseOrganization:
             os.remove(DatabaseOrganization.DB_NAME)
 
 if __name__ == '__main__':
-    DB.flush()
-    db = DB()
-    db.set_up()
+    # DB.flush()
     DatabaseOrganization.flush()
+    # db = DB()
+    # db.set_up()
     dborg = DatabaseOrganization()
     dborg.set_up()
