@@ -86,8 +86,7 @@ class TableGrid(Frame):
         # При событии <Configure> будет происходить перерисовывание Canvas'а.
         # Событие <Configure> - базовое событие для виджетов;
         # происходит, когда виджет меняет свой размер или местоположение.
-        self.frame.bind("<Configure>", lambda e: self._scroll())        
-
+        self.frame.bind("<Configure>", lambda e: self._scroll())
 
     def _scroll(self):
         """
@@ -96,13 +95,13 @@ class TableGrid(Frame):
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
         self.canvas.config(width=self.w, height=self.h)
 
-
     def rebuild(self, rows=0, columns=0):
         ''' 
             Пересоздание таблицы полей ввода.
         '''
-        self.vars = []
-        self.cells = []
+
+        self.cells=[]
+        self.vars=[]
 
         for i in range(1, rows+1):
             self.vars.append([])

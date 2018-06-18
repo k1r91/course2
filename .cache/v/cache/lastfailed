@@ -1,0 +1,7 @@
+{
+  "l1/examples/test_code_pytest.py::test_get_salary_empty": true,
+  "l1/examples/test_code_pytest.py::test_get_salary_fio": true,
+  "payment_system/tests/test_db.py": true,
+  "payment_system/tests/test_terminal.py": true,
+  "payment_system/tests/test_transaction.py": true
+}

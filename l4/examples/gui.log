@@ -1,0 +1,4 @@
+2018-06-18 09:37:17,013 - INFO - Функция sql_get_terminals вызвана из update_data 
+2018-06-18 09:37:21,061 - INFO - Функция sql_get_terminals вызвана из update_data 
+2018-06-18 09:37:21,946 - INFO - Функция create_terminal вызвана из __call__ 
+2018-06-18 09:37:28,556 - INFO - Функция sql_get_terminals вызвана из update_data 
