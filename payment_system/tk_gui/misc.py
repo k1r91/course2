@@ -1,4 +1,6 @@
 import os
+import getpass
+import datetime
 import sql
 from tkinter import *
 from PIL import Image, ImageTk
@@ -40,6 +42,34 @@ class TableGrid(Frame):
             b = MagicButtons(self.frame, row_id=row-2, table=self)
             b.grid(row=row, column=len(self.titles))
             self.buttons.append(b)
+        self.vars.append([])
+        for col in range(cols):
+            var = StringVar()
+            self.vars[rows].append(var)
+            cell = Entry(self.frame, textvariable=var)
+            cell.grid(row=rows+3, column=col)
+            self.cells.append(cell)
+        button_add = MagicButtons.create_add(self.frame)
+        button_add.config(command=self.insert)
+        self.buttons.append(button_add)
+        button_add.grid(row=rows+3, column=cols)
+        self.bar = StatusBar(self.frame, table=self)
+        self.bar.grid(row=rows+4, columnspan=2)
+
+    def insert(self):
+        values = [x.get() for x in self.vars[-1]]
+        sql.insert(self.tablename, values)
+        self.update_data()
+
+    def update_data(self):
+        if self.tablename is 'terminal':
+            sql.update_terminals(self)
+        elif self.tablename is 'collector':
+            sql.update_collectors(self)
+        elif self.tablename is 'organization':
+            sql.update_organizations(self)
+        elif self.tablename is 'org_type':
+            sql.update_types(self)
 
     def _create_scroll(self):
         ''' Обёртка для создания прокрутки внутри Frame.
@@ -89,6 +119,7 @@ class TableGrid(Frame):
 
 
     def table_update(self, data, titles=None, header=None, tablename=None):
+        self.bar.destroy()
         self.tablename = tablename
         for b in self.buttons:
             b.destroy()
@@ -134,15 +165,22 @@ class MagicButtons(Frame):
         btn.config(command=command)
         return btn
 
+    @staticmethod
+    def create_add(frame):
+        image = MagicButtons.get_image(os.path.join(MagicButtons.img_dir, 'insert.gif'))
+        btn = Button(frame, image=image, width=17, height=17)
+        btn.img = image
+        return btn
+
     def row_update(self, id):
-        cell_st_index = (len(self.table.titles) - 1) * id
-        cell_end_index = cell_st_index + len(self.table.titles) - 1
+        cell_st_index = (len(self.table.titles)) * id
+        cell_end_index = cell_st_index + len(self.table.titles)
         if self.state:
             self.state = 0  # disabled
             values = [x.get() for x in self.table.vars[id]]
             for cell in self.table.cells[cell_st_index: cell_end_index]:
                 cell.config(state=DISABLED)
-            sql.perform_query(self.table.tablename, values)
+            sql.update(self.table.tablename, values, id)
             image = self.get_image(os.path.join(self.img_dir, 'update.gif'))
             self.btn_update.config(image=image)
             self.btn_update.img = image
@@ -155,4 +193,44 @@ class MagicButtons(Frame):
                 cell.config(state=NORMAL)
 
     def row_delete(self, id):
-        print('Deleting {} row from table {}'.format(id, self.table.tablename))
+        values = [x.get() for x in self.table.vars[id]]
+        # sql.delete(self.table.tablename, values)
+        t = DeleteBox(self.table, values)
+        t.mainloop()
+
+
+class DeleteBox(Toplevel):
+
+    def __init__(self, parent, values, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.table = parent
+        self.values = values
+        x, y = parent.winfo_pointerx(), parent.winfo_pointery()
+        self.geometry('{}x{}+{}+{}'.format(150, 70, x, y))
+        top = Label(self, text='Remove selected record?')
+        top.pack(side=TOP)
+        data_str = ', '.join(values)
+        topdata = Label(self, text=data_str)
+        topdata.pack(side=TOP)
+        button_ok = Button(self, text='OK', command=self.delete_record)
+        button_ok.config(height=1, width=10)
+        button_ok.pack(side=LEFT)
+        button_cancel = Button(self, text='Cancel', command=self.destroy)
+        button_cancel.pack(side=RIGHT)
+        button_cancel.config(height=1, width=10)
+
+    def delete_record(self):
+        sql.delete(self.table.tablename, self.values)
+        self.table.update_data()
+        self.destroy()
+
+class StatusBar(Frame):
+
+    def __init__(self, parent, table=None, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        name = Label(self, text='Welcome, {}! Current database: "{}"'.format(
+            getpass.getuser(),
+            sql.get_db_name(table.tablename)
+        ))
+        self.timeL = Label(self, text=datetime.datetime.now())
+        name.pack(side=LEFT)

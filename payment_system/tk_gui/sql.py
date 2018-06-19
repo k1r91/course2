@@ -4,9 +4,10 @@ sys.path.append('..')
 
 from db import DatabaseOrganization, DB
 
-
-db_trans = DB().cursor
-db_org = DatabaseOrganization().cursor
+db_tr = DB()
+db_trans = db_tr.cursor
+db_or = DatabaseOrganization()
+db_org = db_or.cursor
 
 def not_implemented():
     print('Not implemented yet!')
@@ -61,5 +62,42 @@ def update_collectors(table):
     table.table_update(get_collectors(), titles=['ID', 'Name', 'Surname', 'Phone', 'Hash'], header='Collectors', tablename=
                        'collector')
 
-def perform_query(tablename, values):
-    print('Update {} on {}'.format(tablename, values))
+def get_db(tname):
+    if tname in ['organization', 'collector', 'org_type']:
+        return db_or.conn
+    elif tname is 'terminal':
+        return db_tr.conn
+
+def get_db_name(tname):
+    if tname in ['organization', 'collector', 'org_type']:
+        return DatabaseOrganization.DB_NAME
+    elif tname is 'terminal':
+        return DB.DB_NAME
+
+
+def insert(tname, values):
+    value_str = '?,' * len(values)
+    value_str = value_str[:-1]
+    query = 'INSERT INTO {} VALUES ({})'.format(tname, value_str)
+    db = get_db(tname)
+    db.execute(query, values)
+    db.commit()
+
+def delete(tname, values):
+    query = 'DELETE FROM {} WHERE id = ?'.format(tname)
+    db = get_db(tname)
+    db.execute(query, (values[0], ))
+    db.commit()
+
+def update(tname, values, row_id):
+    db = get_db(tname)
+    if tname is 'terminal':
+        query = 'UPDATE {} SET id = ?, last_transaction_id = ?, cash = ?, state = ? WHERE rowid = ?'.format(tname)
+    elif tname is 'organization':
+        query = 'UPDATE {} SET id=?, name=?, commission=?, type=?, logo=? WHERE rowid=?'.format(tname)
+    elif tname is 'org_type':
+        query = 'UPDATE {} SET id=?, name=? WHERE rowid=?'.format(tname)
+    elif tname is 'collector':
+        query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE rowid=?'.format(tname)
+    db.execute(query, values + [row_id+1])
+    db.commit()
