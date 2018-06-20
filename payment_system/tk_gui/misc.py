@@ -54,7 +54,7 @@ class TableGrid(Frame):
         self.buttons.append(button_add)
         button_add.grid(row=rows+3, column=cols)
         self.bar = StatusBar(self.frame, table=self)
-        self.bar.grid(row=rows+4, columnspan=2)
+        self.bar.grid(row=rows+4, columnspan=1000)
 
     def insert(self):
         values = [x.get() for x in self.vars[-1]]
@@ -224,13 +224,20 @@ class DeleteBox(Toplevel):
         self.table.update_data()
         self.destroy()
 
+
 class StatusBar(Frame):
 
     def __init__(self, parent, table=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        name = Label(self, text='Welcome, {}! Current database: "{}"'.format(
+        self.name = Label(self, text='Welcome, {}! Current database: "{}". Current time: '.format(
             getpass.getuser(),
             sql.get_db_name(table.tablename)
         ))
-        self.timeL = Label(self, text=datetime.datetime.now())
-        name.pack(side=LEFT)
+        self.time_label = Label(self, text=datetime.datetime.today().strftime('%H:%M:%S %d.%m.%Y'))
+        self.name.pack(side=LEFT)
+        self.time_label.pack(side=RIGHT)
+        self.after(1000, self.clock_update)
+
+    def clock_update(self):
+        self.time_label.config(text=datetime.datetime.today().strftime('%H:%M:%S %d.%m.%Y'))
+        self.after(1000, self.clock_update)

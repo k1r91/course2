@@ -1,3 +1,4 @@
+import os
 import sys
 
 sys.path.append('..')
@@ -70,9 +71,9 @@ def get_db(tname):
 
 def get_db_name(tname):
     if tname in ['organization', 'collector', 'org_type']:
-        return DatabaseOrganization.DB_NAME
+        return os.path.basename(DatabaseOrganization.DB_NAME)
     elif tname is 'terminal':
-        return DB.DB_NAME
+        return os.path.basename(DB.DB_NAME)
 
 
 def insert(tname, values):
@@ -83,11 +84,13 @@ def insert(tname, values):
     db.execute(query, values)
     db.commit()
 
+
 def delete(tname, values):
     query = 'DELETE FROM {} WHERE id = ?'.format(tname)
     db = get_db(tname)
     db.execute(query, (values[0], ))
     db.commit()
+
 
 def update(tname, values, row_id):
     db = get_db(tname)

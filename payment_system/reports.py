@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from collections import OrderedDict
 from deco import time_it
@@ -25,15 +26,37 @@ def select_transactions_by_var(variable, id, start=None, end=None):
         datetime_data = trans_cursor.execute(query).fetchone()[0]
         start = datetime.strptime(datetime_data, '%Y-%m-%d  %H:%M:%S')
     if not end:
-        end = datetime.now()
+        end = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     query = 'SELECT * FROM ps_transaction WHERE {} = ? AND datetime >=? AND datetime <= ? AND type = 1'.format(variable)
     result = trans_cursor.execute(query, (id, start,  end))
     data = result.fetchall()
     return data, start, end
 
 
-def select_transactions_by_term(id, start=None, end=None):
-    return select_transactions_by_var('term_id', id, start=start, end=end)
+def select_transactions_by_term(_id, start=None, end=None):
+    data, start, end = select_transactions_by_var('term_id', _id, start=start, end=end)
+    result = list()
+    result.append('Transactions report for terminal № {} from {} to {}'.format(_id, start, end))
+    format_str = '{:<7} {:<8} {:<20} {:<6} {:<10} {:<10}'
+    result.append(format_str.format(
+        'Term_id',
+        'Trans_id',
+        'Datetime',
+        'Org_id',
+        'Amount',
+        'Account',
+    ))
+    for record in data:
+        result.append(format_str.format(
+            record[1],
+            record[2],
+            record[3],
+            record[6],
+            record[7],
+            record[9],
+        ))
+    return os.linesep.join(result)
+
 
 
 def calculate_sum(org_id, start=None, end=None):
