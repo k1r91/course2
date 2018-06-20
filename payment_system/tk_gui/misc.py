@@ -117,7 +117,6 @@ class TableGrid(Frame):
             label.grid(row=1, column=index)
             self.titles.append(label)
 
-
     def table_update(self, data, titles=None, header=None, tablename=None):
         self.bar.destroy()
         self.tablename = tablename
