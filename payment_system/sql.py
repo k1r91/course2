@@ -10,9 +10,15 @@ db_trans = db_tr.cursor
 db_or = DatabaseOrganization()
 db_org = db_or.cursor
 
+
 def not_implemented():
     print('Not implemented yet!')
 
+
+def get_org_and_types():
+    query = '''SELECT organization.id, 
+    organization.name, org_type.name FROM organization INNER JOIN org_type ON organization.type=org_type.id'''
+    return db_org.execute(query).fetchall()
 
 def get_terminals():
     query = 'SELECT * FROM terminal'
@@ -104,3 +110,6 @@ def update(tname, values, row_id):
         query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE rowid=?'.format(tname)
     db.execute(query, values + [row_id+1])
     db.commit()
+
+if __name__ == '__main__':
+    print(get_org_and_types())

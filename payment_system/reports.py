@@ -69,7 +69,7 @@ def calculate_sum(org_id, start=None, end=None):
     result_org = list(org_cursor.execute(query_org, (org_id, )).fetchone())
     org_name, org_type = result_org[0], result_org[1]
     total_amount = sum([item[-1] for item in result_trans]) / 100
-    result_str = 'Обороты с организацией {}({}) за период с {} по {} составляют {} рублей'.format(org_name, org_type,
+    result_str = 'Turnover with organization {} ({}) from {} to {}:  {} rubles'.format(org_name, org_type,
                                                                                                   start, end,
                                                                                                   total_amount)
     return result_str
@@ -105,9 +105,11 @@ def total_calculate_sum(start=None, end=None):
             if item[0] == tr[6]:
                 sum_org += tr[-1]
         result[item] = sum_org / 100
-    print('Отчёт за период с {} по {}:'.format(start, end))
+    report_data = [[start, end]]
+    report_data.append(['ID', 'Name', 'Type', 'Amount'])
     for key, value in result.items():
-        print('{}. {} ({}): {} рублей.'.format(key[0], key[1], key[2], value))
+        report_data.append([key[0], key[1], key[2], value])
+    return report_data
 
 
 @time_it
@@ -189,7 +191,7 @@ if __name__ == '__main__':
     select_7 = calculate_sum(11, start=datetime(year=2018, month=6, day=13), end=datetime(year=2018, month=6, day=13,
                                                                                           hour=14))
     print(select_7)
-    total_calculate_sum_v2(start=datetime(year=2018, month=6, day=14))
+    print(total_calculate_sum(start=datetime(year=2018, month=6, day=14)))
     print(calculate_sum_by_term(1049))
     timespan_report(304, (0, 6, 12, 18, 24))
     timespan_report(45, (0, 6, 12, 18, 24))

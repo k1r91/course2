@@ -1,7 +1,6 @@
 """
 This module is used to manage organization and transactions database
 """
-import os
 import sql
 from tkinter import *
 from misc import TableGrid
@@ -30,6 +29,8 @@ select_om.add_command(label='Organizations', command=lambda x=table: sql.update_
 select_om.add_command(label='Organization types', command=lambda x=table: sql.update_types(table))
 select_om.add_command(label='Collectors', command=lambda x=table: sql.update_collectors(table))
 reports_om.add_command(label='Transactions', command=lambda x=root: misc_reports.report_transactions(root))
+reports_om.add_command(label='One organization', command=lambda x=root:misc_reports.report_one_org(root))
+reports_om.add_command(label='All organizations', command=lambda x=root:misc_reports.report_all_org(root))
 rootm.add_cascade(label='Terminal DB', menu=select_tm)
 rootm.add_cascade(label='Organizations DB', menu=select_om)
 rootm.add_cascade(label='Reports', menu=reports_om)

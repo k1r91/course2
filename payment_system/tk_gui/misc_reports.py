@@ -1,11 +1,10 @@
-import os
-import sys
 import datetime
 import calendar
 from collections import OrderedDict
 from tkinter import *
 sys.path.append('..')
 import reports
+import sql
 
 
 def report_transactions(parent):
@@ -13,26 +12,122 @@ def report_transactions(parent):
     report.mainloop()
 
 
-class TrReportDialog(Toplevel):
+def report_one_org(parent):
+    report = OneOrgDialogReport(parent)
+    report.mainloop()
+
+def report_all_org(parent):
+    report = AllOrgReportDialog(parent)
+    report.mainloop()
+
+
+class CommonReportDialog(Toplevel):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.parent = parent
+        ws, hs = parent.winfo_screenwidth(), parent.winfo_screenheight()
+        self.geometry('{}x{}+{}+{}'.format(350, 350, ws // 4, hs // 5))
+        self.dialog = CommonReportFrame(self)
+        self.dialog.grid(row=1, columnspan=2)
+        self.dialog.button_form.config(command=self.generate)
+
+    def check_dates(self):
+        self.dialog.span_error.config(text='')
+        self.start = self.get_start_date()
+        self.end = self.get_end_date()
+        if self.end < self.start:
+            self.dialog.span_error.config(text='Start date must be lower than end')
+            return False
+        return True
+
+    def generate(self):
+        raise NotImplementedError('Have to generate this function')
+
+    def get_start_date(self):
+        return self.dialog.start_date.get_values()
+
+    def get_end_date(self):
+        return self.dialog.end_date.get_values()
+
+
+class AllOrgReportDialog(CommonReportDialog):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.title('All organizations report')
+
+    def generate(self):
+        if not self.check_dates():
+            return
+        data = reports.total_calculate_sum(self.start, self.end)
+        report = AllOrgReportWindow(self, data)
+        report.mainloop()
+
+
+class AllOrgReportWindow(Toplevel):
+    def __init__(self, parent, data, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        ws, hs = parent.winfo_screenwidth(), parent.winfo_screenheight()
+        self.geometry('{}x{}+{}+{}'.format(650, 600, ws // 4 + 50, hs // 5 + 50))
+        self.title('All organizations report data')
+        Label(self, text='Report for all organizations from {} to {}'.format(data[0][0], data[0][1])).\
+            grid(row=0, column=0)
+        self.display_data = Paginator(self, data[1:], cell_width=17, psize=16)
+        self.display_data.grid(row=1, column=0)
+
+
+class OneOrgDialogReport(CommonReportDialog):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.title('One organization report')
+        self.organizations = sql.get_org_and_types()
+        Label(self, text='  Choose organization: ').grid(row=0, column=0)
+        self.var = StringVar()
+        self.var.set(self.organizations[0])
+        self.options = OptionMenu(self, self.var, *self.organizations)
+        self.options.config(width=28)
+        self.options.grid(row=0, column=1)
+
+    def generate(self):
+        if not self.check_dates():
+            return
+        report = Toplevel(self)
+        ws, hs = self.parent.winfo_screenwidth(), self.parent.winfo_screenheight()
+        report.geometry('{}x{}+{}+{}'.format(650, 600, ws // 4 + 50, hs // 5 + 50))
+        org_id = int([var.lstrip() for var in self.var.get()[1:-1].split(',')][0])
+        Label(report, text=reports.calculate_sum(org_id, self.start, self.end)).pack(side=TOP)
+        report.mainloop()
+
+
+class TrReportDialog(CommonReportDialog):
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        ws, hs = parent.winfo_screenwidth(), parent.winfo_screenheight()
-        self.geometry('{}x{}+{}+{}'.format(300, 300, ws//4, hs//5))
         self.title('Transaction report')
         Label(self, text='Terminal id: ').grid(row=0, column=0, sticky='e')
         self.terminal_id = StringVar()
         self.terminal_id.set('1049')
         self.terminal_id_cell = Entry(self, textvariable=self.terminal_id, width=5)
         self.terminal_id_cell.grid(row=0, column=1, sticky='w')
-        dialog = CommonReportDialog(self)
-        dialog.grid(row=1, columnspan=2)
 
     def get_terminal_id(self):
         return self.terminal_id.get()
 
+    def generate(self):
+        if not self.check_dates():
+            return
+        try:
+            t_id = int(self.get_terminal_id())
+            if t_id < 0:
+                self.dialog.span_error.config(text='Terminal id must be positive integer')
+                return
+        except ValueError:
+            self.dialog.span_error.config(text='Terminal id must be integer')
+            return
+        report = TransactionReportWindow(self, reports.select_transactions_by_term(t_id, self.start, self.end))
+        report.mainloop()
 
-class CommonReportDialog(Frame):
+
+class CommonReportFrame(Frame):
     """
     class to display dialog box of report for transactions
     """
@@ -49,28 +144,10 @@ class CommonReportDialog(Frame):
 
     def grid_buttons(self):
         bw = 15
-        self.button_form = Button(self, text='Generate', command=self.generate, width=bw)
+        self.button_form = Button(self, text='Generate', width=bw)
         self.button_form.grid(row=2, column=0)
         self.button_cancel = Button(self, text='Cancel', command=self.parent.destroy, width=bw)
         self.button_cancel.grid(row=2, column=1)
-
-    def generate(self):
-        self.span_error.config(text='')
-        start = self.start_date.get_values()
-        end = self.end_date.get_values()
-        if end < start:
-            self.span_error.config(text='Start date must be lower than end')
-            return
-        try:
-            t_id = int(self.parent.get_terminal_id())
-            if t_id < 0:
-                self.span_error.config(text='Terminal id must be positive integer')
-                return
-        except ValueError:
-            self.span_error.config(text='Terminal id must be integer')
-            return
-        report = TransactionReportWindow(self.parent, reports.select_transactions_by_term(t_id, start, end))
-        report.mainloop()
 
 
 class TransactionReportWindow(Toplevel):
@@ -97,7 +174,7 @@ class TransactionReportWindow(Toplevel):
 
 class Paginator(Frame):
 
-    def __init__(self, parent, data, format_str=None, psize=20, cell_width=12, *args, **kwargs):
+    def __init__(self, parent, data, psize=20, cell_width=12, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.cw = cell_width
         self.psize = psize
@@ -117,9 +194,31 @@ class Paginator(Frame):
 
         self.display_records = []
         self.display_data()
+        self.button_state_config()
+        Label(self.bottom, text='   Go to page: ').grid(row=0, column=3)
+        self.gotopage = StringVar()
+        self.gotopage.set(self.total_pages)
+        self.gotopage_entry = Entry(self.bottom, textvariable=self.gotopage, width=6)
+        self.gotopage_entry.grid(row=0, column=4)
+        self.goto_btn = Button(self.bottom, text='go', command=self.goto)
+        self.goto_btn.grid(row=0, column=5)
+
+    def goto(self):
+        page = self.gotopage.get()
+        try:
+            page = int(page)
+        except TypeError:
+            return
+        if page > self.total_pages:
+            self.page = self.total_pages
+        elif page < 0:
+            self.page = 0
+        else:
+            self.page = page
+        self.display_data()
 
     def display_data(self):
-        self.label_page.config(text='Page {} of {}'.format(self.page, self.total_pages))
+        self.label_page.config(text='   Page {} of {}   '.format(self.page, self.total_pages))
         piece = self.data[self.page * self.psize: (self.page+1) * self.psize]
         for i, record in enumerate(piece):
             try:
@@ -134,6 +233,19 @@ class Paginator(Frame):
                     label = Label(self, text=item, anchor='w', width=self.cw)
                     label.grid(row=i+1, column=j, sticky='w')
                     self.display_records[i].append(label)
+        if len(piece) < self.psize:
+            for line in self.display_records[len(piece): self.psize]:
+                for label in line:
+                    label.config(text='')
+        self.button_state_config()
+
+    def button_state_config(self):
+        self.btn_left.config(state=NORMAL)
+        self.btn_right.config(state=NORMAL)
+        if self.page == self.total_pages:
+            self.btn_right.config(state=DISABLED)
+        if self.page == 0:
+            self.btn_left.config(state=DISABLED)
 
 
     def go_left(self):
