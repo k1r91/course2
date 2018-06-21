@@ -31,6 +31,8 @@ select_om.add_command(label='Collectors', command=lambda x=table: sql.update_col
 reports_om.add_command(label='Transactions', command=lambda x=root: misc_reports.report_transactions(root))
 reports_om.add_command(label='One organization', command=lambda x=root:misc_reports.report_one_org(root))
 reports_om.add_command(label='All organizations', command=lambda x=root:misc_reports.report_all_org(root))
+reports_om.add_command(label='Summary by terminal', command=lambda x=root:misc_reports.report_sum_term(root))
+reports_om.add_command(label='Timespan report', command=lambda x=root:misc_reports.report_timespan(root))
 rootm.add_cascade(label='Terminal DB', menu=select_tm)
 rootm.add_cascade(label='Organizations DB', menu=select_om)
 rootm.add_cascade(label='Reports', menu=reports_om)

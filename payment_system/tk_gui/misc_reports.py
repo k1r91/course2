@@ -16,8 +16,19 @@ def report_one_org(parent):
     report = OneOrgDialogReport(parent)
     report.mainloop()
 
+
 def report_all_org(parent):
     report = AllOrgReportDialog(parent)
+    report.mainloop()
+
+
+def report_sum_term(parent):
+    report = SumTermDialog(parent)
+    report.mainloop()
+
+
+def report_timespan(parent):
+    report = TimeSpanReportDialog(parent)
     report.mainloop()
 
 
@@ -26,7 +37,7 @@ class CommonReportDialog(Toplevel):
         super().__init__(parent, *args, **kwargs)
         self.parent = parent
         ws, hs = parent.winfo_screenwidth(), parent.winfo_screenheight()
-        self.geometry('{}x{}+{}+{}'.format(350, 350, ws // 4, hs // 5))
+        self.geometry('{}x{}+{}+{}'.format(450, 350, ws // 4, hs // 5))
         self.dialog = CommonReportFrame(self)
         self.dialog.grid(row=1, columnspan=2)
         self.dialog.button_form.config(command=self.generate)
@@ -35,6 +46,8 @@ class CommonReportDialog(Toplevel):
         self.dialog.span_error.config(text='')
         self.start = self.get_start_date()
         self.end = self.get_end_date()
+        if not self.start or not self.end:
+            return False
         if self.end < self.start:
             self.dialog.span_error.config(text='Start date must be lower than end')
             return False
@@ -48,6 +61,13 @@ class CommonReportDialog(Toplevel):
 
     def get_end_date(self):
         return self.dialog.end_date.get_values()
+
+    def simple_report_window(self, data):
+        report = Toplevel(self)
+        ws, hs = self.parent.winfo_screenwidth(), self.parent.winfo_screenheight()
+        report.geometry('{}x{}+{}+{}'.format(750, 600, ws // 4 + 50, hs // 5 + 50))
+        Label(report, text=data).pack(side=TOP)
+        report.mainloop()
 
 
 class AllOrgReportDialog(CommonReportDialog):
@@ -71,7 +91,7 @@ class AllOrgReportWindow(Toplevel):
         self.title('All organizations report data')
         Label(self, text='Report for all organizations from {} to {}'.format(data[0][0], data[0][1])).\
             grid(row=0, column=0)
-        self.display_data = Paginator(self, data[1:], cell_width=17, psize=16)
+        self.display_data = Paginator(self, data[1:], cell_width=17, psize=15)
         self.display_data.grid(row=1, column=0)
 
 
@@ -90,12 +110,8 @@ class OneOrgDialogReport(CommonReportDialog):
     def generate(self):
         if not self.check_dates():
             return
-        report = Toplevel(self)
-        ws, hs = self.parent.winfo_screenwidth(), self.parent.winfo_screenheight()
-        report.geometry('{}x{}+{}+{}'.format(650, 600, ws // 4 + 50, hs // 5 + 50))
         org_id = int([var.lstrip() for var in self.var.get()[1:-1].split(',')][0])
-        Label(report, text=reports.calculate_sum(org_id, self.start, self.end)).pack(side=TOP)
-        report.mainloop()
+        self.simple_report_window(reports.calculate_sum(org_id, self.start, self.end))
 
 
 class TrReportDialog(CommonReportDialog):
@@ -127,9 +143,33 @@ class TrReportDialog(CommonReportDialog):
         report.mainloop()
 
 
+class SumTermDialog(TrReportDialog):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.title('Summary report for terminal')
+
+    def generate(self):
+        if not self.check_dates():
+            return
+        data = reports.calculate_sum_by_term(self.get_terminal_id(), self.start, self.end)
+        self.simple_report_window(data)
+
+
+class TimeSpanReportDialog(TrReportDialog):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.title('Timespan report for terminal')
+
+    def generate(self):
+        if not self.check_dates():
+            return
+        data = reports.timespan_report(self.get_terminal_id(), (0, 6, 12, 18, 24), self.start, self.end)
+        self.simple_report_window(data)
+
+
 class CommonReportFrame(Frame):
     """
-    class to display dialog box of report for transactions
+    Base class to display date and error fields, cancel and generate buttons
     """
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -181,7 +221,7 @@ class Paginator(Frame):
         self.page = 0
         for i, item in enumerate(data[0]):
             Label(self, text=item, width=self.cw, anchor='w').grid(row=0, column=i, sticky='w')
-        self.total_pages = len(data[1:]) // self.psize
+        self.total_pages = len(data[1:]) // (self.psize+1)
         self.data = data[1:]
         self.bottom = Frame(self)
         self.bottom.grid(row=1+len(data), columnspan=len(data[0]))
@@ -328,12 +368,14 @@ class DateEntry(Frame):
 
     def get_values(self):
         self.error_span.config(text='')
-        values = [int(x) for x in (self.dates[self.day].get(), self.dates[self.month].get(), self.dates[self.year].get(),
-                                 self.times[self.hour].get(), self.times[self.minute].get(),
-                                 self.times[self.second].get())]
         try:
+            values = [int(x) for x in (self.dates[self.day].get(), self.dates[self.month].get(),
+                                     self.dates[self.year].get(),
+                                     self.times[self.hour].get(), self.times[self.minute].get(),
+                                     self.times[self.second].get())]
             result = datetime.datetime(day=values[0], month=values[1], year=values[2], hour=values[3], minute=values[4],
                                        second=values[5])
             return result
         except ValueError as e:
             self.error_span.config(text='Incorrect date')
+            return None

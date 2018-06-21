@@ -148,14 +148,14 @@ def total_calculate_sum_v2(start=None, end=None):
 def calculate_sum_by_term(id, start=None, end=None):
     trs, start, end = select_transactions_by_var('term_id', id, start, end)
     sum_term = sum([tr[-1] for tr in trs]) / 100
-    return 'На терминале {} за период с {} по {} обороты составили {} рублей.'.format(id, start, end, sum_term)
-
+    if trs:
+        return 'Turnover on terminal №{} from {} to {}: {} rubles.'.format(id, start, end, sum_term)
+    return 'There are no transaction data.'
 
 def timespan_report(term_id, spans, start=None, end=None):
     trs, start, end = select_transactions_by_var('term_id', term_id, start, end)
     if not trs:
-        print('По терминалу {} нет данных.'.format(term_id))
-        return
+        return 'Terminal {} has no data'.format(term_id)
     report = OrderedDict()
     for span in spans[:]:
         if spans.index(span) != len(spans) - 1:
@@ -167,9 +167,10 @@ def timespan_report(term_id, spans, start=None, end=None):
                 if hstart <= date.hour <= hend:
                     count += 1
             report['{}-{}'.format(hstart, hend)] = count
-    print('Отчёт по временным отметкам на терминале {} за период с {} по {}:'.format(term_id, start, end))
+    result = ['Timespan report for terminal {} from {} to {}:'.format(term_id, start, end)]
     for key, value in report.items():
-        print('{}: {} транзакций.'.format(key, value))
+        result.append('{}: {} transactions.'.format(key, value))
+    return os.linesep.join(result)
 
 if __name__ == '__main__':
     select_1 = select_transactions_by_term(1049)
@@ -193,5 +194,5 @@ if __name__ == '__main__':
     print(select_7)
     print(total_calculate_sum(start=datetime(year=2018, month=6, day=14)))
     print(calculate_sum_by_term(1049))
-    timespan_report(304, (0, 6, 12, 18, 24))
-    timespan_report(45, (0, 6, 12, 18, 24))
+    print(timespan_report(304, (0, 6, 12, 18, 24)))
+    print(timespan_report(45, (0, 6, 12, 18, 24)))
