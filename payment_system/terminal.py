@@ -2,6 +2,7 @@ import os
 import socket
 import random
 import json
+import threading
 import db
 import hashlib
 from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransaction, PaymentTransactionException, \
@@ -33,6 +34,7 @@ class Terminal:
         :param _id: terminal id 
         """
         self.config_file = os.path.join(self.config_folder, str(_id), ''.join([str(_id), '.json']))
+        self.errors = {}
         with open(self.config_file, 'r') as config_file:
             self.config = json.load(config_file)
             self.state = self.config['state']
@@ -41,7 +43,10 @@ class Terminal:
             self.title = self.config['title']
             self.cash = self.config['cash']
             self.last_transaction_id = self.config['last_transaction_id'] + 1
-        self.power_on()
+        try:
+            self.power_on()
+        except TerminalException:
+            self.errors['connection'] = True
         self.incorrect_code = 0
         self.db_org = db.DatabaseOrganization()
         self.db_org_cursor = self.db_org.conn.cursor()
@@ -52,14 +57,23 @@ class Terminal:
         :param data: binary string
         :return: server response
         """
-        self.last_transaction_id += 1
-        self.config['last_transaction_id'] = self.last_transaction_id
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((self.host, self.port))
-        sock.sendall(data)
-        result = str(sock.recv(1024), 'utf-8')
-        sock.close()
-        return result
+        result = []
+
+        def thread(self, result, data=data):
+            self.last_transaction_id += 1
+            self.config['last_transaction_id'] = self.last_transaction_id
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((self.host, self.port))
+            sock.sendall(data)
+            result.append(str(sock.recv(1024), 'utf-8'))
+            sock.close()
+        task = threading.Thread(target=thread, args=(self, result, data, ))
+        task.start()
+        task.join()
+        try:
+            return result[0]
+        except IndexError:
+            return '409'
 
     def power_on(self):
         """
