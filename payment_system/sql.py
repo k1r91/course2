@@ -29,6 +29,11 @@ def get_organizations():
     query = 'SELECT * FROM organization'
     return db_org.execute(query).fetchall()
 
+def get_org_by_type(type_id):
+    query = 'SELECT organization.id, organization.name, org_type.name, organization.logo FROM organization INNER JOIN' \
+            ' org_type ON org_type.id=organization.type WHERE organization.type=?'
+    return db_org.execute(query, (type_id, )).fetchall()
+
 
 def get_org_types():
     query = 'SELECT * FROM org_type'
@@ -113,3 +118,5 @@ def update(tname, values, row_id):
 
 if __name__ == '__main__':
     print(get_org_and_types())
+    print(get_org_types())
+    print(get_org_by_type(1))
