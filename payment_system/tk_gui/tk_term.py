@@ -37,7 +37,7 @@ class TkTerminal(Terminal):
         self.check_printer.grid(row=1, column=0, pady=self.h//40, padx=self.w//30, sticky='nw')
         self.strongbox = StrongBox(self.root)
         self.strongbox.grid(row=1, column=1, sticky='nw', pady=self.h//40, padx=self.w//30)
-        self.bill_acceptor = BillAcceptor(self.root)
+        self.bill_acceptor = BillAcceptor(self)
         self.bill_acceptor.grid(row=1, column=2, sticky='ws', pady=self.h // 40, padx=self.w // 30)
         settings_img = get_resized_image(os.path.join('gif', 'settings.gif'), 20, 20)
         self.settings_btn = Button(self.root, image=settings_img, command=self.open_service)
@@ -50,11 +50,22 @@ class TkTerminal(Terminal):
         print('Not implemented yet!')
 
     def activate_bill_acceptor(self, data, amount, account):
-        self.bill_acceptor.activate()
-        print(data, amount, account)
+        self.bill_acceptor.activate([data, amount, account])
+
+    def activate_check_printer(self, data):
+        self.display.abort = True
+        print('Not implemented print function widh', data)
 
     def disable_bill_acceptor(self):
         self.bill_acceptor.disable()
+
+    def process(self, data):
+        try:
+            self.send_payment_transaction(data[0][0], p_acc=data[2], amount=data[1])
+            self.display.update_transaction_status(True, data)
+        except TerminalException:
+            self.bill_acceptor.release_money()
+            self.display.update_transaction_status(False, data)
 
     def mainloop(self):
         self.root.mainloop()
@@ -94,6 +105,7 @@ class Display(Frame):
             self.types.append(btn)
 
     def change_page(self, page):
+        self.abort = True
         self.flush()
         self.display_types()
         self.types[page-1].config(fg='red')
@@ -130,39 +142,41 @@ class Display(Frame):
         self.frame.columnconfigure(0, weight=1)
         btn_main = Button(self.frame, text="To main page", width=15, command=lambda x=1: self.change_page(x))
         btn_main.grid(row=0, column=0, padx=50, pady=10, sticky='nw')
-        phead = Label(self.frame, text='Pay for organization {}({})'.format(data[1], data[2]))
+        phead = Label(self.frame, text='Pay for organization {}({})'.format(data[1], data[2]), bg='white')
         phead.config(font=('Courier', 22), fg='blue')
         phead.grid(row=1, column=0, padx=50, pady=50, sticky='nwes')
         self.accvar = StringVar()
         self.amountvar = StringVar()
-        paccl = Label(self.frame, text='Input your personal account: ', font=('Courier', 12), fg='blue')
+        paccl = Label(self.frame, text='Input your personal account: ', font=('Courier', 12), fg='blue', bg='white')
         paccl.grid(row=2, column=0)
         self.paccl_entry = Entry(self.frame, textvariable=self.accvar, width=11)
         self.paccl_entry.grid(row=3, column=0)
-        pamountl = Label(self.frame, text='Input amount: ', font=('Courier', 12), fg='blue')
+        pamountl = Label(self.frame, text='Input amount: ', font=('Courier', 12), fg='blue', bg='white')
         pamountl.grid(row=4, column=0)
         self.pamountl_entry = Entry(self.frame, textvariable=self.amountvar, width=11)
         self.pamountl_entry.grid(row=5, column=0)
-        bfr = Frame(self.frame, width=300)
-        self.error_label = Label(bfr, fg='red', font=('Courier', 12))
+        self.bfr = Frame(self.frame, width=300, bg='white')
+        self.error_label = Label(self.bfr, fg='red', font=('Courier', 12), bg='white')
         self.error_label.grid(row=0, columnspan=2)
-        submit = Button(bfr, text='OK', font=('Courier', 14), fg='blue', width=10,
+        self.submit = Button(self.bfr, text='OK', font=('Courier', 14), fg='blue', width=15,
                         command=lambda x=data: self.threaded_pay(x))
-        submit.grid(row=1, column=0, padx=10)
-        cancel = Button(bfr, text='Cancel', font=('Courier', 14), fg='blue', width=10,
-                        command=lambda x=1: self.change_page(x))
-        cancel.grid(row=1, column=1)
-        bfr.grid(row=7, column=0, pady=20)
+        self.submit.grid(row=1, column=0, padx=10)
+        self.cancel = Button(self.bfr, text='Cancel', font=('Courier', 14), fg='blue', width=15,
+                        command=self.renew_pay_page, state=DISABLED)
+        self.cancel.grid(row=1, column=1)
+        self.inserted_cash = Label(self.bfr, font=('Courier', 12), fg='green', bg='white')
+        self.inserted_cash.grid(row=2, columnspan=2, pady=15)
+        self.bfr.grid(row=7, column=0, pady=20)
         self.elements.append(btn_main)
         self.elements.append(phead)
         self.elements.append(paccl)
         self.elements.append(self.paccl_entry)
         self.elements.append(pamountl)
         self.elements.append(self.pamountl_entry)
-        self.elements.append(bfr)
+        self.elements.append(self.bfr)
 
     def threaded_pay(self, data):
-        self.error_label.config(text='')
+        self.error_label.config(text='', fg='red')
         try:
             amount, account = int(self.amountvar.get()), int(self.accvar.get())
         except ValueError:
@@ -175,8 +189,52 @@ class Display(Frame):
             self.error_label.config(text='Max pay {} rubles.'.format(PaymentTransaction.MAX_AMOUNT // 100))
         self.paccl_entry.config(state=DISABLED)
         self.pamountl_entry.config(state=DISABLED)
+        self.submit.config(state=DISABLED)
+        self.cancel.config(state=NORMAL)
+        self.error_label.config(text='Please, insert money in bill acceptor', fg='green')
+        self.inserted_cash.config(text='You inserted 0 rubles.')
         task = threading.Thread(target=self.terminal.activate_bill_acceptor, args=(data, amount, account))
         task.start()
+
+    def renew_pay_page(self):
+        self.error_label.config(text='', fg='red')
+        self.paccl_entry.config(state=NORMAL)
+        self.pamountl_entry.config(state=NORMAL)
+        self.submit.config(state=NORMAL)
+        self.cancel.config(state=DISABLED)
+        self.inserted_cash.config(text='', fg='green')
+        self.terminal.disable_bill_acceptor()
+
+    def update_transaction_status(self, bool, data):
+        self.renew_pay_page()
+        if bool:
+            self.inserted_cash.config(text='Your payment was accepted. Print check?')
+            self.yesbtn = Button(self.bfr, text='Yes',
+                                 command=lambda x=data: self.terminal.activate_check_printer(x),
+                                 width=4,
+                                 fg='green')
+            self.yesbtn.grid(row=3, column=0, sticky='ne')
+            self.nobtn = Button(self.bfr, text='No', command=lambda x=1: self.change_page(x), width=4,
+                                fg='red')
+            self.nobtn.grid(row=3, column=1, sticky='nw')
+            self.abort = False
+            self.wait_task = threading.Thread(target=self.go_to_main_page, args=(2, ))
+            self.wait_task.start()
+        else:
+            self.inserted_cash.config(text='Sorry, was errors', fg='red')
+
+    def go_to_main_page(self, sec):
+        i = 0
+        while i < sec * 10:
+            if hasattr(self, 'abort') and self.abort:
+                return
+            time.sleep(.1)
+            i += 1
+        self.change_page(1)
+
+    def update_inserted(self, amount):
+        self.inserted_cash.config(text='You inserted {} rubles.'.format(amount))
+
     def flush(self):
         """
         eliminates types and organization buttons
@@ -226,6 +284,8 @@ class BillAcceptor(Frame):
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.terminal = parent
+        parent = parent.root
         parent.update()
         self.width = parent.winfo_width() // 10
         print_img = get_resized_image(os.path.join('gif', 'bill_acceptor.gif'), self.width, self.width)
@@ -239,11 +299,22 @@ class BillAcceptor(Frame):
         self.entry.grid(row=0, column=0, sticky='nw', padx=3)
         Label(self.rf, text='rubles', width=10).grid(row=1, column=0, sticky='nw', padx=3)
         self.state = 0
+        self.inserted = 0
 
     def insert(self):
-        print('Not implemented yet!')
+        try:
+            in_amount = int(self.var.get())
+        except ValueError:
+            return
+        self.inserted += in_amount
+        self.terminal.display.update_inserted(self.inserted)
+        if self.inserted >= self.data[1]:
+            self.disable()
+            task = threading.Thread(target=self.terminal.process, args=(self.data, ))
+            task.start()
 
-    def activate(self):
+    def activate(self, data):
+        self.data = data
         self.insert_cash.config(state=NORMAL)
         self.entry.config(state=NORMAL)
         self.active = self.after(700, self.change_image)
@@ -262,10 +333,23 @@ class BillAcceptor(Frame):
         self.active = self.after(700, self.change_image)
 
     def disable(self):
+        self.inserted = 0
         self.insert_cash.config(state=DISABLED)
         self.entry.config(state=DISABLED)
+        print_img = get_resized_image(os.path.join('gif', 'bill_acceptor.gif'), self.width, self.width)
+        self.insert_cash.config(image=print_img)
+        self.insert_cash.image = print_img
+        self.state = 0
+        self.var.set(0)
         if hasattr(self, 'active'):
             self.after_cancel(self.active)
+
+    def release_money(self):
+        """
+        NOT IMPLEMENTED YET!
+        :return:
+        """
+        pass
 
 if __name__ == '__main__':
     t = TkTerminal(1049)

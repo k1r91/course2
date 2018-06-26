@@ -16,6 +16,10 @@ def not_implemented():
 
 
 def get_org_and_types():
+    db_tr = DB()
+    db_trans = db_tr.cursor
+    db_or = DatabaseOrganization()
+    db_org = db_or.cursor
     query = '''SELECT organization.id, 
     organization.name, org_type.name FROM organization INNER JOIN org_type ON organization.type=org_type.id'''
     return db_org.execute(query).fetchall()
@@ -30,12 +34,20 @@ def get_organizations():
     return db_org.execute(query).fetchall()
 
 def get_org_by_type(type_id):
+    db_tr = DB()
+    db_trans = db_tr.cursor
+    db_or = DatabaseOrganization()
+    db_org = db_or.cursor
     query = 'SELECT organization.id, organization.name, org_type.name, organization.logo FROM organization INNER JOIN' \
             ' org_type ON org_type.id=organization.type WHERE organization.type=?'
     return db_org.execute(query, (type_id, )).fetchall()
 
 
 def get_org_types():
+    db_tr = DB()
+    db_trans = db_tr.cursor
+    db_or = DatabaseOrganization()
+    db_org = db_or.cursor
     query = 'SELECT * FROM org_type'
     return db_org.execute(query).fetchall()
 

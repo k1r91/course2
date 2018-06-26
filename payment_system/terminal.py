@@ -33,6 +33,8 @@ class Terminal:
         cursor to organizations database
         :param _id: terminal id 
         """
+        self.db_org = db.DatabaseOrganization()
+        self.db_org_cursor = self.db_org.conn.cursor()
         self.config_file = os.path.join(self.config_folder, str(_id), ''.join([str(_id), '.json']))
         with open(self.config_file, 'r') as config_file:
             self.config = json.load(config_file)
@@ -44,8 +46,6 @@ class Terminal:
             self.last_transaction_id = self.config['last_transaction_id'] + 1
         self.power_on()
         self.incorrect_code = 0
-        self.db_org = db.DatabaseOrganization()
-        self.db_org_cursor = self.db_org.conn.cursor()
 
     def send(self, data):
         """
@@ -99,6 +99,8 @@ class Terminal:
 
     def send_payment_transaction(self, org_id, p_acc, amount):
         self.check_block()
+        self.db_org = db.DatabaseOrganization()
+        self.db_org_cursor = self.db_org.conn.cursor()
         query = "SELECT * FROM organization WHERE id = ?"
         result = self.db_org_cursor.execute(query, (org_id, )).fetchall()
         if not result:
