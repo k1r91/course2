@@ -35,6 +35,7 @@ class Terminal:
         """
         self.db_org = db.DatabaseOrganization()
         self.db_org_cursor = self.db_org.conn.cursor()
+        self.incorrect_code = 0
         self.config_file = os.path.join(self.config_folder, str(_id), ''.join([str(_id), '.json']))
         with open(self.config_file, 'r') as config_file:
             self.config = json.load(config_file)
@@ -46,7 +47,6 @@ class Terminal:
             self.secret = self.config['secret']
         self.check_block()
         self.power_on()
-        self.incorrect_code = 0
 
     def send(self, data):
         """
@@ -117,13 +117,11 @@ class Terminal:
 
     def send_encashment_transaction(self, collector_id, amount, secret):
         self.check_block()
+        self.db_org = db.DatabaseOrganization()
+        self.db_org_cursor = self.db_org.conn.cursor()
         query = "SELECT * FROM collector WHERE id = ?"
         result = self.db_org_cursor.execute(query, (collector_id, )).fetchall()
         if not result or hashlib.sha256(secret.encode('utf-8')).hexdigest() != result[0][4]:
-            self.incorrect_code += 1
-            if self.incorrect_code == 3:
-                self.state = 0
-                raise TerminalException('Error 408')
             raise EncashmentTransactionException('Error 406')
         if amount > self.cash:
             raise EncashmentTransactionException('Error 407')

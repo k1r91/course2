@@ -123,9 +123,9 @@ class DatabaseOrganization:
     def fill_collectors(self):
         query = '''INSERT INTO collector (id, name, surname, phone, secret) VALUES (?, ?, ?, ?, ?)'''
         collectors = [(488, 'Kirill', 'Cherkasov', '89049864438',
-                       '8a22f0d8d7b0b3cba6eda35d76bae70e58eb3160b9eee8c7a353964d27d55008'),
+                       '79483d76bc4def199f9b7629570a8ebda13cd1926b8d63750c7e279c38ecc678'),
                       (1227, 'Larisa', 'Cherkasova', '89097019023',
-                       '93caad3f1734df406550dff8a3c4b9b893a539c1ac63c7af7a2aca702990ceca'),
+                       '79483d76bc4def199f9b7629570a8ebda13cd1926b8d63750c7e279c38ecc678'),
                       ]
         self.cursor.executemany(query, collectors)
         self.conn.commit()
