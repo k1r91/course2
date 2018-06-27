@@ -39,11 +39,12 @@ class Terminal:
         with open(self.config_file, 'r') as config_file:
             self.config = json.load(config_file)
             self.state = self.config['state']
-            self.check_block()
             self._id = self.config['id']
             self.title = self.config['title']
             self.cash = self.config['cash']
             self.last_transaction_id = self.config['last_transaction_id'] + 1
+            self.secret = self.config['secret']
+        self.check_block()
         self.power_on()
         self.incorrect_code = 0
 

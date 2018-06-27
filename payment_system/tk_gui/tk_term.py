@@ -1,11 +1,13 @@
 import os
 import threading
 import time
+import datetime
+import hashlib
 from tkinter import *
 from PIL import ImageTk, Image
 sys.path.append('..')
 from terminal import Terminal, TerminalException
-from transaction import PaymentTransaction
+from transaction import PaymentTransaction, PaymentTransactionException
 import sql
 
 
@@ -18,11 +20,11 @@ def get_resized_image(path, width, height):
 class TkTerminal(Terminal):
 
     def __init__(self, _id):
-        self.errors = {}
+        self.errors = False
         try:
             super().__init__(_id)
         except TerminalException:
-            self.errors['connection'] = False
+            self.errors = True
         self.root = Tk()
         self.root.title('Terminal № {}'.format(self._id))
         self.root.resizable(False, False)
@@ -33,7 +35,7 @@ class TkTerminal(Terminal):
         self.root.geometry('{}x{}+{}+{}'.format(self.w, self.h, self.ws, self.hs))
         self.display = Display(self, height=self.h-200, width=self.w)
         self.display.grid(row=0, columnspan=3)
-        self.check_printer = CheckPrinter(self.root)
+        self.check_printer = CheckPrinter(self)
         self.check_printer.grid(row=1, column=0, pady=self.h//40, padx=self.w//30, sticky='nw')
         self.strongbox = StrongBox(self.root)
         self.strongbox.grid(row=1, column=1, sticky='nw', pady=self.h//40, padx=self.w//30)
@@ -43,18 +45,19 @@ class TkTerminal(Terminal):
         self.settings_btn = Button(self.root, image=settings_img, command=self.open_service)
         self.settings_btn.grid(row=2, column=0, sticky='nw', padx=10)
         self.settings_btn.image = settings_img
-        self.items = []
-        self.display.display_organizations()
+        if not self.errors:
+            self.display.display_organizations()
+        else:
+            self.display.maintenance()
 
     def open_service(self):
-        print('Not implemented yet!')
+        self.display.settings_access()
 
     def activate_bill_acceptor(self, data, amount, account):
         self.bill_acceptor.activate([data, amount, account])
 
     def activate_check_printer(self, data):
-        self.display.abort = True
-        print('Not implemented print function widh', data)
+        self.check_printer.activate(data)
 
     def disable_bill_acceptor(self):
         self.bill_acceptor.disable()
@@ -63,12 +66,17 @@ class TkTerminal(Terminal):
         try:
             self.send_payment_transaction(data[0][0], p_acc=data[2], amount=data[1])
             self.display.update_transaction_status(True, data)
-        except TerminalException:
+        except PaymentTransactionException:
             self.bill_acceptor.release_money()
             self.display.update_transaction_status(False, data)
 
     def mainloop(self):
         self.root.mainloop()
+
+    def raise_incorrect_code(self):
+        self.incorrect_code += 1
+        if self.incorrect_code == 3:
+            self.display.maintenance()
 
 
 class Display(Frame):
@@ -87,6 +95,51 @@ class Display(Frame):
         self.frame.image = background_image
         self.types = []
         self.elements = []
+
+    def maintenance(self):
+        self.flush()
+        self.frame.columnconfigure(0, weight=1)
+        self.frame.rowconfigure(0, weight=1)
+        maintenance_label = Label(self.frame, bg='white', fg='red', font=('Courier bold', 44))
+        maintenance_label.config(text='Sorry, current terminal \n is under maintenance')
+        maintenance_label.grid(row=0, column=0)
+
+    def settings_page(self):
+        pwd = hashlib.sha256(self.pvar.get().encode('utf-8')).hexdigest()
+        if pwd != self.terminal.secret:
+            self.terminal.raise_incorrect_code()
+            self.error_settings_span.config(text='Wrong code. Remaining attemts: {}'.format(
+                3-self.terminal.incorrect_code
+            ))
+            return
+        self.flush()
+        print('Displaying settings page')
+        self.terminal.incorrect_code = 0
+
+    def settings_access(self):
+        self.flush()
+        self.frame.columnconfigure(0, weight=1)
+        self.frame.columnconfigure(1, weight=1)
+        pl = Label(self.frame, text='Enter password:', fg='blue', font=('Courier', 16), bg='white')
+        pl.grid(row=0, columnspan=2, pady=(100, 10))
+        self.pvar = StringVar()
+        self.pvar_entry = Entry(self.frame, textvariable=self.pvar, width=23, show='*')
+        self.pvar_entry.grid(row=1, columnspan=2, pady=(0, 15))
+        self.btn_settings_ok = Button(self.frame, text='OK', width=8, fg='green', command=self.settings_page)
+        self.btn_settings_ok.grid(row=2, column=0, pady=(0, 10), padx=(0, 10), sticky='e')
+        self.btn_settings_cancel = Button(self.frame, text='Cancel', width=8, fg='red',
+                                         command=lambda x=1: self.change_page(x))
+        self.btn_settings_ok.grid(row=2, column=0, pady=(0, 10), padx=(0, 10), sticky='e')
+        self.btn_settings_cancel.grid(row=2, column=1, pady=(0, 10), sticky='w')
+        self.error_settings_span = Label(self.frame, fg='red', font=('Courier', 10), bg='white')
+        self.error_settings_span.grid(row=3, columnspan=2)
+        self.elements.append(pl)
+        self.elements.append(self.pvar_entry)
+        self.elements.append(self.btn_settings_ok)
+        self.elements.append(self.btn_settings_cancel)
+        self.elements.append(self.error_settings_span)
+        self.terminal.settings_btn.config(state=DISABLED)
+
 
     def display_organizations(self):
         self.display_types()
@@ -196,6 +249,14 @@ class Display(Frame):
         task = threading.Thread(target=self.terminal.activate_bill_acceptor, args=(data, amount, account))
         task.start()
 
+    def threaded_print(self, data):
+        self.abort=True
+        self.yesbtn.destroy()
+        self.nobtn.destroy()
+        self.change_page(1)
+        task = threading.Thread(target=self.terminal.activate_check_printer, args=(data, ))
+        task.start()
+
     def renew_pay_page(self):
         self.error_label.config(text='', fg='red')
         self.paccl_entry.config(state=NORMAL)
@@ -210,7 +271,7 @@ class Display(Frame):
         if bool:
             self.inserted_cash.config(text='Your payment was accepted. Print check?')
             self.yesbtn = Button(self.bfr, text='Yes',
-                                 command=lambda x=data: self.terminal.activate_check_printer(x),
+                                 command=lambda x=data: self.threaded_print(x),
                                  width=4,
                                  fg='green')
             self.yesbtn.grid(row=3, column=0, sticky='ne')
@@ -218,7 +279,7 @@ class Display(Frame):
                                 fg='red')
             self.nobtn.grid(row=3, column=1, sticky='nw')
             self.abort = False
-            self.wait_task = threading.Thread(target=self.go_to_main_page, args=(2, ))
+            self.wait_task = threading.Thread(target=self.go_to_main_page, args=(59, ))
             self.wait_task.start()
         else:
             self.inserted_cash.config(text='Sorry, was errors', fg='red')
@@ -240,8 +301,12 @@ class Display(Frame):
         eliminates types and organization buttons
         :return:
         """
+        self.terminal.settings_btn.config(state=NORMAL)
         self.terminal.disable_bill_acceptor()
         self.frame.columnconfigure(0, weight=0)
+        self.frame.rowconfigure(0, weight=0)
+        self.frame.columnconfigure(1, weight=0)
+        self.frame.rowconfigure(1, weight=0)
         for btn in self.types:
             btn.destroy()
         self.types = []
@@ -254,19 +319,84 @@ class CheckPrinter(Frame):
 
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        parent.update()
-        self.width = parent.winfo_width() // 10
+        self.terminal = parent
+        self.parent = parent.root
+        self.parent.update()
+        self.width = self.parent.winfo_width() // 10
         print_img = get_resized_image(os.path.join('gif', 'check_printer.gif'), self.width, self.width)
-        self.print_button = Button(self, image=print_img, command=self.print_check, state=DISABLED)
+        self.print_button = Button(self, image=print_img, state=DISABLED)
         self.print_button.image = print_img
         self.print_button.grid(row=0, column=0)
+        self.state=0
 
-    def print_check(self):
-        print('Not implemented yet!')
+    def print_check(self, data):
+        check = Toplevel(self.parent, bg='white')
+        check.resizable(False, False)
+        check.geometry('{}x{}+{}+{}'.format(self.terminal.h//2,
+                                            self.terminal.w//2,
+                                            self.terminal.ws+50,
+                                            self.terminal.hs+50))
+        check.title('Check')
+        check.columnconfigure(0, weight=1)
+        check.columnconfigure(1, weight=1)
+        wLabel(check, text='Paypal inc.', font=('Courier bold', 22)).grid(row=0, pady=(10, 20), columnspan=2)
+        wLabel(check, text='Terminal № {}'.format(self.terminal._id),
+               font=('Courier', 14)).grid(row=1, pady=(0, 10), columnspan=2)
+        wLabel(check, text='-' * 1000).grid(row=2, pady=(0, 5), columnspan=2)
+        wLabel(check, text='Transaction: {}'.format(self.terminal.last_transaction_id-1), font=('Courier', 10)).grid(
+            sticky='w', row=3, column=0
+        )
+        wLabel(check, text='{}'.format(datetime.datetime.now().strftime('%d.%m.%y %H:%M:%S')),
+               font=('Courier', 10)).grid(sticky='e', row=3, column=1)
+        wLabel(check, text='-' * 1000).grid(row=4, pady=(0, 20), columnspan=2)
+        wLabel(check, text='Payment operation', font=('Courier bold', 12)).grid(row=5, pady=(0, 20), columnspan=2)
+        wLabel(check, text='Organization', font=('Courier bold', 10)).grid(row=6, pady=(0, 10), padx=(10, 0), column=0,
+                                                                           sticky='w')
+        wLabel(check, text='{} ({})'.format(data[0][1], data[0][2]), font=('Courier', 10)).grid(row=6, pady=(0, 10),
+                                                                                                padx=(0, 10),
+                                                                                                column=1, sticky='e')
+        wLabel(check, text='Amount', font=('Courier bold', 10)).grid(row=7, pady=(0, 10), padx=(10, 0), column=0,
+                                                                           sticky='w')
+        wLabel(check, text='{} rub.'.format(data[1]), font=('Courier', 10)).grid(row=7, pady=(0, 10),
+                                                                                                padx=(0, 10),
+                                                                                                column=1, sticky='e')
+        wLabel(check, text='Account', font=('Courier bold', 10)).grid(row=8, pady=(0, 10), padx=(10, 0), column=0,
+                                                                     sticky='w')
+        wLabel(check, text=data[2], font=('Courier', 10)).grid(row=8, pady=(0, 10), padx=(0, 10), column=1, sticky='e')
+        wLabel(check, text='-' * 1000).grid(row=9, pady=(0, 5), columnspan=2)
+        wLabel(check, text='Thank you for using Paypal inc. payment system! \n We hope to see you again soon!',
+               font=('Courier', 9)).grid(row=10, columnspan=2)
+        self.disable()
+        check.mainloop()
+
+    def activate(self, data):
+        if hasattr(self, 'active'):
+            self.print_button.after_cancel(self.active)
+        self.print_button.config(state=NORMAL, command=lambda x=data: self.print_check(x))
+        self.active = self.print_button.after(700, self.change_image)
+
+    def disable(self):
+        self.print_button.after_cancel(self.active)
+        img = get_resized_image(os.path.join('gif', 'check_printer.gif'), self.width, self.width)
+        self.print_button.config(image=img, state=DISABLED)
+        self.print_button.image = img
+        self.state=0
+
+    def change_image(self):
+        if self.state:
+            img = get_resized_image(os.path.join('gif', 'check_printer.gif'), self.width, self.width)
+            self.print_button.config(image=img)
+            self.print_button.image=img
+            self.state = 0
+        else:
+            img = get_resized_image(os.path.join('gif', 'check_printer_2.gif'), self.width, self.width)
+            self.print_button.config(image=img)
+            self.print_button.image = img
+            self.state=1
+        self.active = self.print_button.after(700, self.change_image)
 
 
 class StrongBox(Frame):
-
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
         parent.update()
@@ -345,11 +475,18 @@ class BillAcceptor(Frame):
             self.after_cancel(self.active)
 
     def release_money(self):
+        self.disable()
         """
         NOT IMPLEMENTED YET!
         :return:
         """
         pass
+
+
+class wLabel(Label):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config(bg='white')
 
 if __name__ == '__main__':
     t = TkTerminal(1049)
