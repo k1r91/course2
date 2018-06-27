@@ -7,8 +7,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 sys.path.append('..')
 from terminal import Terminal, TerminalException
-from transaction import PaymentTransaction, PaymentTransactionException, \
-    EncashmentTransaction, EncashmentTransactionException
+from transaction import PaymentTransaction, PaymentTransactionException, EncashmentTransactionException
 import sql
 
 
@@ -114,6 +113,7 @@ class TkTerminal(Terminal):
     def restart(self):
         self.root.destroy()
         self.__init__(self._id)
+        self.root.mainloop()
 
 
 class Display(Frame):
@@ -340,7 +340,6 @@ class Display(Frame):
         if amount < PaymentTransaction.MIN_AMOUNT // 100:
             self.error_label.config(text='Min pay {} rubles'.format(PaymentTransaction.MIN_AMOUNT // 100))
             return
-        print(amount, PaymentTransaction.MAX_AMOUNT // 100)
         if amount > PaymentTransaction.MAX_AMOUNT // 100:
             self.error_label.config(text='Max pay {} rubles.'.format(PaymentTransaction.MAX_AMOUNT // 100))
             return
