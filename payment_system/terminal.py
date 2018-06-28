@@ -89,7 +89,7 @@ class Terminal:
         """
         self.check_block()
         if self.cash > 10000000:
-            self.send_encashment_transaction(488, self.cash, 'dncornho775741')
+            self.send_encashment_transaction(488, self.cash, '775741')
         else:
             query = 'SELECT id FROM organization'
             result = self.db_org_cursor.execute(query)

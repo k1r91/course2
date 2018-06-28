@@ -1,0 +1,725 @@
+2018-06-28 11:52:42,826 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:42,826 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:42,826 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:42,826 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:42,926 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:42,927 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,027 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,027 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,027 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,027 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,028 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,028 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,028 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,028 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,128 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,128 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,128 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,128 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,128 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,128 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,129 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,228 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,229 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,329 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,329 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,329 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,329 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,330 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,330 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,330 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,330 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,330 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,429 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,430 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,430 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,430 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,430 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,530 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,530 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,531 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,531 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,531 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,531 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,631 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,631 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,631 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,632 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:43,731 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,732 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,732 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,732 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,732 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,732 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,832 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,832 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,832 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:43,833 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,833 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,933 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:43,933 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,933 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:43,933 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,933 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:43,933 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,033 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,033 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,038 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,039 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,039 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,134 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,134 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,135 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,136 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,136 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,235 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,235 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,335 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,336 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,337 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,337 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,337 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,436 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,436 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,437 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,438 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,537 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,537 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,537 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,537 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,537 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,538 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,637 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,638 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,638 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,738 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,738 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,739 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,839 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,839 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,839 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,839 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,839 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,840 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,840 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,840 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,840 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,840 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:44,939 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:44,940 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,040 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,040 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,040 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,040 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,041 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,041 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,041 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,041 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,140 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,141 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,141 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,141 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,241 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,241 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,242 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,342 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,342 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,342 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,342 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,343 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,343 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,343 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,343 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,442 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,443 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,444 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,444 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,444 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,543 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,543 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,643 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,644 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,645 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,645 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,744 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,744 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,745 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,845 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,845 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,845 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,845 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,845 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,846 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,846 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,945 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,946 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:45,947 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:45,947 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:45,947 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,046 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,046 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,047 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,047 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,047 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,047 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,147 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,147 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,147 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,147 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,147 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,148 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,247 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,247 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,248 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,249 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,249 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,249 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,348 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,348 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,348 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,348 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,349 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,349 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,349 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,349 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,448 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,449 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,450 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,450 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,450 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,450 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,549 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,549 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,550 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,550 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,550 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,650 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,650 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,650 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,650 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,650 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,651 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,750 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,751 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,751 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,751 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,751 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,851 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,851 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,851 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:46,851 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,852 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,951 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:46,952 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:46,952 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,952 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:46,952 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:46,952 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,052 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,052 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,052 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,152 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,153 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,154 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,154 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,253 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,254 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,255 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,354 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,354 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,455 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,455 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,555 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,556 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,656 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,656 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,656 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,656 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,657 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,756 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:52:47,757 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,757 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:52:47,757 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:52:47,757 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:52:47,757 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,685 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:55,685 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,685 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,686 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,786 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,786 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,886 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:55,886 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,886 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,887 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:55,887 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:55,887 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:55,987 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:55,987 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:55,988 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,087 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,087 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,088 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,188 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,188 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,188 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,188 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,188 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,288 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,289 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,389 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,389 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,389 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,390 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,490 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,490 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,490 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,490 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,590 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,591 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,591 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,691 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,691 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,691 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,692 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,792 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,792 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:56,792 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,792 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,792 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,892 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,893 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,993 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:56,993 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:56,994 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,094 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,094 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,094 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,094 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,095 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,095 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,095 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,095 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,095 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,194 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,195 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,195 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,195 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,195 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,195 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,196 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,196 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,295 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,295 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,296 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,296 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,396 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,396 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,396 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,396 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,396 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,397 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,496 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,497 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,498 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,597 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,597 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,597 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,597 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,598 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,598 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,598 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,598 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,598 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,697 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,698 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,698 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,798 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,798 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,798 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,799 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,898 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:57,899 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,900 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:57,999 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:57,999 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,000 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,000 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,000 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,000 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,000 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,100 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,100 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,100 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,101 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,101 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,101 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,101 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,101 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,200 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,201 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,201 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,301 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,301 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,302 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,302 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,402 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,402 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,402 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,402 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,502 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,503 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,503 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,503 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,503 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,503 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,603 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,603 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,603 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,604 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,604 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,604 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,703 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,704 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,705 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,705 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,705 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,705 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,804 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,804 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:58,805 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:58,905 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:58,905 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:58,905 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:58,905 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,005 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,006 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,106 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,106 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,107 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,107 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,107 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,107 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,107 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,207 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,207 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,207 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,207 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,207 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,207 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,307 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,307 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,308 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,308 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,308 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,308 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,408 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,408 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,408 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,408 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,409 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,409 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,409 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,508 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,509 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,609 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,609 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,609 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,609 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,710 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,710 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:53:59,711 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,711 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,711 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,810 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,810 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,811 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:53:59,911 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:53:59,911 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:53:59,911 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:53:59,911 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,011 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,011 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,012 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,012 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,012 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,012 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,112 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,112 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,112 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,112 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,112 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,113 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,113 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,113 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,113 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,212 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,213 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,213 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,313 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,313 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,314 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,314 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,314 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,314 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,314 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,315 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,315 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,315 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,315 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,414 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,414 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,415 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,515 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,515 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,515 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,515 - INFO -Thread-1 - The King: gnome bring me Diamonds 
+2018-06-28 11:54:00,515 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,516 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,516 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,516 - INFO -Thread-1 - The King: gnome bring me Ruby 
+2018-06-28 11:54:00,516 - INFO -Thread-1 - The King: gnome bring me Gold 
+2018-06-28 11:54:00,615 - INFO -Thread-2 - Gnome was working. Now rest... 
+2018-06-28 11:54:00,616 - INFO -Thread-1 - The King: gnome bring me Silver 
+2018-06-28 11:54:00,616 - INFO -Thread-1 - The King: gnome bring me Gold 
