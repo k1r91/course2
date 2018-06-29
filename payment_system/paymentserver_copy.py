@@ -1,11 +1,11 @@
-import socket
 import socketserver
 from db import DB, DatabaseOrganization
 from transaction import Transaction, ServiceTransaction, PaymentTransaction, EncashmentTransaction
 from bill import Bill
+from abc import ABCMeta
 
 
-class PaymentServerSkeleton():
+class PaymentServerSkeleton(metaclass=ABCMeta):
     host = 'localhost'
     port = 9999
 
@@ -74,66 +74,57 @@ class PaymentServerSkeleton():
         self.db_trans = DB()
         self.db_org = DatabaseOrganization()
 
-    def update_bill(self):
-        self.bill = Bill()
+class PaymentServerHandler(socketserver.BaseRequestHandler, PaymentServerSkeleton):
 
-    def handle_request(self, request=None):
-        if isinstance(request, socket.socket):
-            write = request.sendall
-            data = request.recv(1024)
+    def handle(self):
+
         self.initialize_bases()
-        self.update_bill()
-
-        tr_type = Transaction.get_type(data)
+        self.bill = Bill()
+        self.data = self.request.recv(1024)
+        tr_type = Transaction.get_type(self.data)
         tr = None
         errors = []
 
         # ***** process payment transaction *****
 
         if tr_type == 1:
-            tr = PaymentTransaction.deserialize(data)
+            tr = PaymentTransaction.deserialize(self.data)
             if not self.check_valid_organization(tr.org_id):     # if organization id not in database
-                write(bytes('402', 'utf-8'))
+                self.request.sendall(bytes('402', 'utf-8'))
                 return False
             if self.send_pay(tr.org_id, tr.p_acc, tr.amount, tr.commission):
-                write(bytes('200', 'utf-8'))
+                self.request.sendall(bytes('200', 'utf-8'))
             else:
-                write(bytes('404', 'utf-8'))
+                self.request.sendall(bytes('404', 'utf-8'))
                 errors.append(404)
 
         # **** process encashment transaction *****
 
         elif tr_type == 2:
-            tr = EncashmentTransaction.deserialize(data)
+            tr = EncashmentTransaction.deserialize(self.data)
             if self.check_collector_requisites(tr.collector_id):
                 self.bill += tr.amount
-                write(bytes('200', 'utf-8'))
+                self.request.sendall(bytes('200', 'utf-8'))
             else:
-                write(bytes('406', 'utf-8'))
+                self.request.sendall(bytes('406', 'utf-8'))
                 errors.append('406')
 
         # **** process service transaction *****
 
         elif tr_type == 0:
-            tr = ServiceTransaction.deserialize(data)
+            tr = ServiceTransaction.deserialize(self.data)
             if tr.action == 0:  # terminal power on
                 # check terminal for registration in our database
                 if self.check_terminal_registration(tr):
-                    write(bytes('200', 'utf-8'))
+                    self.request.sendall(bytes('200', 'utf-8'))
                 else:
-                    write(bytes('401', 'utf-8'))
+                    self.request.sendall(bytes('401', 'utf-8'))
                     errors.append('401')
             elif tr.action == 2:    # terminal save config action (shutdown)
                 self.write_terminal_config(tr)
         # save transaction in database if no errors occurred
         if not errors:
             self.save_transaction(tr)
-
         # TODO: log file instead of this
-        print('Client says: {}'.format(data))
+        print('Client {} says: {}'.format(self.client_address[0], self.data))
         print('Deserialized data: {}'.format(tr))
-
-class PaymentServerHandler(socketserver.BaseRequestHandler, PaymentServerSkeleton):
-
-    def handle(self):
-        super().handle_request(self.request)

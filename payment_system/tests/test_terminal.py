@@ -14,6 +14,6 @@ class TestTerminal(unittest.TestCase):
                 pass
 
     def test_not_response(self):
-        with self.assertRaises(ConnectionRefusedError):
+        with self.assertRaises(TerminalException):
             with Terminal(1049):
                 pass

@@ -3,7 +3,7 @@ import time
 from collections import Counter
 from random import choice, randint
 
-from lesson.app_log import get_logger
+from app_log import get_logger
 
 
 def gnome(out_q, treasure):

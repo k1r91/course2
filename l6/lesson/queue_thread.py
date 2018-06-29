@@ -4,7 +4,7 @@ from queue import Queue
 from random import choice, randint
 from threading import Thread
 
-from lesson.app_log import get_logger
+from app_log import get_logger
 
 gnomes_cave=[]
 treasure = ('Gold', 'Silver', 'Diamonds', 'Ruby')
