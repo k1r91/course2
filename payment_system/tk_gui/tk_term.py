@@ -288,29 +288,29 @@ class Display(Frame):
         self.frame.columnconfigure(0, weight=1)
         btn_main = Button(self.frame, text="To main page", width=15, command=lambda x=1: self.change_page(x))
         btn_main.grid(row=0, column=0, padx=50, pady=10, sticky='nw')
-        phead = Label(self.frame, text='Pay for organization {}({})'.format(data[1], data[2]), bg='white')
+        phead = Label(self.frame, text='Pay for organization {}({})'.format(data[1], data[2]), bg='white', width=900)
         phead.config(font=('Courier', 22), fg='blue')
         phead.grid(row=1, column=0, padx=50, pady=50, sticky='nwes')
         self.accvar = StringVar()
         self.amountvar = StringVar()
-        paccl = Label(self.frame, text='Input your personal account: ', font=('Courier', 12), fg='blue', bg='white')
+        paccl = Label(self.frame, text='Input your personal account: ', font=('Courier', 12), fg='blue', bg='white', width=100)
         paccl.grid(row=2, column=0)
         self.paccl_entry = Entry(self.frame, textvariable=self.accvar, width=11)
         self.paccl_entry.grid(row=3, column=0)
-        pamountl = Label(self.frame, text='Input amount: ', font=('Courier', 12), fg='blue', bg='white')
+        pamountl = Label(self.frame, text='Input amount: ', font=('Courier', 12), fg='blue', bg='white', width=100)
         pamountl.grid(row=4, column=0)
         self.pamountl_entry = Entry(self.frame, textvariable=self.amountvar, width=11)
         self.pamountl_entry.grid(row=5, column=0)
         self.bfr = Frame(self.frame, width=300, bg='white')
-        self.error_label = Label(self.bfr, fg='red', font=('Courier', 12), bg='white')
+        self.error_label = Label(self.bfr, fg='red', font=('Courier', 12), bg='white', width=100)
         self.error_label.grid(row=0, columnspan=2)
         self.submit = Button(self.bfr, text='OK', font=('Courier', 14), fg='blue', width=15,
                         command=lambda x=data: self.threaded_pay(x))
-        self.submit.grid(row=1, column=0, padx=10)
+        self.submit.grid(row=1, column=0, padx=10, sticky='e')
         self.cancel = Button(self.bfr, text='Cancel', font=('Courier', 14), fg='blue', width=15,
                         command=self.renew_pay_page, state=DISABLED)
-        self.cancel.grid(row=1, column=1)
-        self.inserted_cash = Label(self.bfr, font=('Courier', 12), fg='green', bg='white')
+        self.cancel.grid(row=1, column=1, sticky='w')
+        self.inserted_cash = Label(self.bfr, font=('Courier', 10), fg='green', bg='white', width=120)
         self.inserted_cash.grid(row=2, columnspan=2, pady=15)
         self.bfr.grid(row=7, column=0, pady=20)
         self.elements.append(btn_main)
@@ -372,7 +372,7 @@ class Display(Frame):
     def update_transaction_status(self, bool, data):
         self.renew_pay_page()
         if bool:
-            self.inserted_cash.config(text='Your payment was accepted. Print check?')
+            self.inserted_cash.config(text='Payment was accepted. Print check?')
             self.yesbtn = Button(self.bfr, text='Yes',
                                  command=lambda x=data: self.threaded_print(x),
                                  width=4,
