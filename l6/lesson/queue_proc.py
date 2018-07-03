@@ -33,7 +33,7 @@ def gnome_king(in_q):
 if __name__ == '__main__':
     treasure = ('Gold', 'Silver', 'Diamond', 'Ruby', 'Chocolate')
     q = mp.Queue()
-    p1 = mp.Process(target=gnome_king, args=(q, )) # no daemon, because putting None breaks king cycle
+    p1 = mp.Process(target=gnome_king, args=(q, ))  # no daemon, because putting None breaks king cycle
     p2 = mp.Process(target=gnome, args=(q, treasure), daemon=True)
     p1.start()
     p2.start()
