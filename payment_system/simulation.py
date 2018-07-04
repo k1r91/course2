@@ -20,5 +20,5 @@ if __name__ == '__main__':
     q.put(True)
     task = threading.Thread(target=simulate, args=(q, ))
     task.start()
-    input('Press any key to stop simulation')
+    input('Press ENTER to stop simulation')
     q.get()

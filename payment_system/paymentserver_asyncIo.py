@@ -3,7 +3,8 @@ import asyncio
 from paymentserver import PaymentServerSkeleton
 from transaction import Transaction, ServiceTransaction, PaymentTransaction, EncashmentTransaction
 
-class PaymentServerAsync():
+
+class PaymentServerAsync:
 
     @staticmethod
     async def handle(reader, writer):
@@ -77,7 +78,6 @@ class PaymentServerAsync():
         # TODO: log file instead of this
         print('Client says: {}'.format(data))
         print('Deserialized data: {}'.format(tr))
-
 
     @staticmethod
     def run():
