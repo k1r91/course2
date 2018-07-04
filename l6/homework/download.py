@@ -30,7 +30,7 @@ def download_image(url, path_to):
 
 @time_it
 def main():
-    theme = 'nature'
+    theme = 'cars'
     link = 'https://pexels.com/search/{}/'.format(theme)
     content = get_content(link)
     soup = BeautifulSoup(content, 'html.parser')
