@@ -125,14 +125,7 @@ class Terminal:
 
     def send_encashment_transaction(self, collector_id, amount, secret):
         self.check_block()
-        # self.db_org = db.DatabaseOrganization()
-        # self.db_org_cursor = self.db_org.conn.cursor()
-        # # query = "SELECT * FROM collector WHERE id = ?"
-        # result = self.db_org_cursor.execute(query, (collector_id, )).fetchall()
-        # if not result or hashlib.sha256(secret.encode('utf-8')).hexdigest() != result[0][4]:
-        #     raise EncashmentTransactionException('Error 406')
         secret = hashlib.sha256(self.key + secret.encode('utf-8')).hexdigest()
-        print(secret)
         if amount > self.cash:
             raise EncashmentTransactionException('Error 407')
         tr = EncashmentTransaction(self._id, self.last_transaction_id, collector_id, amount, secret)
@@ -200,5 +193,5 @@ class Terminal:
 if __name__ == '__main__':
     with Terminal(1049) as terminal1:
         print(terminal1)
-        # terminal1.send_payment_transaction(25, 3249234, 1001)
+        terminal1.send_payment_transaction(25, 3249234, 1001)
         terminal1.send_encashment_transaction(488, 1000, '775741')

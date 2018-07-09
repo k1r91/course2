@@ -66,7 +66,7 @@ class PaymentServerAsync:
 
         elif tr_type == 2:
             tr = EncashmentTransaction.deserialize(data)
-            if parent.check_collector_requisites(tr.collector_id):
+            if parent.check_collector_requisites(tr.collector_id, tr.secret):
                 parent.bill += tr.amount
                 writer.write(bytes('200', 'utf-8'))
                 await writer.drain()

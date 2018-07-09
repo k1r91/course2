@@ -16,10 +16,13 @@ class PaymentServerSkeleton:
     with open(os.path.join('bc8ae345d5b0fe19e7042bb3dbeae388', 'xb72ef')) as sf:
         key = sf.read().encode('utf-8')
 
-    def check_collector_requisites(self, col_id):
+    def check_collector_requisites(self, col_id, secret):
         query = '''SELECT * FROM collector WHERE id = ?'''
-        result = self.db_org.cursor.execute(query, (col_id,))
+        result = self.db_org.cursor.execute(query, (col_id,)).fetchall()
         if not result:
+            return False
+        print(result)
+        if secret != result[0][4]:
             return False
         return True
 
@@ -123,7 +126,7 @@ class PaymentServerSkeleton:
 
         elif tr_type == 2:
             tr = EncashmentTransaction.deserialize(data)
-            if self.check_collector_requisites(tr.collector_id):
+            if self.check_collector_requisites(tr.collector_id, tr.secret):
                 self.bill += tr.amount
                 write(bytes('200', 'utf-8'))
             else:
