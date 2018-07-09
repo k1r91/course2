@@ -13,7 +13,6 @@ from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransa
 
 
 class TerminalException(Exception):
-
     def __init__(self, msg):
         self.msg = msg
 
@@ -25,7 +24,6 @@ class TerminalException(Exception):
 
 
 class Terminal:
-
     host = 'localhost'
     port = 9999
     config_folder = os.path.join(os.path.dirname(__file__), 'terminals')
@@ -73,7 +71,8 @@ class Terminal:
             sock.sendall(cipher)
             result.append(str(sock.recv(1024), 'utf-8'))
             sock.close()
-        task = threading.Thread(target=thread, args=(self, result, data, ))
+
+        task = threading.Thread(target=thread, args=(self, result, data,))
         task.start()
         task.join()
         try:
@@ -112,7 +111,7 @@ class Terminal:
         self.db_org = db.DatabaseOrganization()
         self.db_org_cursor = self.db_org.conn.cursor()
         query = "SELECT * FROM organization WHERE id = ?"
-        result = self.db_org_cursor.execute(query, (org_id, )).fetchall()
+        result = self.db_org_cursor.execute(query, (org_id,)).fetchall()
         if not result:
             raise PaymentTransactionException('Error 402')
         commission = result[0][2]
@@ -126,15 +125,17 @@ class Terminal:
 
     def send_encashment_transaction(self, collector_id, amount, secret):
         self.check_block()
-        self.db_org = db.DatabaseOrganization()
-        self.db_org_cursor = self.db_org.conn.cursor()
-        query = "SELECT * FROM collector WHERE id = ?"
-        result = self.db_org_cursor.execute(query, (collector_id, )).fetchall()
-        if not result or hashlib.sha256(secret.encode('utf-8')).hexdigest() != result[0][4]:
-            raise EncashmentTransactionException('Error 406')
+        # self.db_org = db.DatabaseOrganization()
+        # self.db_org_cursor = self.db_org.conn.cursor()
+        # # query = "SELECT * FROM collector WHERE id = ?"
+        # result = self.db_org_cursor.execute(query, (collector_id, )).fetchall()
+        # if not result or hashlib.sha256(secret.encode('utf-8')).hexdigest() != result[0][4]:
+        #     raise EncashmentTransactionException('Error 406')
+        secret = hashlib.sha256(self.key + secret.encode('utf-8')).hexdigest()
+        print(secret)
         if amount > self.cash:
             raise EncashmentTransactionException('Error 407')
-        tr = EncashmentTransaction(self._id, self.last_transaction_id, collector_id, amount)
+        tr = EncashmentTransaction(self._id, self.last_transaction_id, collector_id, amount, secret)
         response = self.send(tr.serialize())
         if response == '200':
             self.cash -= amount
@@ -195,11 +196,9 @@ class Terminal:
                                                                                           self.config_file,
                                                                                           self.cash)
 
+
 if __name__ == '__main__':
     with Terminal(1049) as terminal1:
         print(terminal1)
-        terminal1.send_payment_transaction(25, 3249234, 1001)
-        try:
-            terminal1.send_encashment_transaction(488, 1000, '775741')
-        except EncashmentTransactionException as e:
-            print(e.msg)
+        # terminal1.send_payment_transaction(25, 3249234, 1001)
+        terminal1.send_encashment_transaction(488, 1000, '775741')

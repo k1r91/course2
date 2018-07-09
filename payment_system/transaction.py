@@ -368,18 +368,20 @@ class EncashmentTransaction(Transaction):
     PACK_FORMAT = 'IQ'
     TYPE = 0x02
 
-    def __init__(self, term_id, tr_id, collector_id, amount):
+    def __init__(self, term_id, tr_id, collector_id, amount, secret):
         super().__init__(term_id, tr_id)
         self.collector_id = collector_id
         self.amount = amount
-        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.collector_id, self.amount))
+        self.secret = secret
+        self.length = super().get_length() + len(struct.pack(self.PACK_FORMAT, self.collector_id, self.amount)) + \
+                      len(self.secret)
 
     def serialize(self):
         """
         :return: binary hex string according to pack format
         """
         result = super().serialize(self.length, self.TYPE) + struct.pack(self.PACK_FORMAT, self.collector_id,
-                                                                         self.amount)
+                                                                         self.amount) + self.secret.encode('utf-8')
         return result
 
     @staticmethod
@@ -390,12 +392,14 @@ class EncashmentTransaction(Transaction):
         """
         parent_data = Transaction.deserialize(data[:Transaction.fmt_size()])
         EncashmentTransaction.check_type(parent_data['type'])
-        data = struct.unpack(EncashmentTransaction.PACK_FORMAT, data[-EncashmentTransaction.fmt_size():])
+        remaining_data = data[Transaction.fmt_size():Transaction.fmt_size()+EncashmentTransaction.fmt_size()]
+        secret = data[-64:].decode('utf-8')
+        data = struct.unpack(EncashmentTransaction.PACK_FORMAT, remaining_data)
         collector_id = data[0]
         amount = data[1]
         term_id = parent_data['term_id']
         tr_id = parent_data['tr_id']
-        res = EncashmentTransaction(term_id, tr_id, collector_id, amount)
+        res = EncashmentTransaction(term_id, tr_id, collector_id, amount, secret)
         res.length = parent_data['length']
         res.date = parent_data['date']
         return res
@@ -410,8 +414,10 @@ class EncashmentTransaction(Transaction):
         return struct.calcsize(EncashmentTransaction.PACK_FORMAT)
 
     def __str__(self):
-        return 'Encashment transaction: {}, collector_id={}, amount={}'.format(super().__str__(), self.collector_id,
-                                                                               self.amount)
+        return 'Encashment transaction: {}, collector_id={}, amount={}, secret={}'.format(super().__str__(),
+                                                                                          self.collector_id,
+                                                                                          self.amount,
+                                                                                          self.secret)
 
 if __name__ == '__main__':
     def print_transaction(tr):
@@ -425,5 +431,5 @@ if __name__ == '__main__':
     print_transaction(t1)
     print_transaction(ServiceTransaction(50, 2, 'power_on', {'last_transaction_id':25,'cash':5000, 'state':1}))
     print_transaction(ServiceTransaction(50, 3, 'activate_sensor', {'last_transaction_id':25,'cash':5000, 'state':1}))
-    print_transaction(EncashmentTransaction(50, 4, 567, 20000))
+    print_transaction(EncashmentTransaction(50, 4, 567, 20000, "9d6fa611b10c4a7ac6b68f953bbc536c4c45b8a4bc0fd215a5bf44254bc454d8"))
     pass
