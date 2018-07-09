@@ -25,12 +25,12 @@ from Cryptodome.Cipher import AES
 plaintext = b'The rain in Spain'
 
 
-def padding_text(text):
-    ''' Выравнивание сообщения до длины кратной 16 байтам.
-        В данном случае исходное сообщение дополняется пробелами.
-    '''
-    pad_len = (16 - len(text) % 16) % 16
-    return text + b' ' * pad_len
+# def padding_text(text):
+#     ''' Выравнивание сообщения до длины кратной 16 байтам.
+#         В данном случае исходное сообщение дополняется пробелами.
+#     '''
+#     pad_len = (16 - len(text) % 16) % 16
+#     return text + b' ' * pad_len
 
 
 def _encrypt(plaintext, key):
@@ -41,8 +41,8 @@ def _encrypt(plaintext, key):
         Его следует добавить в качестве префикса к финальному шифру, 
         чтобы была возможность правильно расшифровать сообщение.
     '''
-    cipher = AES.new(key, AES.MODE_CBC)
-    ciphertext = cipher.iv + cipher.encrypt(plaintext)
+    cipher = AES.new(key, AES.MODE_EAX)
+    ciphertext = cipher.encrypt(plaintext)
     return ciphertext
 
 
@@ -53,8 +53,8 @@ def _decrypt(ciphertext, key):
         Его длина для большинства режимов шифрования всегда 16 байт.
         Расшифровываться будет оставшаяся часть шифра.
     '''
-    cipher = AES.new(key, AES.MODE_CBC, iv=ciphertext[:16])
-    msg = cipher.decrypt(ciphertext[16:])
+    cipher = AES.new(key, AES.MODE_EAX)
+    msg = cipher.decrypt(ciphertext)
     return msg
 
 
@@ -64,7 +64,7 @@ def _decrypt(ciphertext, key):
 key = b'Super Secret Key'
 
 # Длина сообщения должна быть кратна 16, поэтому выполним выравнивание.
-plaintext = padding_text(plaintext)
+# plaintext = padding_text(plaintext)
 
 # Выполним шифрование
 cipher = _encrypt(plaintext, key)
@@ -72,6 +72,6 @@ print(hexlify(cipher))
 
 # Выполним расшифрование
 msg = _decrypt(cipher, key)
-print(msg)
+print(msg.strip())
 
 

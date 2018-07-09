@@ -1,11 +1,13 @@
 import os
-import sys
+import hmac
 import socket
 import random
 import json
 import threading
 import db
 import hashlib
+import struct
+from Cryptodome.Cipher import AES
 from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransaction, PaymentTransactionException, \
     EncashmentTransactionException
 
@@ -46,6 +48,7 @@ class Terminal:
             self.cash = self.config['cash']
             self.last_transaction_id = self.config['last_transaction_id'] + 1
             self.secret = self.config['secret']
+            self.key = self.config['key'].encode('utf-8')
         self.check_block()
         self.power_on()
 
@@ -57,12 +60,17 @@ class Terminal:
         """
         result = []
 
-        def thread(self, result, data=data):
+        def thread(self, result, data):
+            padded_data, pad_len = self.padd_message(data)
+            pad_len = struct.pack('B', pad_len)
+            cipher = self._encrypt(padded_data)
             self.last_transaction_id += 1
             self.config['last_transaction_id'] = self.last_transaction_id
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((self.host, self.port))
-            sock.sendall(data)
+            self.hash_signature(sock)
+            sock.sendall(pad_len)
+            sock.sendall(cipher)
             result.append(str(sock.recv(1024), 'utf-8'))
             sock.close()
         task = threading.Thread(target=thread, args=(self, result, data, ))
@@ -147,6 +155,22 @@ class Terminal:
         result = self.send(tr.serialize())
         return result
 
+    def hash_signature(self, connection):
+        message = connection.recv(32)
+        hash = hmac.new(self.key, message)
+        digest = hash.hexdigest().encode('utf-8')
+        connection.sendall(digest)
+
+    @staticmethod
+    def padd_message(message, pad_size=16):
+        pad_len = pad_size - len(message) % pad_size
+        return message + b' ' * pad_len, pad_len
+
+    def _encrypt(self, text):
+        cipher = AES.new(self.key, AES.MODE_CBC)
+        ciphertext = cipher.iv + cipher.encrypt(text)
+        return ciphertext
+
     def check_block(self):
         """
         state = 0 : blocked
@@ -174,17 +198,8 @@ class Terminal:
 if __name__ == '__main__':
     with Terminal(1049) as terminal1:
         print(terminal1)
-        # terminal1.send_random_transaction()
-        # terminal1.send_payment_transaction(25, 3249234, 1000)
-        # try:
-        #     terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
-        # except EncashmentTransactionException as e:
-        #     print(e.msg)
-        # try:
-        #     terminal1.send_encashment_transaction(488, 10, 'dncornho7757411')
-        # except EncashmentTransactionException as e:
-        #     print(e.msg)
-        # try:
-        #     terminal1.send_encashment_transaction(488, 1000, 'dncornho775741')
-        # except EncashmentTransactionException as e:
-        #     print(e.msg)
+        terminal1.send_payment_transaction(25, 3249234, 1001)
+        try:
+            terminal1.send_encashment_transaction(488, 1000, '775741')
+        except EncashmentTransactionException as e:
+            print(e.msg)

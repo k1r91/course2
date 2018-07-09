@@ -1,13 +1,20 @@
+import os
+import hmac
+import struct
 import socket
 import socketserver
+from Cryptodome.Cipher import AES
 from db import DB, DatabaseOrganization
 from transaction import Transaction, ServiceTransaction, PaymentTransaction, EncashmentTransaction
 from bill import Bill
 
 
-class PaymentServerSkeleton():
+class PaymentServerSkeleton:
     host = 'localhost'
     port = 9999
+
+    with open(os.path.join('bc8ae345d5b0fe19e7042bb3dbeae388', 'xb72ef')) as sf:
+        key = sf.read().encode('utf-8')
 
     def check_collector_requisites(self, col_id):
         query = '''SELECT * FROM collector WHERE id = ?'''
@@ -78,15 +85,26 @@ class PaymentServerSkeleton():
         self.bill = Bill()
 
     def handle_request(self, request=None):
+        errors = []
         if isinstance(request, socket.socket):
+            signed = PaymentServerSkeleton.verify_signature(request)
             write = request.sendall
-            data = request.recv(1024)
+            if not signed:
+                write(bytes('410', 'utf-8'))
+                errors.append(410)
+                return False
+            pad_len = request.recv(struct.calcsize('B'))
+            pad_len = struct.unpack('B', pad_len)[0]
+            cipher = request.recv(1024)
+            data = PaymentServerSkeleton._decrypt(cipher, pad_len)
+        else:
+            return False
+
         self.initialize_bases()
         self.update_bill()
 
         tr_type = Transaction.get_type(data)
         tr = None
-        errors = []
 
         # ***** process payment transaction *****
 
@@ -132,6 +150,22 @@ class PaymentServerSkeleton():
         # TODO: log file instead of this
         print('Client says: {}'.format(data))
         print('Deserialized data: {}'.format(tr))
+
+    @staticmethod
+    def verify_signature(request):
+        message = os.urandom(32)
+        request.sendall(message)
+        hashm = hmac.new(PaymentServerSkeleton.key, message)
+        digest = hashm.hexdigest().encode('utf-8')
+        response = request.recv(len(digest))
+        return hmac.compare_digest(digest, response)
+
+    @staticmethod
+    def _decrypt(text, pad_len):
+        cipher = AES.new(PaymentServerSkeleton.key, AES.MODE_CBC, iv=text[:16])
+        msg = cipher.decrypt(text[16:])
+        return msg[:-pad_len]
+
 
 class PaymentServerHandler(socketserver.BaseRequestHandler, PaymentServerSkeleton):
 

@@ -4,6 +4,7 @@
 import hmac
 import os
 
+
 def client_authenticate(connection, secret_key):
     ''' Аутентификация клиента на удаленном сервисе.
         Параметр connection - сетевое соединение (сокет);

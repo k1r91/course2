@@ -1,4 +1,7 @@
+import os
+import hmac
 import asyncio
+import struct
 
 from paymentserver import PaymentServerSkeleton
 from transaction import Transaction, ServiceTransaction, PaymentTransaction, EncashmentTransaction
@@ -7,15 +10,38 @@ from transaction import Transaction, ServiceTransaction, PaymentTransaction, Enc
 class PaymentServerAsync:
 
     @staticmethod
+    async def verify_signature(reader, writer, key):
+        message = os.urandom(32)
+        writer.write(message)
+        await writer.drain()
+        hash = hmac.new(key, message)
+        digest = hash.hexdigest()
+        response = await reader.read(len(digest))
+        return hmac.compare_digest(digest.encode(), response)
+
+    @staticmethod
     async def handle(reader, writer):
+
         parent = PaymentServerSkeleton()
+        errors = []
+
+        signed = await PaymentServerAsync.verify_signature(reader, writer, parent.key)
+
+        if not signed:
+            errors.append(410)
+            writer.write(bytes('410', 'utf-8'))
+            writer.close()
+            return False
+
         parent.initialize_bases()
         parent.update_bill()
-        data = await reader.read(1024)
+        pad_len = await reader.read(struct.calcsize('B'))
+        pad_len = struct.unpack('B', pad_len)[0]
+        cipher = await reader.read(1024)
+        data = PaymentServerSkeleton._decrypt(cipher, pad_len)
 
         tr_type = Transaction.get_type(data)
         tr = None
-        errors = []
 
         # ***** process payment transaction *****
 
