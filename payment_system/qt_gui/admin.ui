@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AdminWindow</class>
+ <widget class="QMainWindow" name="AdminWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>801</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Database administration</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/admin/admin_icon.png</normaloff>img/admin/admin_icon.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>801</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTerminals">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuOrganizations_DB">
+    <property name="title">
+     <string>Transactions DB</string>
+    </property>
+    <addaction name="actionTransactions"/>
+    <addaction name="actionTerminals"/>
+   </widget>
+   <widget class="QMenu" name="menuReports">
+    <property name="title">
+     <string>Organizations DB</string>
+    </property>
+    <addaction name="actionOrganizations"/>
+    <addaction name="actionOrganization_Types"/>
+    <addaction name="actionCollectors"/>
+   </widget>
+   <widget class="QMenu" name="menuReports_2">
+    <property name="title">
+     <string>Reports</string>
+    </property>
+    <addaction name="actionTransactions_2"/>
+    <addaction name="actionBy_terminal"/>
+    <addaction name="actionTimespan_by_terminal"/>
+   </widget>
+   <addaction name="menuTerminals"/>
+   <addaction name="menuOrganizations_DB"/>
+   <addaction name="menuReports"/>
+   <addaction name="menuReports_2"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionTransactions_DB">
+   <property name="text">
+    <string>Transactions DB</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionTransactions">
+   <property name="text">
+    <string>Transactions</string>
+   </property>
+  </action>
+  <action name="actionTerminals">
+   <property name="text">
+    <string>Terminals</string>
+   </property>
+  </action>
+  <action name="actionOrganizations">
+   <property name="text">
+    <string>Organizations</string>
+   </property>
+  </action>
+  <action name="actionOrganization_Types">
+   <property name="text">
+    <string>Organization Types</string>
+   </property>
+  </action>
+  <action name="actionCollectors">
+   <property name="text">
+    <string>Collectors</string>
+   </property>
+  </action>
+  <action name="actionTransactions_2">
+   <property name="text">
+    <string>Transactions</string>
+   </property>
+  </action>
+  <action name="actionBy_terminal">
+   <property name="text">
+    <string>By terminal</string>
+   </property>
+  </action>
+  <action name="actionTimespan_by_terminal">
+   <property name="text">
+    <string>Timespan by terminal</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
