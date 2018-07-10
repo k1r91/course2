@@ -2,11 +2,14 @@
 <ui version="4.0">
  <class>AdminWindow</class>
  <widget class="QMainWindow" name="AdminWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
+    <width>808</width>
     <height>600</height>
    </rect>
   </property>
@@ -15,15 +18,60 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>img/admin/admin_icon.png</normaloff>img/admin/admin_icon.png</iconset>
+    <normaloff>../../../../../../.designer/backup/img/admin/admin_icon.png</normaloff>../../../../../../.designer/backup/img/admin/admin_icon.png</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>20</y>
+      <width>731</width>
+      <height>511</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0" alignment="Qt::AlignRight">
+      <widget class="QPushButton" name="pushButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Add record</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QTableWidget" name="tableWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>801</width>
+     <width>808</width>
      <height>25</height>
     </rect>
    </property>
