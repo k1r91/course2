@@ -24,9 +24,21 @@ def get_org_and_types():
     organization.name, org_type.name FROM organization INNER JOIN org_type ON organization.type=org_type.id'''
     return db_org.execute(query).fetchall()
 
+
 def get_terminals():
     query = 'SELECT * FROM terminal'
     return db_trans.execute(query).fetchall()
+
+def get_data(tablename):
+    db = get_db(tablename)
+    query = 'SELECT * FROM {}'.format(tablename)
+    return db.execute(query).fetchall()
+
+
+def get_headers(tablename):
+    db = get_db(tablename)
+    query = 'PRAGMA TABLE_INFO({})'.format(tablename)
+    return db.execute(query).fetchall()
 
 
 def get_organizations():
@@ -132,3 +144,5 @@ if __name__ == '__main__':
     print(get_org_and_types())
     print(get_org_types())
     print(get_org_by_type(1))
+    print(get_headers('terminal'))
+    print(get_data('terminal'))
