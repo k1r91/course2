@@ -29,10 +29,17 @@ def get_terminals():
     query = 'SELECT * FROM terminal'
     return db_trans.execute(query).fetchall()
 
-def get_data(tablename):
+
+def get_count(tablename):
     db = get_db(tablename)
-    query = 'SELECT * FROM {}'.format(tablename)
-    return db.execute(query).fetchall()
+    query = 'SELECT COUNT(*) FROM {}'.format(tablename)
+    return int(db.execute(query).fetchone()[0])
+
+
+def get_data(tablename, start=0, count=50):
+    db = get_db(tablename)
+    query = 'SELECT * FROM {} LIMIT ?, ?'.format(tablename)
+    return db.execute(query, (start, count, )).fetchall()
 
 
 def get_headers(tablename):
@@ -44,6 +51,7 @@ def get_headers(tablename):
 def get_organizations():
     query = 'SELECT * FROM organization'
     return db_org.execute(query).fetchall()
+
 
 def get_org_by_type(type_id):
     db_tr = DB()
@@ -65,7 +73,7 @@ def get_org_types():
 
 
 def get_transactions():
-    query = 'SELECT * FROM ps_transaction LIMIT 10'
+    query = 'SELECT * FROM ps_transaction'
     return db_trans.execute(query).fetchall()
 
 
@@ -101,7 +109,7 @@ def update_collectors(table):
 def get_db(tname):
     if tname in ['organization', 'collector', 'org_type']:
         return db_or.conn
-    elif tname is 'terminal':
+    elif tname in ['terminal', 'ps_transaction']:
         return db_tr.conn
 
 def get_db_name(tname):
@@ -146,3 +154,4 @@ if __name__ == '__main__':
     print(get_org_by_type(1))
     print(get_headers('terminal'))
     print(get_data('terminal'))
+    print(get_count('ps_transaction'))
