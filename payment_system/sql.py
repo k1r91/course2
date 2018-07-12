@@ -1,5 +1,6 @@
 import os
 import sys
+import sqlite3
 
 sys.path.append('..')
 
@@ -145,8 +146,13 @@ def update(tname, values, row_id):
         query = 'UPDATE {} SET id=?, name=? WHERE rowid=?'.format(tname)
     elif tname is 'collector':
         query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE rowid=?'.format(tname)
-    db.execute(query, values + [row_id+1])
-    db.commit()
+    try:
+        db.execute(query, values + [row_id+1])
+        db.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    return False
 
 if __name__ == '__main__':
     print(get_org_and_types())
