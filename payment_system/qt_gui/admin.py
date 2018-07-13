@@ -55,7 +55,8 @@ class MainWin(QtWidgets.QMainWindow):
                 self.ui.tableWidget.setItem(i, j, item)
             if self.table != 'ps_transaction':
                 self.ui.tableWidget.setColumnCount(len(headers) + 1)
-                manage_btns = ManageButtons(i+1, self)
+                row = i + self.rpp * self.current_page + 1
+                manage_btns = ManageButtons(i, row, self)
                 self.ui.tableWidget.setCellWidget(i, len(headers), manage_btns)
                 self.ui.tableWidget.setColumnWidth(len(headers), 70)
                 last_item = QtWidgets.QTableWidgetItem()
@@ -186,9 +187,11 @@ class ManageButtons(QtWidgets.QWidget):
     """
     img_dir = os.path.join(os.path.dirname(__file__), 'img', 'admin')
 
-    def __init__(self, row, parent, *args, **kwargs):
+    def __init__(self, tpos, row, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.tpos = tpos
         self.row = row
+        # print(self.row, self.tpos)
         self.parent = parent
         self.edit_status = True
         self.btn_undo = QtWidgets.QPushButton()
@@ -215,11 +218,11 @@ class ManageButtons(QtWidgets.QWidget):
         self.setLayout(pLayout)
 
     def action_undo(self):
-        self.edit_status = False
+        self.edit_status = True
         self.btn_undo.setDisabled(True)
         self.set_bgr_image(self.btn_edit, 'edit.png')
-        self.parent.set_row_disabled(self.row-1)
-        self.parent.restore_row(self.row-1, self.prev_data)
+        self.parent.set_row_disabled(self.tpos)
+        self.parent.restore_row(self.tpos, self.prev_data)
 
     def action_edit(self):
         """
@@ -231,18 +234,17 @@ class ManageButtons(QtWidgets.QWidget):
             self.edit_status = False
             self.btn_undo.setDisabled(False)
             self.set_bgr_image(self.btn_edit, 'apply.jpg')
-            self.parent.set_row_editable(self.row-1)
-            self.prev_data = self.parent.get_row_values(self.row-1)
+            self.parent.set_row_editable(self.tpos)
+            self.prev_data = self.parent.get_row_values(self.tpos)
         else:
             # saving to database, make row disabled
             self.edit_status = True
             self.btn_undo.setDisabled(True)
             self.set_bgr_image(self.btn_edit, 'edit.png')
-            self.parent.set_row_disabled(self.row-1)
-            insert_data = self.parent.get_row_values(self.row-1)
-            if not sql.update(self.parent.table, insert_data, self.row-1):
-                self.parent.restore_row(self.row-1, self.prev_data)
-
+            self.parent.set_row_disabled(self.tpos)
+            insert_data = self.parent.get_row_values(self.tpos)
+            if not sql.update(self.parent.table, insert_data, self.row):
+                self.parent.restore_row(self.tpos, self.prev_data)
 
     def set_bgr_image(self, btn, img):
         path = os.path.join(self.img_dir, img)
@@ -251,8 +253,24 @@ class ManageButtons(QtWidgets.QWidget):
         btn.setIcon(icon)
         btn.setIconSize(QtCore.QSize(23, 23))
 
-    def action_delete(self):
-        print('delete data: {} form table {}'.format(self.row, self.parent.table))
+    def action_delete(self, event):
+        cursor = QtGui.QCursor()
+        x = cursor.pos().x()
+        y = cursor.pos().y()
+        reqWindow = QtWidgets.QDialog(self.parent)
+        reqWindow.setGeometry(QtCore.QRect(x, y, 300, 100))
+        reqWindow.setWindowTitle('Deleting record')
+        gridLayout = QtWidgets.QGridLayout(reqWindow)
+        pushDelete = QtWidgets.QPushButton()
+        pushDelete.setText('Delete')
+        pushCancel = QtWidgets.QPushButton('Cancel')
+        pushCancel.setText('Cancel')
+        deleteHeader = QtWidgets.QLabel()
+        deleteHeader.setText('Are you sure you want to delete {} row?'.format(self.row))
+        gridLayout.addWidget(deleteHeader, 0, 0, 2, 2, QtCore.Qt.AlignCenter)
+        gridLayout.addWidget(pushDelete, 2, 0, 1, 1)
+        gridLayout.addWidget(pushCancel, 2, 1, 1, 1)
+        reqWindow.exec_()
 
 
 if __name__ == '__main__':

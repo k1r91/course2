@@ -139,7 +139,7 @@ def delete(tname, values):
 def update(tname, values, row_id):
     db = get_db(tname)
     if tname is 'terminal':
-        query = 'UPDATE {} SET id = ?, last_transaction_id = ?, cash = ?, state = ? WHERE rowid = ?'.format(tname)
+        query = 'UPDATE {} SET id=?, last_transaction_id = ?, cash = ?, state = ? WHERE rowid = ?'.format(tname)
     elif tname is 'organization':
         query = 'UPDATE {} SET id=?, name=?, commission=?, type=?, logo=? WHERE rowid=?'.format(tname)
     elif tname is 'org_type':
@@ -147,10 +147,11 @@ def update(tname, values, row_id):
     elif tname is 'collector':
         query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE rowid=?'.format(tname)
     try:
-        db.execute(query, values + [row_id+1])
+        db.execute(query, values +[row_id])
         db.commit()
         return True
-    except sqlite3.IntegrityError:
+    except sqlite3.IntegrityError as e:
+        print(e)
         return False
     return False
 

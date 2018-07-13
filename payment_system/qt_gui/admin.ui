@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>920</width>
-    <height>653</height>
+    <width>999</width>
+    <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../.designer/backup/img/admin/admin_icon.png</normaloff>../../../../../../.designer/backup/img/admin/admin_icon.png</iconset>
+    <normaloff>../../../../../../../../.designer/backup/img/admin/admin_icon.png</normaloff>../../../../../../../../.designer/backup/img/admin/admin_icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -142,19 +142,6 @@
       <item row="0" column="0" colspan="9">
        <widget class="QTableWidget" name="tableWidget"/>
       </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="pushGoToPage">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Go to page</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="3" alignment="Qt::AlignRight">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -176,6 +163,19 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="7">
+       <widget class="QPushButton" name="pushGoToPage">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Go to page</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -185,7 +185,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>920</width>
+     <width>999</width>
      <height>25</height>
     </rect>
    </property>
