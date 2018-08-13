@@ -136,18 +136,18 @@ def delete(tname, values):
     db.commit()
 
 
-def update(tname, values, row_id):
+def update(tname, values, _id):
     db = get_db(tname)
     if tname is 'terminal':
-        query = 'UPDATE {} SET id=?, last_transaction_id = ?, cash = ?, state = ? WHERE rowid = ?'.format(tname)
+        query = 'UPDATE {} SET id=?, last_transaction_id = ?, cash = ?, state = ? WHERE id=?'.format(tname)
     elif tname is 'organization':
-        query = 'UPDATE {} SET id=?, name=?, commission=?, type=?, logo=? WHERE rowid=?'.format(tname)
+        query = 'UPDATE {} SET id=?, name=?, commission=?, type=?, logo=? WHERE id=?'.format(tname)
     elif tname is 'org_type':
         query = 'UPDATE {} SET id=?, name=? WHERE rowid=?'.format(tname)
     elif tname is 'collector':
-        query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE rowid=?'.format(tname)
+        query = 'UPDATE {} SET id=?, name=?, surname=?, phone=?, secret=? WHERE id=?'.format(tname)
     try:
-        db.execute(query, values +[row_id])
+        db.execute(query, values +[_id])
         db.commit()
         return True
     except sqlite3.IntegrityError as e:

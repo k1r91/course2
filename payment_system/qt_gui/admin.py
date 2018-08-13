@@ -3,9 +3,13 @@ This module is used to admin databases of project
 """
 import os
 import sys
+import datetime
+import threading
+import time
+import sqlite3
 sys.path.append('..')
 import sql
-import datetime
+import reports_ui
 from PyQt5 import QtWidgets, QtCore, QtGui
 from admin_template import Ui_AdminWindow
 
@@ -18,7 +22,15 @@ class MainWin(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.setGeometry(QtCore.QRect(250, 150, self.geometry().width(), self.geometry().height()))
         self.change_table('organization')
+        self.update_info_label()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.update_info_label)
+        self.timer.start(1000)
         self.init_connections()
+
+    def update_info_label(self):
+        t = datetime.datetime.now()
+        self.ui.labelInfo.setText('Current table: {}. {}'.format(self.table, t.strftime('%d.%m.%Y %H:%M:%S')))
 
     def update_ui(self, table):
         """updates table, labels, and buttons according to current page and table
@@ -56,7 +68,7 @@ class MainWin(QtWidgets.QMainWindow):
             if self.table != 'ps_transaction':
                 self.ui.tableWidget.setColumnCount(len(headers) + 1)
                 row = i + self.rpp * self.current_page + 1
-                manage_btns = ManageButtons(i, row, self)
+                manage_btns = ManageButtons(i, row, line, self)
                 self.ui.tableWidget.setCellWidget(i, len(headers), manage_btns)
                 self.ui.tableWidget.setColumnWidth(len(headers), 70)
                 last_item = QtWidgets.QTableWidgetItem()
@@ -174,11 +186,55 @@ class MainWin(QtWidgets.QMainWindow):
         self.ui.actionOrganizations.triggered.connect(lambda: self.change_table('organization'))
         self.ui.actionOrganization_Types.triggered.connect(lambda: self.change_table('org_type'))
         self.ui.actionCollectors.triggered.connect(lambda: self.change_table('collector'))
+        self.ui.actionTransactionsReport.triggered.connect(
+            lambda: self.show_report_dialog(reports_ui.TransactionReportDialog))
         self.ui.comboBoxPerPage.currentIndexChanged.connect(self.change_rpp)
         self.ui.pushExit.clicked.connect(self.exit)
         self.ui.pushNextPage.clicked.connect(self.next_page)
         self.ui.pushPreviousPage.clicked.connect(self.previous_page)
         self.ui.pushGoToPage.clicked.connect(self.go_to_page)
+        self.ui.pushButton_add_record.clicked.connect(self.add_record_form)
+
+    def show_report_dialog(self, dialog):
+        window = dialog(self)
+        window.show()
+
+    def add_record_form(self):
+        self.add_values = []
+        add_window = QtWidgets.QDialog(self)
+        add_window.setWindowTitle('Add record')
+        grid = QtWidgets.QGridLayout(add_window)
+        btn_ok = QtWidgets.QPushButton()
+        btn_ok.setText('OK')
+        btn_cancel = QtWidgets.QPushButton()
+        btn_cancel.setText('Cancel')
+        btn_cancel.clicked.connect(add_window.close)
+        btn_ok.clicked.connect(self.add_record)
+        headers = sql.get_headers(self.table)
+        for i, head in enumerate(headers):
+            label = QtWidgets.QLabel()
+            label.setText('{} ({}):'.format(head[1], head[2]))
+            add_value = QtWidgets.QLineEdit()
+            self.add_values.append(add_value)
+            grid.addWidget(label, i, 0, 1, 1)
+            grid.addWidget(add_value, i, 1, 1, 1)
+        self.add_error = QtWidgets.QLabel()
+        grid.addWidget(self.add_error, len(headers), 0, 1, 2, QtCore.Qt.AlignCenter)
+        grid.addWidget(btn_ok, len(headers)+1, 0, 1, 1)
+        grid.addWidget(btn_cancel, len(headers)+1, 1, 1, 1)
+        self.add_window = add_window
+        add_window.exec_()
+
+    def add_record(self):
+        values = []
+        for line in self.add_values:
+            values.append(line.text())
+        try:
+            sql.insert(self.table, values)
+            self.add_window.close()
+            self.change_table(self.table)
+        except sqlite3.IntegrityError:
+            self.add_error.setText("<font color='red'>Was errors!</font>")
 
 
 class ManageButtons(QtWidgets.QWidget):
@@ -187,10 +243,11 @@ class ManageButtons(QtWidgets.QWidget):
     """
     img_dir = os.path.join(os.path.dirname(__file__), 'img', 'admin')
 
-    def __init__(self, tpos, row, parent, *args, **kwargs):
+    def __init__(self, tpos, row, line,  parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tpos = tpos
         self.row = row
+        self.row_data = line
         # print(self.row, self.tpos)
         self.parent = parent
         self.edit_status = True
@@ -242,8 +299,8 @@ class ManageButtons(QtWidgets.QWidget):
             self.btn_undo.setDisabled(True)
             self.set_bgr_image(self.btn_edit, 'edit.png')
             self.parent.set_row_disabled(self.tpos)
-            insert_data = self.parent.get_row_values(self.tpos)
-            if not sql.update(self.parent.table, insert_data, self.row):
+            self.row_data = self.parent.get_row_values(self.tpos)
+            if not sql.update(self.parent.table, self.row_data, self.prev_data[0]):
                 self.parent.restore_row(self.tpos, self.prev_data)
 
     def set_bgr_image(self, btn, img):
@@ -265,13 +322,20 @@ class ManageButtons(QtWidgets.QWidget):
         pushDelete.setText('Delete')
         pushCancel = QtWidgets.QPushButton('Cancel')
         pushCancel.setText('Cancel')
+        pushCancel.clicked.connect(reqWindow.close)
+        pushDelete.clicked.connect(self.delete_row)
         deleteHeader = QtWidgets.QLabel()
         deleteHeader.setText('Are you sure you want to delete {} row?'.format(self.row))
         gridLayout.addWidget(deleteHeader, 0, 0, 2, 2, QtCore.Qt.AlignCenter)
         gridLayout.addWidget(pushDelete, 2, 0, 1, 1)
         gridLayout.addWidget(pushCancel, 2, 1, 1, 1)
+        self.reqWindow = reqWindow
         reqWindow.exec_()
 
+    def delete_row(self):
+        sql.delete(self.parent.table, self.row_data)
+        self.parent.change_table(self.parent.table)
+        self.reqWindow.close()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

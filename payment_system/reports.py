@@ -33,6 +33,25 @@ def select_transactions_by_var(variable, id, start=None, end=None):
     return data, start, end
 
 
+def select_all_transactions(start=None, end=None):
+    if start and end and start > end:
+        raise ValueError('Start date must be lower than and date')
+    if not start:
+        query = '''SELECT datetime FROM ps_transaction LIMIT 1'''
+        datetime_data = trans_cursor.execute(query).fetchone()[0]
+        start = datetime.strptime(datetime_data, '%Y-%m-%d  %H:%M:%S')
+    if not end:
+        end = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query = 'SELECT * FROM ps_transaction WHERE datetime >=? AND datetime <= ? AND type = 1'
+    result = trans_cursor.execute(query, (start, end))
+    data = result.fetchall()
+    result = list()
+    result.append(['Term_id', 'Transaction_id', 'Datetime', 'Org_id', 'Amount', 'Account'])
+    for record in data:
+        result.append([record[1], record[2], record[3], record[6], record[7], record[9]])
+    return result
+
+
 def select_transactions_by_term(_id, start=None, end=None):
     data, start, end = select_transactions_by_var('term_id', _id, start=start, end=end)
     if not data:
