@@ -188,6 +188,12 @@ class MainWin(QtWidgets.QMainWindow):
         self.ui.actionCollectors.triggered.connect(lambda: self.change_table('collector'))
         self.ui.actionTransactionsReport.triggered.connect(
             lambda: self.show_report_dialog(reports_ui.TransactionReportDialog))
+        self.ui.actionIndebtedness.triggered.connect(
+            lambda: self.show_report_dialog(reports_ui.IndebtednessReportDialog))
+        self.ui.actionTimespan_by_terminal_2.triggered.connect(
+            lambda: self.show_report_dialog(reports_ui.TimeSpanReportDialog))
+        self.ui.actionAmount_by_terminal.triggered.connect(
+            lambda: self.show_report_dialog(reports_ui.SummaryByTermReportDialog))
         self.ui.comboBoxPerPage.currentIndexChanged.connect(self.change_rpp)
         self.ui.pushExit.clicked.connect(self.exit)
         self.ui.pushNextPage.clicked.connect(self.next_page)

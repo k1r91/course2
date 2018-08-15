@@ -224,8 +224,9 @@
      <string>Reports</string>
     </property>
     <addaction name="actionTransactionsReport"/>
-    <addaction name="actionBy_terminal"/>
-    <addaction name="actionTimespan_by_terminal"/>
+    <addaction name="actionIndebtedness"/>
+    <addaction name="actionTimespan_by_terminal_2"/>
+    <addaction name="actionAmount_by_terminal"/>
    </widget>
    <addaction name="menuTerminals"/>
    <addaction name="menuOrganizations_DB"/>
@@ -285,7 +286,22 @@
   </action>
   <action name="actionTimespan_by_terminal">
    <property name="text">
+    <string>Indebtedness</string>
+   </property>
+  </action>
+  <action name="actionTimespan_by_terminal_2">
+   <property name="text">
     <string>Timespan by terminal</string>
+   </property>
+  </action>
+  <action name="actionAmount_by_terminal">
+   <property name="text">
+    <string>Amount by terminal</string>
+   </property>
+  </action>
+  <action name="actionIndebtedness">
+   <property name="text">
+    <string>Indebtedness</string>
    </property>
   </action>
  </widget>

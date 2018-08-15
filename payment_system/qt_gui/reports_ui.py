@@ -1,6 +1,9 @@
+import os
 import sys
 import datetime
 import calendar
+import threading
+import csv
 from PyQt5 import QtWidgets, QtCore, QtGui
 sys.path.append('..')
 import reports
@@ -45,6 +48,8 @@ class CommonReportDialog(QtWidgets.QDialog):
         self.end_date.setDate(end)
 
     def form(self):
+        self.start = self.start_date.dateTime().toPyDateTime()
+        self.end = self.end_date.dateTime().toPyDateTime()
         self.close()
 
 
@@ -61,26 +66,117 @@ class TransactionReportDialog(CommonReportDialog):
         self.label_terminal = QtWidgets.QLabel()
         self.label_terminal.setText('Terminal: ')
         self.combo_terminal = QtWidgets.QComboBox()
-        self.combo_terminal.addItems(['All'] + [str(x[0]) for x in sql.get_terminals()])
+        self.terminals = [str(x[0]) for x in sql.get_terminals()]
+        self.combo_terminal.addItems(['All'] + self.terminals)
         self.grid.addWidget(self.combo_terminal, 1, 1, 1, 2)
         self.grid.addWidget(self.label_terminal, 1, 0, 1, 1, QtCore.Qt.AlignRight)
 
     def form(self):
+        super().form()
         term_id = self.combo_terminal.currentText()
-        start = self.start_date.dateTime().toPyDateTime()
-        end = self.end_date.dateTime().toPyDateTime()
         if term_id == 'All':
-            data = reports.select_all_transactions(start, end)
-            header = 'Summary transaction information from {} to {}'.format(start, end)
+            data = reports.select_all_transactions(self.start, self.end)
+            header = 'Summary transaction information from {} to {}'.format(self.start, self.end)
             report = Paginator(data, header, self)
             report.setWindowTitle('Summary transaction information')
         else:
-            data = reports.select_transactions_by_term(term_id, start, end)
+            data = reports.select_transactions_by_term(term_id, self.start, self.end)
             header = 'Transaction report for terminal {} from {} to {}.'.format(data[0][0], data[0][1], data[0][2])
             report = Paginator(data[1:], header, self)
             report.setWindowTitle('Transactions by terminal')
-        super().form()
         report.show()
+
+
+class TimeSpanReportDialog(TransactionReportDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setWindowTitle('Timespan report dialog')
+
+    def build_ui(self):
+        super().build_ui()
+        self.spans = QtWidgets.QComboBox()
+        spans = [(0, 6, 12, 18, 24),
+                 (0, 3, 6, 9, 12, 15, 18, 21, 24),
+                 (0, 12, 24)]
+        for i, span in enumerate(spans):
+            self.spans.addItem(str(span))
+            self.spans.setItemData(i, span)
+        self.grid.addWidget(self.spans, 1, 3, 1, 1)
+        span_l = QtWidgets.QLabel()
+        span_l.setText('Choose timespan')
+        self.grid.addWidget(span_l, 0, 3, 1, 1)
+
+    def form(self):
+        CommonReportDialog.form(self)
+        current_span = self.spans.itemData(self.spans.currentIndex())
+        if self.combo_terminal.currentText() == 'All':
+            data = reports.timespan_report_v2(self.terminals[0], current_span , self.start, self.end)
+            for i, term in enumerate(self.terminals[1:]):
+                sqld = reports.timespan_report_v2(term, current_span, self.start, self.end)
+                for item in sqld[1:]:
+                    data.append(item)
+            header = 'Timespan report for all terminals from {} to {} with span: {}'.format(self.start, self.end,
+                                                                                            current_span)
+        else:
+            data = reports.timespan_report_v2(self.combo_terminal.currentText(), current_span,
+                                              self.start, self.end)
+            header = 'Timespan report for terminal {} from {} to {} with span {}.'.format(
+                self.combo_terminal.currentText(), self.start, self.end, current_span)
+        report = Paginator(data, header, self)
+        report.setWindowTitle('Timespan report')
+        report.show()
+
+
+class IndebtednessReportDialog(CommonReportDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setWindowTitle('Indebtedness to organizations')
+        self.build_ui()
+
+    def build_ui(self):
+        super().build_ui()
+        self.org_l = QtWidgets.QLabel()
+        self.org_l.setText('Choose organization:')
+        self.combo_org = QtWidgets.QComboBox()
+        self.combo_org.addItem('All')
+        for i, org in enumerate(sql.get_org_and_types()):
+            self.combo_org.addItem('{} ({})'.format(org[1], org[2]))
+            self.combo_org.setItemData(i+1, org[0])
+        self.grid.addWidget(self.combo_org, 0, 1, 1, 2)
+        self.grid.addWidget(self.org_l, 0, 0, 1, 1)
+
+    def form(self):
+        super().form()
+        if self.combo_org.currentText() == 'All':
+            data = reports.total_calculate_sum_v2(start=self.start, end=self.end)
+            header = 'Summary indebtedness report for all organizations from {} to {}.'.format(self.start, self.end)
+        else:
+            data = reports.total_calculate_sum_v2(self.combo_org.itemData(self.combo_org.currentIndex()), self.start,
+                                                  self.end)
+            header = 'Summary indebtedness report for {} from {} to {}.'.format(
+                self.combo_org.currentText(),
+                self.start,
+                self.end
+            )
+        report = Paginator(data, header, self)
+        report.setWindowTitle('Indebtedness report')
+        report.show()
+
+
+class SummaryByTermReportDialog(CommonReportDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setWindowTitle('Summary report for all terminals')
+        self.build_ui()
+
+    def form(self):
+        super().form()
+        data = reports.calculate_sum_by_all_terms(self.start, self.end)
+        header = 'Summary report for all terminals from {} to {}.'.format(self.start, self.end)
+        report = Paginator(data, header, self)
+        report.setWindowTitle('Summary report for all terminals')
+        report.show()
+
 
 
 class Paginator(QtWidgets.QDialog):
@@ -117,6 +213,7 @@ class Paginator(QtWidgets.QDialog):
             # q.setStyleSheet("font-weight: bold; margin-bottom: 50px;")
             q.setText(h)
             self.table.setHorizontalHeaderItem(i, q)
+        self.table_headers = self.data[0]
         self.data = self.data[1:]
         self.prev_btn = QtWidgets.QPushButton()
         self.prev_btn.setText('<<')
@@ -171,7 +268,53 @@ class Paginator(QtWidgets.QDialog):
             self.prev_btn.setDisabled(True)
 
     def export(self):
-        print('Exporting to {}'.format(self.export_dropdown.currentIndex()))
+        if self.export_dropdown.currentIndex() == 0:
+            return
+        export_format = self.export_dropdown.currentText()
+        export_window = QtWidgets.QDialog(self)
+        grid = QtWidgets.QGridLayout(export_window)
+        export_window.setWindowTitle('Export to {}'.format(export_format))
+        ex_label = QtWidgets.QLabel()
+        ex_label.setText('Insert file path:')
+        ex_path = QtWidgets.QLineEdit()
+        ex_path.setText(os.getcwd() + '/data.{}'.format(export_format))
+        ex_path.setMinimumWidth(350)
+        ex_ok = QtWidgets.QPushButton()
+        ex_ok.setText('Export')
+        ex_ok.clicked.connect(lambda: self.export_thread(export_format, ex_path.text()))
+        ex_cancel = QtWidgets.QPushButton()
+        ex_cancel.setText('Cancel')
+        ex_cancel.clicked.connect(export_window.close)
+        self.ex_progress_bar = QtWidgets.QProgressBar()
+        grid.addWidget(ex_label, 0, 0, 1, 1)
+        grid.addWidget(ex_path, 0, 1, 1, 1)
+        grid.addWidget(ex_ok, 0, 2, 1, 1)
+        grid.addWidget(ex_cancel, 0, 3, 1, 1)
+        grid.addWidget(self.ex_progress_bar, 1, 0, 1, 4)
+        export_window.show()
+
+    def export_thread(self, ex_format, path):
+        task = threading.Thread(target=self.make_export, args=(ex_format, path), daemon=True)
+        task.start()
+
+    def make_export(self, ex_format, path):
+        tsize = len(self.data)
+        if ex_format == 'txt':
+            with open(path, 'w', encoding='utf-8') as ex_file:
+                ex_file.write(self.header + os.linesep)
+                ex_file.write(' '.join(self.table_headers) + os.linesep)
+                for i, record in enumerate(self.data):
+                    self.ex_progress_bar.setValue(i/tsize*100)
+                    ex_file.write(''.join([' '.join([str(x) for x in record]), os.linesep]))
+        elif ex_format == 'csv':
+            with open(path, 'w', encoding='utf-8') as ex_file:
+                csv_writer = csv.writer(ex_file)
+                csv_writer.writerow([self.header])
+                csv_writer.writerow(self.table_headers)
+                for i, record in enumerate(self.data):
+                    self.ex_progress_bar.setValue(i/tsize*100)
+                    csv_writer.writerow(record)
+        self.ex_progress_bar.setValue(100)
 
     def get_status_text(self):
         lp = (self.page+1) * self.rpp

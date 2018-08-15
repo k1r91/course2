@@ -131,8 +131,8 @@ def total_calculate_sum(start=None, end=None):
     return report_data
 
 
-@time_it
-def total_calculate_sum_v2(start=None, end=None):
+# @time_it
+def total_calculate_sum_v2(org_id=None, start=None, end=None):
     """
     calculates debt for all organizations
     :param start: date period start
@@ -144,6 +144,8 @@ def total_calculate_sum_v2(start=None, end=None):
     result = OrderedDict()
     query = '''SELECT organization.id, organization.name, org_type.name FROM organization INNER JOIN org_type ON
             organization.type = org_type.id'''
+    if org_id is not None:
+        query += ' WHERE organization.id={}'.format(org_id)
     organizations = org_cursor.execute(query).fetchall()
     if not start:
         query = '''SELECT datetime FROM ps_transaction LIMIT 1'''
@@ -159,9 +161,11 @@ def total_calculate_sum_v2(start=None, end=None):
         trs = [tr for tr in transactions if item[0] == tr[6]]
         sum_org = sum([tr[-1] for tr in trs])
         result[item] = sum_org / 100
-    print('Отчёт за период с {} по {}:'.format(start, end))
+    total = [['Organization name', 'Organization type', 'Indebtedness']]
     for key, value in result.items():
-        print('{}. {} ({}): {} рублей.'.format(key[0], key[1], key[2], value))
+        # print('{}. {} ({}): {} рублей.'.format(key[0], key[1], key[2], value))
+        total.append([key[1], key[2], value])
+    return total
 
 
 def calculate_sum_by_term(id, start=None, end=None):
@@ -170,6 +174,20 @@ def calculate_sum_by_term(id, start=None, end=None):
     if trs:
         return 'Turnover on terminal №{} from {} to {}: {} rubles.'.format(id, start, end, sum_term)
     return 'There are no transaction data.'
+
+def calculate_sum_by_term_v2(id, start=None, end=None):
+    trs, start, end = select_transactions_by_var('term_id', id, start, end)
+    sum_term = sum([tr[-1] for tr in trs]) / 100
+    return [id, sum_term]
+
+
+def calculate_sum_by_all_terms(start=None, end=None):
+    query = 'SELECT id FROM terminal'
+    terminals = [x[0] for x in db_trans.cursor.execute(query).fetchall()]
+    result = [['Terminal', 'Amount']]
+    for t in terminals:
+        result.append(calculate_sum_by_term_v2(t, start, end))
+    return result
 
 def timespan_report(term_id, spans, start=None, end=None):
     trs, start, end = select_transactions_by_var('term_id', term_id, start, end)
@@ -191,27 +209,52 @@ def timespan_report(term_id, spans, start=None, end=None):
         result.append('{}: {} transactions.'.format(key, value))
     return os.linesep.join(result)
 
+
+def timespan_report_v2(term_id, spans, start=None, end=None):
+    trs, start, end = select_transactions_by_var('term_id', term_id, start, end)
+    if not trs:
+        return []
+    report = OrderedDict()
+    for span in spans[:]:
+        if spans.index(span) != len(spans) - 1:
+            hstart = span
+            hend = spans[spans.index(span) + 1]
+            count = 0
+            for tr in trs:
+                date = datetime.strptime(tr[3], '%Y-%m-%d %H:%M:%S')
+                if hstart <= date.hour <= hend:
+                    count += 1
+            report['{}-{}'.format(hstart, hend)] = count
+
+    result = [['Terminal', 'Span (day hour range)', 'Transactions']]
+    for key, value in report.items():
+        result.append([term_id, key, value])
+    return result
+
 if __name__ == '__main__':
-    select_1 = select_transactions_by_term(1049)
-    select_2 = select_transactions_by_term(1049, start=datetime(year=2018, month=6, day=14))
-    select_3 = select_transactions_by_term(1049, start=datetime(year=2018, month=6, day=13))
-    print(select_1)
-    print(select_2)
-    print(select_3)
-    try:
-        select_4 = select_transactions_by_term(1049, 'bbbbbbb')
-        print(select_4)
-    except TypeError as err:
-        print(err)
-    print(select_1 == select_3)
-    select_5 = calculate_sum(10, start=datetime(year=2018, month=6, day=14))
-    print(select_5)
-    select_6 = calculate_sum(15, start=datetime(year=2018, month=6, day=14))
-    print(select_6)
-    select_7 = calculate_sum(11, start=datetime(year=2018, month=6, day=13), end=datetime(year=2018, month=6, day=13,
-                                                                                          hour=14))
-    print(select_7)
-    print(total_calculate_sum(start=datetime(year=2018, month=6, day=14)))
-    print(calculate_sum_by_term(1049))
-    print(timespan_report(304, (0, 6, 12, 18, 24)))
-    print(timespan_report(45, (0, 6, 12, 18, 24)))
+    # select_1 = select_transactions_by_term(1049)
+    # select_2 = select_transactions_by_term(1049, start=datetime(year=2018, month=6, day=14))
+    # select_3 = select_transactions_by_term(1049, start=datetime(year=2018, month=6, day=13))
+    # print(select_1)
+    # print(select_2)
+    # print(select_3)
+    # try:
+    #     select_4 = select_transactions_by_term(1049, 'bbbbbbb')
+    #     print(select_4)
+    # except TypeError as err:
+    #     print(err)
+    # print(select_1 == select_3)
+    # select_5 = calculate_sum(10, start=datetime(year=2018, month=6, day=14))
+    # print(select_5)
+    # select_6 = calculate_sum(15, start=datetime(year=2018, month=6, day=14))
+    # print(select_6)
+    # select_7 = calculate_sum(11, start=datetime(year=2018, month=6, day=13), end=datetime(year=2018, month=6, day=13,
+    #                                                                                       hour=14))
+    # print(select_7)
+    # print(total_calculate_sum(start=datetime(year=2018, month=6, day=14)))
+    print(calculate_sum_by_term_v2(1049))
+    print(calculate_sum_by_all_terms())
+    # print(timespan_report_v2(250, (0, 6, 12, 18, 24)))
+    # print(timespan_report(45, (0, 6, 12, 18, 24)))
+    # print(timespan_report(304, (0, 3, 6, 9, 12, 15, 18, 24)))
+    # print(total_calculate_sum_v2())
