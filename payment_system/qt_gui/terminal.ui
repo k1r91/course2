@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TerminalMainWindow</class>
+ <widget class="QMainWindow" name="TerminalMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1217</width>
+    <height>843</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1211</width>
+      <height>801</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_main">
+     <property name="horizontalSpacing">
+      <number>6</number>
+     </property>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushCheckPrinter">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushStrongBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QWidget" name="widget_bill_acceptor" native="true">
+       <widget class="QPushButton" name="pushButton_10">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>0</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/10rubles.png</normaloff>img/terminal/10rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>42</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QProgressBar" name="progressBar_bill_acceptor">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>212</y>
+          <width>381</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_50">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>0</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/50rubles.png</normaloff>img/terminal/50rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>42</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_200">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>50</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/200rubles.png</normaloff>img/terminal/200rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>42</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_100">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>50</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/100rubles.png</normaloff>img/terminal/100rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>42</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_1000">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>100</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/1000rubles.png</normaloff>img/terminal/1000rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>41</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_500">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>100</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/500rubles.png</normaloff>img/terminal/500rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>42</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_5000">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>150</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/5000rubles.png</normaloff>img/terminal/5000rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>41</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_2000">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>150</y>
+          <width>105</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>105</width>
+          <height>45</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/2000rubles.png</normaloff>img/terminal/2000rubles.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>95</width>
+          <height>41</height>
+         </size>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_bill_acceptor_icon">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>151</width>
+          <height>201</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>img/terminal/bill_acceptor.png</normaloff>img/terminal/bill_acceptor.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>151</width>
+          <height>201</height>
+         </size>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QWidget" name="display_widget" native="true">
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(img/terminal/display.png) 0 0 0 0 stretch stretch;</string>
+       </property>
+       <widget class="QWidget" name="gridLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1211</width>
+          <height>541</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="pushButton">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>200</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-image: none;</string>
+           </property>
+           <property name="text">
+            <string>PushButton</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1217</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
