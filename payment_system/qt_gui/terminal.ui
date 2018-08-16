@@ -2,11 +2,14 @@
 <ui version="4.0">
  <class>TerminalMainWindow</class>
  <widget class="QMainWindow" name="TerminalMainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1217</width>
+    <width>1210</width>
     <height>843</height>
    </rect>
   </property>
@@ -33,17 +36,62 @@
      <property name="horizontalSpacing">
       <number>6</number>
      </property>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushCheckPrinter">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>250</height>
-        </size>
+     <item row="0" column="0" colspan="3">
+      <widget class="QWidget" name="display_widget" native="true">
+       <property name="autoFillBackground">
+        <bool>false</bool>
        </property>
-       <property name="text">
-        <string>PushButton</string>
+       <property name="styleSheet">
+        <string notr="true">border-image: url(img/terminal/display.png) 0 0 0 0 stretch stretch;</string>
        </property>
+       <widget class="QWidget" name="widget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>60</y>
+          <width>971</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-image: none;</string>
+        </property>
+        <widget class="QWidget" name="gridLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>971</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="grid_top"/>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="widget_2" native="true">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>120</y>
+          <width>1021</width>
+          <height>401</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-image: none;</string>
+        </property>
+        <widget class="QWidget" name="gridLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1021</width>
+           <height>401</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="grid_bottom"/>
+        </widget>
+       </widget>
       </widget>
      </item>
      <item row="1" column="1">
@@ -55,7 +103,20 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>Strong Box</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushCheckPrinter">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Check Printer</string>
        </property>
       </widget>
      </item>
@@ -406,50 +467,6 @@
        </widget>
       </widget>
      </item>
-     <item row="0" column="0" colspan="3">
-      <widget class="QWidget" name="display_widget" native="true">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-image: url(img/terminal/display.png) 0 0 0 0 stretch stretch;</string>
-       </property>
-       <widget class="QWidget" name="gridLayoutWidget_3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>1211</width>
-          <height>541</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QPushButton" name="pushButton">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>200</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">border-image: none;</string>
-           </property>
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>
@@ -458,8 +475,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1217</width>
-     <height>21</height>
+     <width>1210</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>

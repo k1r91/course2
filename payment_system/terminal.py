@@ -7,6 +7,7 @@ import threading
 import db
 import hashlib
 import struct
+import sql
 from Cryptodome.Cipher import AES
 from transaction import ServiceTransaction, PaymentTransaction, EncashmentTransaction, PaymentTransactionException, \
     EncashmentTransactionException
@@ -49,6 +50,10 @@ class Terminal:
             self.key = self.config['key'].encode('utf-8')
         self.check_block()
         self.power_on()
+
+    def refresh_org_db(self):
+        self.types = sql.get_org_types()
+        self.organizations = sql.get_organizations()
 
     def send(self, data):
         """
