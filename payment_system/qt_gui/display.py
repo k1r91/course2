@@ -28,7 +28,7 @@ class Display(QtCore.QObject):
         self.header_buttons = list()
         self.parent.refresh_org_db()
         for i, t in enumerate(self.parent.types):
-            btn = DisplayButton('', 120, 30, text=t[1])
+            btn = DisplayButton(None, None, 120, 30, text=t[1])
             self.layout_top.addWidget(btn, QtCore.Qt.AlignLeft)
             self.header_buttons.append(btn)
             btn.clicked.connect(self.change_main_screen_page(i))
@@ -38,7 +38,7 @@ class Display(QtCore.QObject):
         row = 0
         col = 0
         for org in self.get_current_page_organizations():
-            btn = DisplayButton('', 195, 130)
+            btn = DisplayButton(None, org[4], 195, 130)
             self.org_buttons.append(btn)
             self.grid_bottom.addWidget(btn, row, col, 1, 1, QtCore.Qt.AlignTop)
             col += 1
@@ -50,7 +50,15 @@ class Display(QtCore.QObject):
     def load_organization_info(self):
         self.make_active_header_buttons()
         for i, org in enumerate(self.get_current_page_organizations()):
-            self.org_buttons[i].setText(org[1])
+            # -----------------------------
+            print(org)
+            # -----------------------------
+            self.org_buttons[i].change_icon(org[4])
+            self.org_buttons[i].id = org[0]
+            if self.org_buttons[i].connected:
+                self.org_buttons[i].clicked.disconnect(self.org_buttons[i].not_implemented)
+            self.org_buttons[i].clicked.connect(self.org_buttons[i].not_implemented)
+            self.org_buttons[i].connected = True
 
     def change_main_screen_page(self, page):
         def change_page():
@@ -93,11 +101,23 @@ class Display(QtCore.QObject):
 
 
 class DisplayButton(QtWidgets.QPushButton):
-    def __init__(self, icon_path, w, h, *args, **kwargs):
+    def __init__(self, org_id, icon_path, w, h, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.width = w
+        self.height = h
         self.setFixedWidth(w)
         self.setFixedHeight(h)
+        self.setStyleSheet('border-image: none; background-color: white;')
+        self.id = org_id
+        self.change_icon(icon_path)
+        self.connected = False
+
+    def change_icon(self, icon_path):
         self.icon = QtGui.QIcon()
         self.icon.addPixmap(QtGui.QPixmap(icon_path), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setIcon(self.icon)
-        self.setStyleSheet('border-image: none;')
+        i_size = QtCore.QSize(self.width-5, self.height-5)
+        self.setIconSize(i_size)
+
+    def not_implemented(self):
+        print(self.id)
