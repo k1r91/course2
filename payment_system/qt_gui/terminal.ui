@@ -68,7 +68,7 @@
          <layout class="QGridLayout" name="grid_bottom"/>
         </widget>
        </widget>
-       <widget class="QWidget" name="widget" native="true">
+       <widget class="QWidget" name="widget_top" native="true">
         <property name="geometry">
          <rect>
           <x>90</x>
@@ -89,7 +89,21 @@
            <height>51</height>
           </rect>
          </property>
-         <layout class="QHBoxLayout" name="horizontal_display_top_layout"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_top">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
        </widget>
        <widget class="QLabel" name="label_status">
@@ -111,6 +125,10 @@ border-image: none;</string>
          <string>TextLabel</string>
         </property>
        </widget>
+       <zorder>widget_2</zorder>
+       <zorder>widget_top</zorder>
+       <zorder>label_status</zorder>
+       <zorder>pushButton</zorder>
       </widget>
      </item>
      <item row="1" column="1">
@@ -355,6 +373,12 @@ border-image: none;</string>
           <width>105</width>
           <height>45</height>
          </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>

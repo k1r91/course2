@@ -1,11 +1,12 @@
 import sys
-import multiprocessing as mp
+import threading
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 # my modules
 import sql
 from terminal_template import Ui_TerminalMainWindow
 from display import Display
+from bill_acceptor import BillAcceptor
 
 sys.path.append('..')
 from terminal import Terminal, TerminalException
@@ -18,6 +19,7 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.setWindowTitle('Terminal № {}'.format(_id))
         self.available = True
+        self.bill_acceptor = BillAcceptor(self)
         try:
             Terminal.__init__(self, _id)
         except TerminalException:
@@ -34,6 +36,16 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
     @staticmethod
     def not_impemented(self):
         print('Not implemented yet')
+
+    def activate_bill_acceptor(self):
+        bill_acceptor_thread = threading.Thread(target=self.run_bill_acceptor, daemon=True)
+        bill_acceptor_thread.start()
+
+    def run_bill_acceptor(self):
+        self.bill_acceptor.activate()
+
+    def deactivate_bill_acceptor(self):
+        self.bill_acceptor.deactivate()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
