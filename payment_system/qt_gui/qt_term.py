@@ -7,6 +7,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from terminal_template import Ui_TerminalMainWindow
 from display import Display
 from bill_acceptor import BillAcceptor
+from check_printer import CheckPrinter
 
 sys.path.append('..')
 from terminal import Terminal, TerminalException
@@ -21,6 +22,7 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
         self.setWindowTitle('Terminal № {}'.format(_id))
         self.available = True
         self.bill_acceptor = BillAcceptor(self)
+        self.check_printer = CheckPrinter(self)
         try:
             Terminal.__init__(self, _id)
         except TerminalException:
@@ -34,10 +36,6 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
         else:
             self.display.load_error_screen()
 
-    @staticmethod
-    def not_impemented(self):
-        print('Not implemented yet')
-
     def activate_bill_acceptor(self):
         bill_acceptor_thread = threading.Thread(target=self.bill_acceptor_thread, daemon=True)
         bill_acceptor_thread.start()
@@ -47,6 +45,18 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
 
     def deactivate_bill_acceptor(self):
         self.bill_acceptor.deactivate()
+
+    def activate_check_printer(self, data):
+        data.update({'last_transaction_id': self.last_transaction_id, 'terminal_id': self._id})
+        check_printer_thread = threading.Thread(target=self.check_printer_thread, args=(data, ),
+                                                daemon=True)
+        check_printer_thread.start()
+
+    def deactivate_check_printer(self):
+        self.check_printer.deactivate()
+
+    def check_printer_thread(self, data):
+        self.check_printer.activate(data)
 
 
 if __name__ == '__main__':

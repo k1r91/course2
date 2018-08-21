@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1210</width>
-    <height>843</height>
+    <width>1285</width>
+    <height>896</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -129,6 +129,9 @@ border-image: none;</string>
      </item>
      <item row="1" column="1">
       <widget class="QPushButton" name="pushStrongBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -136,12 +139,25 @@ border-image: none;</string>
         </size>
        </property>
        <property name="text">
-        <string>Strong Box</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>img/terminal/strongbox.png</normaloff>img/terminal/strongbox.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QPushButton" name="pushCheckPrinter">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -149,7 +165,17 @@ border-image: none;</string>
         </size>
        </property>
        <property name="text">
-        <string>Check Printer</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>img/terminal/check_printer.png</normaloff>img/terminal/check_printer.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -533,8 +559,8 @@ border-image: none;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1210</width>
-     <height>21</height>
+     <width>1285</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>

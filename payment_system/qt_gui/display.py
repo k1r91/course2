@@ -1,8 +1,13 @@
+import sys
 import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-class Display:
+sys.path.append('..')
 
+from transaction import PaymentTransactionException
+
+
+class Display:
     def __init__(self, parent, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.parent = parent
@@ -16,6 +21,8 @@ class Display:
         self.header_buttons = list()
         self.org_buttons = list()
         self.elems = list()
+        self.return_timer = QtCore.QTimer()
+        self.return_timer.connected = False
 
     def flush_screen(self):
         self.elems = self.elems + self.header_buttons + self.org_buttons
@@ -48,7 +55,7 @@ class Display:
         self.make_active_header_buttons()
         for i, org in enumerate(self.get_current_page_organizations()):
             self.org_buttons[i].change_icon(org[4])
-            self.org_buttons[i].id = org[0]
+            self.org_buttons[i].org = org
             if self.org_buttons[i].connected:
                 self.org_buttons[i].clicked.disconnect()
             self.org_buttons[i].clicked.connect(self.display_pay_page(self.org_buttons[i].org))
@@ -57,13 +64,12 @@ class Display:
     def display_pay_page(self, org):
         def closure():
             self.flush_screen()
-            print(org)
             back_btn = QtWidgets.QPushButton('<< To main page')
-            back_btn.clicked.connect(self.load_main_screen)
+            back_btn.clicked.connect(self.cancel_pay)
             self.layout_top.insertWidget(0, back_btn)
             top_label = QtWidgets.QLabel('Payment to {}.'.format(org[1]))
             logo_label = QtWidgets.QLabel()
-            logo_label.setFixedSize(130, 86)
+            logo_label.setFixedSize(195, 130)
             logo_label.setStyleSheet('border-image: url({}) 0 0 0 0 stretch stretch;'.format(org[4]))
             self.acc_label = QtWidgets.QLabel('Personal account: ')
             self.acc_value = QtWidgets.QLineEdit()
@@ -95,11 +101,16 @@ class Display:
     def cancel_pay(self):
         self.load_main_screen()
         self.parent.deactivate_bill_acceptor()
+        self.parent.check_printer.deactivate()
+        if self.return_timer.connected:
+            self.return_timer.connected = False
+            self.return_timer.timeout.disconnect()
 
     def process_pay(self, org):
         def send_pay():
             self.pay_error_label.setText('')
             self.pay_error_label.setStyleSheet('color: red;')
+            self.return_timer.connected = False
             try:
                 account = int(self.acc_value.text())
             except ValueError:
@@ -108,7 +119,39 @@ class Display:
             if not 0 < account < 256**8:
                 self.pay_error_label.setText('Incorrect account')
                 return
+            amount = self.parent.bill_acceptor.amount
+            if amount == 0:
+                self.pay_error_label.setText('Amount must be positive')
+                return
+            try:
+                self.parent.send_payment_transaction(org[0], account, amount)
+                self.pay_error_label.setStyleSheet('color: green;')
+                self.return_timer_seconds = 10
+                self.pay_error_label.setText('Your payment is completed. Return to main page in {} sec.'.format(
+                    self.return_timer_seconds
+                ))
+                self.return_timer.connected = True
+                self.return_timer.timeout.connect(self.return_timer_callback)
+                self.return_timer.start(1000)
+                self.push_process_pay.setEnabled(False)
+                self.push_cancel_pay.setEnabled(False)
+                self.parent.deactivate_bill_acceptor()
+                self.parent.activate_check_printer({'org': org, 'org_type': self.parent.types[self.current_page][1],
+                                                    'amount': amount, 'account': account})
+            except PaymentTransactionException:
+                self.pay_error_label.setText('Sorry, payment server unavailable.')
         return send_pay
+
+    def return_timer_callback(self):
+        self.return_timer_seconds -= 1
+        if self.return_timer_seconds < 0:
+            self.return_timer.connected = False
+            self.return_timer.timeout.disconnect()
+            self.load_main_screen()
+            self.parent.check_printer.deactivate()
+        self.pay_error_label.setText('Your payment is completed. Return to main page in {} sec.'.format(
+            self.return_timer_seconds
+        ))
 
     def change_main_screen_page(self, page):
         def change_page():

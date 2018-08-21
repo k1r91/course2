@@ -8,6 +8,7 @@ sys.path.append('..')
 
 from transaction import PaymentTransaction
 
+
 class BillAcceptor(QtWidgets.QWidget):
 
     error_text = 'Banknote cannot be read!'
@@ -21,7 +22,9 @@ class BillAcceptor(QtWidgets.QWidget):
         self.timer.timeout.connect(self.change_image)
         self.amount = 0
         self.active = False
+        self.progress_bar = self.ui.progressBar_bill_acceptor
         self.buttons = [
+            self.progress_bar,
             self.ui.pushButton_bill_acceptor_icon,
             self.ui.pushButton_10,
             self.ui.pushButton_50,
@@ -32,7 +35,6 @@ class BillAcceptor(QtWidgets.QWidget):
             self.ui.pushButton_2000,
             self.ui.pushButton_5000,
         ]
-        self.progress_bar = self.ui.progressBar_bill_acceptor
         self.error_label = self.ui.label_error_bill_acceptor
         self.make_connections()
         self.__threads = list()
@@ -49,6 +51,9 @@ class BillAcceptor(QtWidgets.QWidget):
             self.change_image()
             time.sleep(1)
 
+    def get_amount(self):
+        return self.amount
+
     def deactivate(self):
         '''
         stop main process
@@ -56,6 +61,9 @@ class BillAcceptor(QtWidgets.QWidget):
         '''
         for btn in self.buttons:
             btn.setEnabled(False)
+        self.progress_bar.setValue(0)
+        self.error_label.setStyleSheet('color: red;')
+        self.error_label.setText('')
         self.active = False
         self.amount = 0
 
@@ -83,12 +91,12 @@ class BillAcceptor(QtWidgets.QWidget):
         :return:
         '''
         denominations = [10, 50, 100, 200, 500, 1000, 2000, 5000]
-        for i, btn in enumerate(self.buttons[1:]):
+        for i, btn in enumerate(self.buttons[2:]):
             btn.clicked.connect(self.insert_banknote(denominations[i]))
 
     def insert_banknote(self, banknote):
         def closure():
-            for btn in self.buttons[1:]:
+            for btn in self.buttons[2:]:
                 btn.setEnabled(False)
             checker = BanknoteChecker(banknote)
             thread = QThread()
@@ -106,7 +114,7 @@ class BillAcceptor(QtWidgets.QWidget):
 
     @pyqtSlot(int)
     def accept_banknote(self, banknote: int):
-        for btn in self.buttons[1:]:
+        for btn in self.buttons[2:]:
             btn.setEnabled(True)
         if banknote:
             oam = self.amount
@@ -121,7 +129,7 @@ class BillAcceptor(QtWidgets.QWidget):
                 self.terminal.display.update_amount(self.amount)
         else:
             self.error_label.setStyleSheet("color: red;")
-            self.error_label.setText('Sorry, your banknote is corrupted')
+            self.error_label.setText('Banknote is corrupted!')
 
 
 class Worker(QtCore.QObject):
