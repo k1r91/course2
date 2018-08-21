@@ -1,8 +1,5 @@
-import threading
 import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
-from transaction import PaymentTransaction
-
 
 class Display:
 
@@ -58,7 +55,7 @@ class Display:
             self.org_buttons[i].connected = True
 
     def display_pay_page(self, org):
-        def display_page():
+        def closure():
             self.flush_screen()
             print(org)
             back_btn = QtWidgets.QPushButton('<< To main page')
@@ -90,7 +87,10 @@ class Display:
                            self.push_process_pay, self.push_cancel_pay, back_btn, self.pay_error_label]
             self.parent.activate_bill_acceptor()
 
-        return display_page
+        return closure
+
+    def update_amount(self, amount):
+        self.amount_value.setText("Amount: <font color='green'>{}</font> rubles.".format(amount))
 
     def cancel_pay(self):
         self.load_main_screen()
@@ -101,19 +101,12 @@ class Display:
             self.pay_error_label.setText('')
             self.pay_error_label.setStyleSheet('color: red;')
             try:
-                amount = int(self.amount_value.text())
                 account = int(self.acc_value.text())
             except ValueError:
-                self.pay_error_label.setText('Amount and account must be positive integers')
+                self.pay_error_label.setText('Please input correct account')
                 return
             if not 0 < account < 256**8:
                 self.pay_error_label.setText('Incorrect account')
-                return
-            if not PaymentTransaction.MIN_AMOUNT < amount * 100 < PaymentTransaction.MAX_AMOUNT:
-                self.pay_error_label.setText('Min amount: {} rubles, max amount: {} rubles'.format(
-                    PaymentTransaction.MIN_AMOUNT // 100,
-                    PaymentTransaction.MAX_AMOUNT // 100
-                ))
                 return
         return send_pay
 

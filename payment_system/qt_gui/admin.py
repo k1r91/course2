@@ -4,8 +4,6 @@ This module is used to admin databases of project
 import os
 import sys
 import datetime
-import threading
-import time
 import sqlite3
 sys.path.append('..')
 import sql

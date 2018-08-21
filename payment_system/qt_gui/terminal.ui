@@ -125,10 +125,6 @@ border-image: none;</string>
          <string>TextLabel</string>
         </property>
        </widget>
-       <zorder>widget_2</zorder>
-       <zorder>widget_top</zorder>
-       <zorder>label_status</zorder>
-       <zorder>pushButton</zorder>
       </widget>
      </item>
      <item row="1" column="1">
@@ -202,7 +198,7 @@ border-image: none;</string>
          <rect>
           <x>0</x>
           <y>212</y>
-          <width>381</width>
+          <width>181</width>
           <height>31</height>
          </rect>
         </property>
@@ -508,6 +504,25 @@ border-image: none;</string>
          </size>
         </property>
        </widget>
+       <widget class="QLabel" name="label_error_bill_acceptor">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>210</y>
+          <width>181</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -519,7 +534,7 @@ border-image: none;</string>
      <x>0</x>
      <y>0</y>
      <width>1210</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

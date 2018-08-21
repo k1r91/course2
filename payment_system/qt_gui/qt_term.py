@@ -1,9 +1,9 @@
 import sys
+import time
 import threading
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 
-# my modules
-import sql
 from terminal_template import Ui_TerminalMainWindow
 from display import Display
 from bill_acceptor import BillAcceptor
@@ -13,8 +13,9 @@ from terminal import Terminal, TerminalException
 
 
 class QTermWin(Terminal, QtWidgets.QMainWindow):
-    def __init__(self, _id, parent=None):
+    def __init__(self, _id, app, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.app = app
         self.ui = Ui_TerminalMainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle('Terminal № {}'.format(_id))
@@ -38,19 +39,22 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
         print('Not implemented yet')
 
     def activate_bill_acceptor(self):
-        bill_acceptor_thread = threading.Thread(target=self.run_bill_acceptor, daemon=True)
+        bill_acceptor_thread = threading.Thread(target=self.bill_acceptor_thread, daemon=True)
         bill_acceptor_thread.start()
 
-    def run_bill_acceptor(self):
+    def bill_acceptor_thread(self):
         self.bill_acceptor.activate()
 
     def deactivate_bill_acceptor(self):
         self.bill_acceptor.deactivate()
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    win = QTermWin(1049)
+    win = QTermWin(1049, app)
     with win:
         win.show()
         sys.exit(app.exec_())
+
+
 
