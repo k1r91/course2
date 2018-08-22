@@ -130,7 +130,6 @@ class DatabaseOrganization:
         self.cursor.executemany(query, collectors)
         self.conn.commit()
 
-        
     @staticmethod
     def flush():
         if os.path.exists(DatabaseOrganization.DB_NAME):

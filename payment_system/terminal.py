@@ -170,6 +170,14 @@ class Terminal:
         ciphertext = cipher.iv + cipher.encrypt(text)
         return ciphertext
 
+    def block(self):
+        self.state = 0
+        self.save_config()
+
+    def unblock(self):
+        self.state = 1
+        self.save_config()
+
     def check_block(self):
         """
         state = 0 : blocked

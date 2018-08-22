@@ -122,7 +122,7 @@ class BillAcceptor(QtWidgets.QWidget):
             if self.amount > PaymentTransaction.MAX_AMOUNT // 100:
                 self.amount = oam
                 self.error_label.setStyleSheet('color: red;')
-                self.error_label.setText('Max amount: {} rubles'.format(PaymentTransaction.MAX_AMOUNT // 100))
+                self.error_label.setText('Max amount: {}₽'.format(PaymentTransaction.MAX_AMOUNT // 100))
             else:
                 self.error_label.setStyleSheet("color: green;")
                 self.error_label.setText('OK')

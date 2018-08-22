@@ -181,7 +181,7 @@ class Display(Frame):
         encash_label_pwd = wLabel(self.frame, text='Collector password', fg='blue', font=('Courier', 14))
         self.encash_entry = Entry(self.frame, width=10, textvariable = self.collector_id)
         self.encash_pwd = Entry(self.frame, width=10, show='*', textvariable=self.collector_pwd)
-        self.encash_btn_ok = Button(self.frame, text='OK', width=7, fg='green', command=self.threaded_encash)
+        self.encash_btn_ok = Button(self.frame, text='OK', width=7, fg='green', command=self.threadthreaded_encash)
         self.encash_btn_cancel = Button(self.frame, text='Exit', width=7, command=lambda x=1: self.change_page(x))
         self.encash_error_span = wLabel(self.frame, fg='red')
         encash_label.grid(row=0, columnspan=2, pady=(100, 10))

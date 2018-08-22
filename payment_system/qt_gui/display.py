@@ -1,5 +1,6 @@
 import sys
 import datetime
+import hashlib
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 sys.path.append('..')
@@ -14,7 +15,6 @@ class Display:
         self.ui = parent.ui
         self.layout_top = self.ui.horizontalLayout_top
         self.grid_bottom = self.ui.grid_bottom
-        self.config_error_page()
         self.parent.refresh_org_db()
         self.current_page = 0
         self.load_status_string()
@@ -23,14 +23,89 @@ class Display:
         self.elems = list()
         self.return_timer = QtCore.QTimer()
         self.return_timer.connected = False
+        self.incorrect_code = 0
 
     def flush_screen(self):
         self.elems = self.elems + self.header_buttons + self.org_buttons
         for elem in self.elems:
             elem.close()
 
+    def settings_auth_page(self):
+        '''
+        Settings authentication page
+        :return:
+        '''
+        self.flush_screen()
+        self.sa_pwd_label = QtWidgets.QLabel('Enter password: ')
+        self.sa_pwd_line = QtWidgets.QLineEdit()
+        self.sa_pwd_line.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.sa_ok = QtWidgets.QPushButton('OK')
+        self.sa_cancel = QtWidgets.QPushButton('Cancel')
+        self.sa_cancel.clicked.connect(self.cancel_pay)
+        self.sa_ok.clicked.connect(self.settings_page)
+        self.sa_error = QtWidgets.QLabel()
+        self.sa_error.setStyleSheet('color: red')
+        self.grid_bottom.addWidget(self.sa_pwd_label, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.sa_pwd_line, 1, 0, 1, 2, QtCore.Qt.AlignCenter|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_ok, 2, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_cancel, 2, 1, 1, 1, QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_error, 3, 0, 1, 2, QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop)
+        self.elems += [self.sa_pwd_label, self.sa_pwd_line, self.sa_ok, self.sa_cancel, self.sa_error]
+
+    def settings_page(self):
+        pwd = hashlib.sha256(self.sa_pwd_line.text().encode('utf-8')).hexdigest()
+        if pwd != self.parent.secret:
+            self.raise_incorrect_code()
+            return
+        self.flush_screen()
+        self.s_block = QtWidgets.QPushButton('Block')
+        self.s_block.clicked.connect(self.block)
+        self.s_unblock = QtWidgets.QPushButton('Unblock')
+        self.s_unblock.clicked.connect(self.unblock)
+        self.s_restart = QtWidgets.QPushButton('Restart')
+        self.s_restart.clicked.connect(self.parent.restart)
+        self.s_shutdown = QtWidgets.QPushButton('Shutdown')
+        self.s_shutdown.clicked.connect(self.parent.shutdown)
+        self.s_encash = QtWidgets.QPushButton('Encash')
+        self.s_exit = QtWidgets.QPushButton('Exit')
+        self.s_exit.clicked.connect(self.cancel_pay)
+        self.s_label = QtWidgets.QLabel()
+        self.s_label.setStyleSheet('color: green')
+        self.grid_bottom.addWidget(self.s_block, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_unblock, 1, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_restart, 2, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_shutdown, 3, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_encash, 4, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_exit, 5, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_label, 6, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.elems += [self.s_block, self.s_unblock, self.s_encash, self.s_restart, self.s_label, self.s_exit,
+                       self.s_shutdown]
+
+    def encash_auth_page(self):
+        pass
+
+    def block(self):
+        self.parent.block()
+        self.s_label.setText('Terminal was blocked')
+
+    def unblock(self):
+        self.parent.unblock()
+        self.s_label.setText('Terminal was unblocked')
+
+    def raise_incorrect_code(self):
+        self.incorrect_code += 1
+        if self.incorrect_code == 3:
+            self.load_error_screen()
+            self.ui.pushButton_settings.clicked.disconnect()
+            self.parent.state = 0
+            return
+        self.sa_error.setText('Wrong attempt! Remaining attempts: {}'.format(3 - self.incorrect_code))
+
     def load_main_screen(self):
         self.flush_screen()
+        if not self.parent.is_available:
+            self.load_error_screen()
+            return
         self.org_buttons = list()
         self.header_buttons = list()
         self.parent.refresh_org_db()
@@ -74,7 +149,7 @@ class Display:
             self.acc_label = QtWidgets.QLabel('Personal account: ')
             self.acc_value = QtWidgets.QLineEdit()
             self.acc_value.setValidator(QtGui.QDoubleValidator())
-            self.amount_value = QtWidgets.QLabel(text="Amount: <font color='green'>0</font> rubles.")
+            self.amount_value = QtWidgets.QLabel(text="Amount: <font color='green'>0</font>₽.")
             self.push_process_pay = QtWidgets.QPushButton('OK')
             self.push_process_pay.clicked.connect(self.process_pay(org))
             self.push_cancel_pay = QtWidgets.QPushButton('Cancel')
@@ -96,7 +171,7 @@ class Display:
         return closure
 
     def update_amount(self, amount):
-        self.amount_value.setText("Amount: <font color='green'>{}</font> rubles.".format(amount))
+        self.amount_value.setText("Amount: <font color='green'>{}</font>₽.".format(amount))
 
     def cancel_pay(self):
         self.load_main_screen()
@@ -184,13 +259,13 @@ class Display:
                 result.append(org)
         return result
 
-    def config_error_page(self):
+    def load_error_screen(self):
+        self.flush_screen()
         self.error_label = QtWidgets.QLabel('Sorry, current terminal is under maintenance.')
         self.error_label.setStyleSheet("font-weight: bold; color: red; border-image: none; font-size: 36px;")
-
-    def load_error_screen(self):
         self.ui.label_status.hide()
-        self.grid_bottom.addWidget(self.error_label, 0, 0, 1, 1, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.error_label, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.elems.append(self.error_label)
 
 
 class DisplayButton(QtWidgets.QPushButton):
