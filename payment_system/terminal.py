@@ -204,7 +204,9 @@ class Terminal:
 
 
 if __name__ == '__main__':
-    with Terminal(1049) as terminal1:
-        print(terminal1)
-        terminal1.send_payment_transaction(25, 256**8-1, 1001)
-        # terminal1.send_encashment_transaction(488, 1000, '775741')
+    terminal1 = Terminal(1049)
+    terminal1.send_encashment_transaction(488, 1000, '775741')
+    # with Terminal(1049) as terminal1:
+    #     print(terminal1)
+    #     # terminal1.send_payment_transaction(25, 256**8-1, 1001)
+    #     terminal1.send_encashment_transaction(488, 1000, '775741')

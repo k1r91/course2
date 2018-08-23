@@ -5,7 +5,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 sys.path.append('..')
 
-from transaction import PaymentTransactionException
+from transaction import PaymentTransactionException, EncashmentTransactionException
+from terminal import TerminalException
 
 
 class Display:
@@ -27,6 +28,10 @@ class Display:
 
     def flush_screen(self):
         self.elems = self.elems + self.header_buttons + self.org_buttons
+        try:
+            self.return_timer.timeout.disconnect()
+        except TypeError:
+            pass
         for elem in self.elems:
             elem.close()
 
@@ -45,11 +50,11 @@ class Display:
         self.sa_ok.clicked.connect(self.settings_page)
         self.sa_error = QtWidgets.QLabel()
         self.sa_error.setStyleSheet('color: red')
-        self.grid_bottom.addWidget(self.sa_pwd_label, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.sa_pwd_line, 1, 0, 1, 2, QtCore.Qt.AlignCenter|QtCore.Qt.AlignTop)
-        self.grid_bottom.addWidget(self.sa_ok, 2, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
-        self.grid_bottom.addWidget(self.sa_cancel, 2, 1, 1, 1, QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.grid_bottom.addWidget(self.sa_error, 3, 0, 1, 2, QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_pwd_label, 0, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.sa_pwd_line, 1, 0, 1, 6, QtCore.Qt.AlignCenter|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_ok, 2, 0, 1, 3, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_cancel, 2, 3, 1, 3, QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.grid_bottom.addWidget(self.sa_error, 3, 0, 1, 6, QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop)
         self.elems += [self.sa_pwd_label, self.sa_pwd_line, self.sa_ok, self.sa_cancel, self.sa_error]
 
     def settings_page(self):
@@ -67,22 +72,69 @@ class Display:
         self.s_shutdown = QtWidgets.QPushButton('Shutdown')
         self.s_shutdown.clicked.connect(self.parent.shutdown)
         self.s_encash = QtWidgets.QPushButton('Encash')
+        self.s_encash.clicked.connect(self.encash_auth_page)
         self.s_exit = QtWidgets.QPushButton('Exit')
         self.s_exit.clicked.connect(self.cancel_pay)
         self.s_label = QtWidgets.QLabel()
         self.s_label.setStyleSheet('color: green')
-        self.grid_bottom.addWidget(self.s_block, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_unblock, 1, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_restart, 2, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_shutdown, 3, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_encash, 4, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_exit, 5, 0, 1, 2, QtCore.Qt.AlignCenter)
-        self.grid_bottom.addWidget(self.s_label, 6, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_block, 0, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_unblock, 1, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_restart, 2, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_shutdown, 3, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_encash, 4, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_exit, 5, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.s_label, 6, 0, 1, 6, QtCore.Qt.AlignCenter)
         self.elems += [self.s_block, self.s_unblock, self.s_encash, self.s_restart, self.s_label, self.s_exit,
                        self.s_shutdown]
 
     def encash_auth_page(self):
-        pass
+        self.flush_screen()
+        self.ea_id = QtWidgets.QLabel('Collector id: ')
+        self.ea_password = QtWidgets.QLabel('Password: ')
+        self.ea_id_value = QtWidgets.QLineEdit()
+        self.ea_password_value = QtWidgets.QLineEdit()
+        self.ea_password_value.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.ea_id_value.setValidator(QtGui.QIntValidator())
+        self.ea_ok = QtWidgets.QPushButton('Encash')
+        self.ea_ok.clicked.connect(self.try_encash)
+        self.ea_cancel = QtWidgets.QPushButton('Cancel')
+        self.ea_cancel.clicked.connect(self.cancel_pay)
+        self.ea_status_label = QtWidgets.QLabel()
+        self.grid_bottom.addWidget(self.ea_id, 0, 0, 1, 3, QtCore.Qt.AlignRight)
+        self.grid_bottom.addWidget(self.ea_id_value, 0, 3, 1, 3, QtCore.Qt.AlignLeft)
+        self.grid_bottom.addWidget(self.ea_password, 1, 0, 1, 3, QtCore.Qt.AlignRight)
+        self.grid_bottom.addWidget(self.ea_password_value, 1, 3, 1, 3, QtCore.Qt.AlignLeft)
+        self.grid_bottom.addWidget(self.ea_ok, 2, 0, 1, 3, QtCore.Qt.AlignRight)
+        self.grid_bottom.addWidget(self.ea_cancel, 2, 3, 1, 3, QtCore.Qt.AlignLeft)
+        self.grid_bottom.addWidget(self.ea_status_label, 3, 0, 1, 6, QtCore.Qt.AlignCenter)
+        self.elems += [self.ea_id, self.ea_password, self.ea_id_value, self.ea_password_value, self.ea_ok,
+                       self.ea_cancel, self.ea_status_label]
+
+    def try_encash(self):
+        try:
+            collector_id = int(self.ea_id_value.text())
+            collector_pwd = self.ea_password_value.text()
+            cash = self.parent.cash
+            self.parent.send_encashment_transaction(collector_id, self.parent.cash, collector_pwd)
+            self.ea_status_label.setStyleSheet('color: green')
+            self.ea_status_label.setText('Collection was successfull. Please take money from strongbox!')
+            self.ea_ok.setEnabled(False)
+            self.ea_cancel.setEnabled(False)
+            self.parent.activate_strongbox(cash)
+        except (EncashmentTransactionException, ValueError):
+            self.raise_incorrect_encash()
+        except TerminalException:
+            self.cancel_pay()
+
+    def raise_incorrect_encash(self):
+        self.incorrect_code += 1
+        if self.incorrect_code == 3:
+            self.load_error_screen()
+            self.ui.pushButton_settings.clicked.disconnect()
+            self.parent.state = 0
+            return
+        self.ea_status_label.setStyleSheet('color: red;')
+        self.ea_status_label.setText('Wrong attempt! Remaining attempts: {}'.format(3 - self.incorrect_code))
 
     def block(self):
         self.parent.block()
@@ -156,14 +208,14 @@ class Display:
             self.push_cancel_pay.clicked.connect(self.cancel_pay)
             self.pay_error_label = QtWidgets.QLabel()
             self.pay_error_label.setStyleSheet('color: red;')
-            self.grid_bottom.addWidget(top_label, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
-            self.grid_bottom.addWidget(logo_label, 1, 0, 1, 2, QtCore.Qt.AlignCenter)
-            self.grid_bottom.addWidget(self.acc_label, 2, 0, 1, 1, QtCore.Qt.AlignRight)
-            self.grid_bottom.addWidget(self.acc_value, 2, 1, 1, 1, QtCore.Qt.AlignLeft)
-            self.grid_bottom.addWidget(self.amount_value, 3, 0, 1, 2, QtCore.Qt.AlignCenter)
-            self.grid_bottom.addWidget(self.push_process_pay, 4, 0, 1, 1, QtCore.Qt.AlignRight)
-            self.grid_bottom.addWidget(self.push_cancel_pay, 4, 1, 1, 1, QtCore.Qt.AlignLeft)
-            self.grid_bottom.addWidget(self.pay_error_label, 5, 0, 1, 2, QtCore.Qt.AlignCenter)
+            self.grid_bottom.addWidget(top_label, 0, 0, 1, 6, QtCore.Qt.AlignCenter)
+            self.grid_bottom.addWidget(logo_label, 1, 0, 1, 6, QtCore.Qt.AlignCenter)
+            self.grid_bottom.addWidget(self.acc_label, 2, 0, 1, 3, QtCore.Qt.AlignRight)
+            self.grid_bottom.addWidget(self.acc_value, 2, 3, 1, 3, QtCore.Qt.AlignLeft)
+            self.grid_bottom.addWidget(self.amount_value, 3, 0, 1, 6, QtCore.Qt.AlignCenter)
+            self.grid_bottom.addWidget(self.push_process_pay, 4, 0, 1, 3, QtCore.Qt.AlignRight)
+            self.grid_bottom.addWidget(self.push_cancel_pay, 4, 3, 1, 3, QtCore.Qt.AlignLeft)
+            self.grid_bottom.addWidget(self.pay_error_label, 5, 0, 1, 6, QtCore.Qt.AlignCenter)
             self.elems += [top_label, logo_label, self.acc_label,self.acc_value, self.amount_value,
                            self.push_process_pay, self.push_cancel_pay, back_btn, self.pay_error_label]
             self.parent.activate_bill_acceptor()
@@ -177,9 +229,10 @@ class Display:
         self.load_main_screen()
         self.parent.deactivate_bill_acceptor()
         self.parent.check_printer.deactivate()
-        if self.return_timer.connected:
-            self.return_timer.connected = False
+        try:
             self.return_timer.timeout.disconnect()
+        except TypeError:
+            pass
 
     def process_pay(self, org):
         def send_pay():
@@ -264,7 +317,7 @@ class Display:
         self.error_label = QtWidgets.QLabel('Sorry, current terminal is under maintenance.')
         self.error_label.setStyleSheet("font-weight: bold; color: red; border-image: none; font-size: 36px;")
         self.ui.label_status.hide()
-        self.grid_bottom.addWidget(self.error_label, 0, 0, 1, 2, QtCore.Qt.AlignCenter)
+        self.grid_bottom.addWidget(self.error_label, 0, 0, 1, 6, QtCore.Qt.AlignCenter)
         self.elems.append(self.error_label)
 
 

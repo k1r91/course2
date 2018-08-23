@@ -7,6 +7,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from terminal_template import Ui_TerminalMainWindow
 from display import Display
 from bill_acceptor import BillAcceptor
+from strongbox import StrongBox
 from check_printer import CheckPrinter
 
 sys.path.append('..')
@@ -24,6 +25,7 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
         self.display = Display(self)
         self.bill_acceptor = BillAcceptor(self)
         self.check_printer = CheckPrinter(self)
+        self.strongbox = StrongBox(self)
         self.ui.pushButton_settings.setMouseTracking(True)
         self.ui.pushButton_settings.enterEvent = self.settings_button_enter
         self.ui.pushButton_settings.leaveEvent = self.settings_button_leave
@@ -43,6 +45,13 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
             return False
         except TerminalException:
             return False
+
+    def activate_strongbox(self, cash):
+        thread_strongbox = threading.Thread(target=self.strongbox_thread, args=(cash, ), daemon=True)
+        thread_strongbox.start()
+
+    def strongbox_thread(self, cash):
+        self.strongbox.activate(cash)
 
     def settings_button_enter(self, event):
         QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.ClosedHandCursor))
@@ -79,7 +88,7 @@ class QTermWin(Terminal, QtWidgets.QMainWindow):
 
     def restart(self):
         self.close()
-        win = QTermWin(self._id)
+        win = QTermWin(self._id, self.app)
         with win:
             win.show()
         self = None
