@@ -11,7 +11,7 @@ class TestTransaction(unittest.TestCase):
         self.t = Transaction(50, 50)
         self.st = ServiceTransaction(50, 2, 'reload', {'last_transaction_id': 25,'cash': 5000, 'state': 1})
         self.pt = PaymentTransaction(50, 1, 225, 89049864438, 11000, 1)
-        self.et = EncashmentTransaction(50, 4, 567, 20000)
+        self.et = EncashmentTransaction(50, 4, 567, 20000, '775741')
 
     def test_common_transaction_length(self):
         self.assertEqual(self.t.get_length(), 17)
