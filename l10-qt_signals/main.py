@@ -33,6 +33,7 @@ class Slider(QtWidgets.QDialog):
     def on_changed(self, value):
         self.changedValue.emit(value)
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     progress = ProgressBar()
